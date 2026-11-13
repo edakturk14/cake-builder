@@ -1,0 +1,103 @@
+# Cake Gallery voice demo for Factory
+
+## How to hand this to Factory
+
+1. Open the cake project in Factory Desktop. Use the existing Workstream and paste the prompt below into the Orchestrator chat. For a new Workstream, select your project folder and branch. A regular Droid session can also use the same prompt in sequence.
+2. Use [the builder mockup](cake-gallery-mockup.png) as the primary visual reference, and the contact sheets under [references](references/) for cake artwork. You can also add the mockup to the Workstream’s **Files** tab. The builder uses one continuous soft ivory-blush background.
+3. Ask Factory to build and run the live version locally. Set `TYPESAFE_API_KEY` in the app's ignored local environment file using the README. Open the running preview in desktop Chrome, click the mic, and grant microphone permission. No paid transcription account is required for this browser-first setup.
+4. Run the four spoken turns in the prompt and then try the themed examples. Open the local timing display and check that the Jev requests are real. The example prices are for the demo.
+
+## Copy everything in this block into Factory
+
+```text
+BUILD CAKE GALLERY'S VOICE-DRIVEN CAKE DESIGNER
+
+Goal
+Build one responsive, desktop-first web page called “Describe your cake” for Cake Gallery. I want to speak naturally and watch a cake appear and change as I talk. This is the whole project for this milestone. Put the builder on the main route. Add a small basket on the same page so I can save the finished design at the displayed estimate. Keep this local and runnable. Skip the storefront menu, accounts, database, shipping, and payment. Use the existing project stack if available. For a new project, choose a simple React and TypeScript app with a small server route. Use real TypeSafe Jev for voice interpretation in the live app.
+
+Orchestrator assignments
+- First agree on the shape of the cake state, a small list of edits, the asset IDs, and the pricing table. One person owns that shared contract and the final integration.
+- Visual Droid owns the page layout, stage, asset preparation, and renderer. Its first deliverable is an empty stage and the finished Eda cake using the approved artwork direction.
+- Voice and Jev Droid owns browser speech recognition, the server-side Jev adapter, normalization and validation of decisions, and timing instrumentation. It owns the live path from a finalized phrase to a visible edit.
+- The Orchestrator can own the sample pricing and basket directly, or assign that as a short third task with separate files if parallel work helps. It verifies the two Droids' work together. Keep price rules, cake assets, and supported options in shared code instead of duplicating them.
+- Do one pass on the four-step live flow before spending time on every themed asset. Then populate the ten-plus examples and verify each maps to visible options. Give me a browser preview, the setup commands, and a short README.
+
+Visual direction
+- Use the attached soft ivory-blush reference. Use one continuous warm ivory background, approximately #FBF3ED, from the header through the stage and controls. No boxed photo backdrop or separate colored header strip. Use soft cocoa text (#482D2E), pale petal surfaces (#F5E1E4), and dusty rose accents (#A95D70) where contrast permits.
+- Place a tiny rose cake-on-a-stand logo and the upright “Cake Gallery” wordmark at the upper left. A compact “Basket (0)” action can sit upper right. No storefront navigation. Use a modest upright serif with some personality for the wordmark and “Describe your cake” heading, such as Baskervville Regular. Use DM Sans or the existing readable sans for controls. Reserve script for icing. Keep headings modest, the cake large, and the page airy.
+- At the start, the center is empty, with enough reserved space to avoid a layout jump. Give the mic a clear Start listening state and one short suggestion, “Try ‘I want a chocolate cake.’” Make the small optional text field share the same composer and command path. It is a fallback for a noisy room, mic denial, and automated verification. Do not turn the builder into a form or put a controls panel beside the cake.
+- Once a cake exists, show one centered cake on a matte cream ceramic pedestal with warm side light, a soft localized contact shadow, and a slightly elevated three-quarter view. The top must be readable. The inscription is piped on the horizontal TOP surface, centered toward the front. If there's a topper, position it behind the writing. Display a quiet row of current specs, a compact live transcript, Undo, Estimated total, and Add to basket.
+- Keep the scene stable. New elements enter with a short fade or settle of about 120–180 ms. Change the affected part in place. Avoid loading a new full scene every time someone speaks. Use a fixed camera, fixed pedestal baseline, and consistent scale. Respect reduced motion.
+- If the project already has a real rotatable cake, keep it and attach the topper and inscription to the cake so they follow the rotation. If the project uses layered artwork, support a small drag or buttons only if there are matching angle views. Hide the rotation cue when there is only one angle. Real-time 3D is optional after the voice flow works.
+
+Artwork and rendering
+- Generate or prepare a tiny set first: a chocolate sponge base, a taller chocolate variant with a clear pink filling seam, a classic baked cheesecake, a neutral vanilla sponge variant, and transparent decorations for strawberries, number candles, and a small original princess. Use Factory's built-in image tool or supplied photos as references. Keep angle, contact points, lighting, and scale consistent.
+- Use preloaded layers or prebuilt models and CSS for this live prototype. Keep the base, filling/layers, toppings, topper, candles and live inscription independently replaceable. Each named theme must have an identifiable visual element when supported. Reuse generic themed components where appropriate, such as a checkered flag, gold stars, football, racket or tennis ball. Keep art believable as cake decorations with size and shadows that fit the scene.
+- Render the inscription from the actual name or message in state, using an icing-like type treatment and perspective aligned to the top. The string “Eda” is an example, not a baked-in image. Size long text to fit or ask for a shorter line. Treat text as plain text. Retain the exact inscription in the basket.
+- Prefer the supplied bakery photos when available. Use preloaded assets for common designs so no image generator is needed during a spoken edit. If there is no exact visual asset for a request, keep the customer’s own words and show a small labeled custom placeholder in the right area. Never replace it silently with a different decoration.
+
+Demo sequence
+Start fresh for the recording. Speak each turn separately:
+1. “I want a cake.” A round chocolate sponge appears immediately after interpretation. Show Chocolate, 1 layer, and $42.
+2. “Make it two layers.” The same cake becomes taller with one visible filling seam. Show 2 layers and $48. A layer is a sponge layer within one cake. A tier is a separate cake stacked on another. “Two tiers” should trigger a short note that tiers aren't in this demo and preserve the existing design.
+3. “Add a princess on top.” A small blue fondant princess appears at the back of the top surface. Show the new decoration and $58.
+4. “Make it a birthday cake and write Eda on top.” Set Birthday and pipe Eda on the top surface in front of the princess. Keep the layers and topper. The price stays $58.
+Then test “Change the name to Ada.” Only the inscription should change. “Remove the princess” takes just that topper off and reduces the price by $10. Undo restores the previous confirmed design and estimate.
+
+Voice and Jev
+- Implement a user-initiated mic in desktop Chrome with browser SpeechRecognition or webkitSpeechRecognition where available. Enable interim results, visibly show the latest transcript while the user is talking, and allow multiple spoken edits while listening. Apply each finalized phrase once. Handle errors, mic denial, unsupported browsers, and natural recognition stops gracefully. Stop listening when the user clicks Stop or leaves the route. Do not require Wispr Flow or a separate paid speech provider for the first version.
+- Jev takes text, not audio. Route every finalized, nonempty transcript and submitted typed command through the same backend. Send only the latest phrase, the relevant confirmed cake state, and concise allowed option descriptions. Keep TYPESAFE_API_KEY server-side and out of the browser bundle, repo and logs. Use the current official TypeSafe System One API or SDK and a configured Jev model. Include a blank environment-variable example in the repo. If a key is missing or the request fails, show the actual status and a short retry message. Do not silently swap in a parser or fake an AI success. An optional scripted visual replay can exist if clearly labeled, and the live recording must use Jev.
+- Design the request around small bounded decisions. Example questions include whether the user wants to create or edit a cake; which base or flavor was explicitly requested; whether layers were set or kept; which occasion or visual theme fits; whether to add, remove, replace or keep a topping or topper; whether candles are absent, plain, or numeric; and whether the inscription is set, removed, or kept. Allow a single turn to change several fields. Give fields explicit keep or unspecified values. When a request is ambiguous, preserve the affected field and show a short clarification. A request about one item must not reset unrelated options.
+- For exact text, a spoken age or a custom decoration, extract candidate spans or explicit numbers from the transcript and let Jev classify their purpose. Jev chooses among bounded values; app code stores the actual selected span. A 40th birthday creates a 40 numeral candle, not a count of 40 candles. “Happy 40th, Ada” is a separate inscription if requested. A calendar year in a New Year's request is not a candle number unless explicitly requested. “Spain World Cup” is a football theme with Spain colors, not a Spanish flavor. “Jensen Huang” maps to the display name and design below.
+- Validate model answers and apply one patch to the confirmed state per turn. Apply multiple independent edits together, keep user-requested removals distinct from fields they did not mention, and preserve the order of finalized turns. If the user resets while a request is running, ignore its eventual result. Support Undo. Repeated recognition events should never add the same topping twice. Fruit, candles, a theme and a custom figurine may coexist. Treat a topper replacement as replacing only the named topper. Changing from sponge to cheesecake preserves toppings, candles, and inscription that can still apply. Cheesecake has one baked layer in this demo. If the customer requests two layers for cheesecake, explain the option and leave it at one. Layers up to three are supported for sponge.
+- Start with visual edits after finalized phrases. Show the interim transcript as speech comes in. If the measured pause before the cake changes is too noticeable, try bounded previews from stable interim text for reversible edits, keyed by utterance and revision, then replace them with the final decision. Avoid sending every interim word to Jev. Preview behavior can come after a reliable first run.
+
+Cake state and sample pricing
+Keep one typed source of truth. Suggested fields: base type, flavor, sponge layer count, occasion, visual theme, toppings, topper or custom-topper request, candle style and number, and inscription. Keep the complete pending/confirmed distinction out of the price calculation: the displayed total and basket reflect the confirmed design. Derive the estimate in code using integer cents. Jev chooses attributes; it does not set prices. Show “Estimated total” and an expandable breakdown if it fits. Recalculate on every confirmed edit and Undo.
+
+Use this sample price table:
+- Base with one layer: vanilla sponge $38, chocolate sponge $42, red velvet $44, classic baked cheesecake $44, lemon sponge $40.
+- Sponge layers: $6 per additional layer, up to three total. Cheesecake has one fixed layer in this demo.
+- Strawberries $7; raspberries $7; chocolate ganache topping $5; caramel drizzle $4; gold stars $4.
+- Plain candles $3; number candles $5 per set including both digits when needed; no charge when there are no candles. Replacing plain with number candles charges only the number-candle set.
+- Princess topper $10; Mario theme kit $12; Formula One kit $12; Spain World Cup kit $12; tennis kit $10; Jensen Huang figurine $15. Theme kits include their named decorations. Do not charge twice for a kit's components.
+- Occasion label and one short inscription are included. Unpriced custom items retain the request and show “Custom decoration to be quoted.” Continue showing the known subtotal as an estimate and carry the unresolved item into the basket. No taxes, shipping, or payment in this prototype. The design and amounts are sample prices, not bakery quotes.
+
+Basket
+- “Add to basket” captures the current confirmed design, an estimate breakdown, and a thumbnail of that exact design. Use the same renderer with the saved state or capture the finished view. A later change to the builder must not silently modify an already-added cake. Verify that all original layers, colors, toppings, candles and inscription appear in the thumbnail.
+- Open a slim drawer or popover on the same page. Show design, quantity, total estimate, and Remove. Store it locally in the browser if helpful for refreshes. Keep Add disabled for an empty cake or an unresolved edit in progress. Allow an unpriced decoration to be saved as a quoted item without implying a final price.
+- Add a separate builder reset action only if it fits naturally. Keep the main experience focused on the mic and visual preview.
+
+Pasteable examples for the visual agent and live Jev checks
+Start each numbered example from a fresh cake unless a follow-up is shown. The visual descriptions are the intended asset mapping. Exact product treatments may use the bakery's references, but retain the identity of the requested theme and attributes. A pictured character or themed topper is a decoration on a cake.
+
+01. “I want a classic cheesecake.” → Golden baked top, cream filling and biscuit crust, one layer. $44. Follow-up “Add strawberries and write Eda on top.” → Red strawberry fan on the rim, Eda on the top, $51.
+02. “Make me a two-layer chocolate birthday cake with a princess on top. Write Eda on it.” → Two same-diameter chocolate sponge layers, pink seam, a small original powder-blue princess at the back, cream Eda icing in front. $58.
+03. “It’s my 40th birthday. Make it a two-layer vanilla cake with a 40 candle and strawberries.” → Two vanilla layers, strawberry clusters, separate upright numeral 4 and 0 read as 40. $56. Follow-up “Actually, make it 41.” → Same cake, digits change, same total.
+04. “I have a New Year’s birthday. Give me a two-layer chocolate cake with gold stars and candles. Write Happy New Year, Eda.” → Dark chocolate, small gold star decorations, plain birthday candles, readable inscription. $55. The year is never inferred as the age.
+05. “Give me a two-layer vanilla Mario cake.” → Red cap topper and red-and-white mushroom and coin accents; clear video-game theme on a vanilla cake. $56. Follow-up “Add a 7 candle.” → Keep all theme pieces, $61.
+06. “I want a two-layer chocolate Formula One cake.” → Small red race-car topper, checkered flags, and a piped track detail. $60. Follow-up “Write Eda on it.” → Keep the car and flags, $60.
+07. “Make a two-layer vanilla World Cup cake for Spain.” → Football topper and red and yellow accents on vanilla sponge. $56. Keep the Spain theme distinct from flavor and general football.
+08. “Make a two-layer lemon tennis cake and write Game, Set, Match.” → Pale lemon sponge, two small tennis balls, one racket and subtle icing court lines. $56.
+09. “I want a two-layer chocolate Jensen Huang cake.” → A small figurine labeled Jensen Huang with a black leather jacket and a restrained green chip motif. $63. If the exact figurine isn't available, show a clearly named placeholder with the jacket and chip motif and retain the requested name.
+10. “Give me a three-layer red velvet cake with raspberries and birthday candles. Write Happy Birthday, Mira.” → Three red velvet sponge layers, ivory filling, fresh raspberries and plain candles. $66.
+11. “I want a two-layer chocolate cake with caramel drizzle and strawberries.” → Warm caramel ribbons and strawberry clusters. $59. Follow-up “Take the strawberries off and add ganache.” → Preserve the caramel, swap just the requested toppings, $57.
+12. “Make a two-layer vanilla birthday cake with a topper shaped like my cat Miso.” → Two vanilla layers with a named Miso topper placeholder at the back. $44 known estimate plus topper to quote. Follow-up “Actually remove the cat and put a 30 candle there.” → Remove custom placeholder, place numeral 30, $49.
+13. “Make a two-layer chocolate cake with a princess topper and a 6 candle.” → Princess at the back and separate number candle with room for writing. $63. Follow-up “Swap the princess for Mario and write Luca.” → Keep chocolate, layers, and 6 candle; Mario theme appears, Luca on top, $65.
+14. “Make me a lemon cake with strawberries and a number 21 candle. Write Happy birthday, Selin.” → One lemon layer, strawberry clusters, clear 21 and icing inscription. $52. Follow-up “Actually, make it a cheesecake, keep everything else.” → Golden cheesecake with the same strawberries, numeral 21 and inscription, $56.
+
+Latency and acceptance
+- Instrument the browser with performance.now() for the first interim transcript, final transcript, fetch start, response received, state apply, and first painted preview after the edit. Use a browser paint check such as a double requestAnimationFrame after the state update, and label it as an approximation. Measure the provider request duration in the server using its own clock. Keep provider duration separate from total request time and final-transcript-to-paint. First interim-to-paint includes time spent speaking. If you report time from the last audible word, measure that separately with a recording or an actual end-of-speech signal. Do not label final-transcript timing as last-word-to-screen.
+- Put timing details behind a local debug toggle or console, off by default in the clean demo. Provide one simple timing table for several real edits. Aim for a responsive preview and report actual numbers, setup, and sample count. Show a first cold request separately if possible. Keep preloading assets and avoid image generation in the live edit path.
+- Verify the four spoken turns in desktop Chrome with a real Jev key and the typed fallback. If microphone permission or credentials are unavailable on the agent machine, mark those checks pending and provide the exact steps I can run. Test a compound request, a self-correction, two rapidly spoken finalized turns, a layer-versus-tier request, an unknown topper, and a late response after reset.
+- Replay the fourteen examples as typed inputs through real Jev when a key is available. Confirm known expected results and prices. A fixture may test renderer and pricing locally without a key; label that run accordingly. Verify Undo and the basket snapshot. Confirm that later edits do not alter the saved cake and that a reload restores a locally saved basket if implemented.
+- Show desktop and narrow-browser screenshots. Give me the local URL, how to set the Jev key, the demo script, sample prices, what is supported, and which voice and model checks you actually ran. Keep the app focused on Describe your cake and its basket. Keep the TypeSafe demo centered on the real mic-to-cake interaction.
+```
+
+## Official references
+
+- [TypeSafe Jev and typed questions](https://docs.typesafe.ai/introduction)
+- [TypeSafe Choice and API request structure](https://docs.typesafe.ai/primitives/choice)
+- [Browser speech recognition](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition)
+- [Factory Workstreams](https://docs.factory.com/workstreams/overview)
+- [Factory image generation](https://docs.factory.com/droid-cli/image-generation)
