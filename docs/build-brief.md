@@ -3,7 +3,7 @@
 ## How to hand this to Factory
 
 1. Open the cake project in Factory Desktop. Use the existing Workstream and paste the prompt below into the Orchestrator chat. For a new Workstream, select your project folder and branch. A regular Droid session can also use the same prompt in sequence.
-2. Use [the builder mockup](cake-gallery-mockup.png) as the primary visual reference, and the contact sheets under [references](references/) for cake artwork. You can also add the mockup to the Workstream’s **Files** tab. The builder uses one continuous soft ivory-blush background.
+2. Use [the builder mockup](cake-gallery-mockup.webp) as the primary visual reference, and the contact sheets under [references](references/) for cake artwork. You can also add the mockup to the Workstream’s **Files** tab. The builder uses one continuous soft ivory-blush background.
 3. Ask Factory to build and run the live version locally. Set `TYPESAFE_API_KEY` in the app's ignored local environment file using the README. Open the running preview in desktop Chrome, click the mic, and grant microphone permission. No paid transcription account is required for this browser-first setup.
 4. Run the four spoken turns in the prompt and then try the themed examples. Open the local timing display and check that the Jev requests are real. The example prices are for the demo.
 
