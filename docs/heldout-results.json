@@ -1,0 +1,3729 @@
+{
+  "summary": {
+    "passed": 23,
+    "total": 30,
+    "passRatePct": 76.66666666666667,
+    "categories": [
+      {
+        "category": "themes-moods",
+        "passed": 1,
+        "total": 5,
+        "passRatePct": 20
+      },
+      {
+        "category": "inferred-toppings",
+        "passed": 3,
+        "total": 4,
+        "passRatePct": 75
+      },
+      {
+        "category": "contextual-occasions",
+        "passed": 3,
+        "total": 4,
+        "passRatePct": 75
+      },
+      {
+        "category": "removals-clears",
+        "passed": 5,
+        "total": 5,
+        "passRatePct": 100
+      },
+      {
+        "category": "multi-edit",
+        "passed": 4,
+        "total": 5,
+        "passRatePct": 80
+      },
+      {
+        "category": "paraphrases",
+        "passed": 4,
+        "total": 4,
+        "passRatePct": 100
+      },
+      {
+        "category": "ambiguity",
+        "passed": 3,
+        "total": 3,
+        "passRatePct": 100
+      }
+    ],
+    "interpreterCounts": {
+      "jevRequests": 30,
+      "jevOnlyTurns": 23,
+      "backupAttempts": 7,
+      "backupAcceptedResults": 2,
+      "finalJevResults": 28,
+      "backupFailureStatuses": [
+        {
+          "id": "m02",
+          "status": 502
+        },
+        {
+          "id": "m04",
+          "status": 422
+        },
+        {
+          "id": "t03",
+          "status": 422
+        },
+        {
+          "id": "o02",
+          "status": 422
+        },
+        {
+          "id": "a02",
+          "status": 422
+        }
+      ]
+    },
+    "latency": {
+      "httpAll": {
+        "count": 30,
+        "medianMs": 209.25991650000105,
+        "maxMs": 12222.133582999999
+      },
+      "jevReported": {
+        "count": 30,
+        "medianMs": 181.4929580000462,
+        "maxMs": 312.1847500000149
+      },
+      "backupReported": {
+        "count": 7,
+        "medianMs": 1092.8080409998074,
+        "maxMs": 1241.0509579998907
+      },
+      "httpJevOnly": {
+        "count": 23,
+        "medianMs": 186.37737500000003,
+        "maxMs": 315.41425000000163
+      },
+      "httpWithBackup": {
+        "count": 7,
+        "medianMs": 1660.271999999999,
+        "maxMs": 12222.133582999999
+      },
+      "note": "Server-reported backup duration is measured before reading the full response body; use HTTP latency for complete request wall time."
+    },
+    "cost": {
+      "apiReportedSubtotalUsd": 0.00161102,
+      "reportedCalls": [
+        {
+          "id": "m01",
+          "costUsd": 0.0011106
+        },
+        {
+          "id": "t01",
+          "costUsd": 0.00050042
+        }
+      ],
+      "unreportedCalls": [
+        {
+          "id": "m02",
+          "status": 502
+        },
+        {
+          "id": "m04",
+          "status": 422
+        },
+        {
+          "id": "t03",
+          "status": 422
+        },
+        {
+          "id": "o02",
+          "status": 422
+        },
+        {
+          "id": "a02",
+          "status": 422
+        }
+      ],
+      "totalBilledCostUsd": null,
+      "note": "Total unknown because five attempted backups omit cost. Unreported is not zero."
+    },
+    "failingCaseIds": [
+      "m01",
+      "m02",
+      "m03",
+      "m04",
+      "t03",
+      "o02",
+      "x03"
+    ],
+    "execution": {
+      "runs": 1,
+      "retries": 0,
+      "imageRouteCalls": 0,
+      "approvedSha": "18f1ef4afe40234761cb6dc8a34d41d8052ee969d8c1e5e576fab52abfe93335",
+      "healthCounterBefore": 0,
+      "healthCounterAfter": 7,
+      "counterDelta": 7,
+      "abort": null,
+      "tunedAfterResults": false
+    }
+  },
+  "mode": "LIVE",
+  "started": "2026-11-14T14:19:10.805Z",
+  "sha256": "18f1ef4afe40234761cb6dc8a34d41d8052ee969d8c1e5e576fab52abfe93335",
+  "planned": 30,
+  "rows": [
+    {
+      "id": "m01",
+      "category": "themes-moods",
+      "phrase": "Can you make it look a bit more grown-up and fancy?",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": {
+          "request": "more grown-up and fancy",
+          "assetId": null
+        },
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": false,
+          "detail": "customTopper"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"changedAny\",\"paths\":[\"colors\",\"inscriptionStyle\"]}",
+          "pass": false,
+          "detail": "colors={\"frosting\":\"white\",\"filling\":\"ivory\",\"inscription\":\"navy\",\"accents\":\"gold\"}; inscriptionStyle={\"font\":\"script\",\"letterCase\":\"as-written\",\"size\":\"medium\",\"placement\":\"front\"}"
+        },
+        {
+          "rule": "{\"kind\":\"changedToAny\",\"paths\":[\"colors.frosting\",\"colors.accents\"],\"values\":[\"gold\",\"black\",\"navy\",\"ivory\",\"white\",\"blush-pink\",\"lavender\"]}",
+          "pass": false,
+          "detail": "colors.frosting=\"white\"; colors.accents=\"gold\""
+        }
+      ],
+      "pass": false,
+      "httpMs": 2226.375,
+      "counterBefore": 0,
+      "response": {
+        "turnId": "heldout-1794665950831-m01",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "customTopper": {
+            "request": "more grown-up and fancy"
+          }
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 297.5282910000533,
+          "status": 200,
+          "interpreter": "fallback",
+          "fallback": {
+            "model": "openai/gpt-4.1-nano",
+            "durationMs": 1241.0509579998907,
+            "status": 200,
+            "costUsd": 0.0011106
+          }
+        }
+      },
+      "counterAfter": 1
+    },
+    {
+      "id": "m02",
+      "category": "themes-moods",
+      "phrase": "Could it have more of a beach feel?",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"changedAny\",\"paths\":[\"colors\"]}",
+          "pass": false,
+          "detail": "colors={\"frosting\":\"white\",\"filling\":\"ivory\",\"inscription\":\"navy\",\"accents\":\"gold\"}"
+        },
+        {
+          "rule": "{\"kind\":\"changedToAny\",\"paths\":[\"colors.frosting\",\"colors.accents\"],\"values\":[\"sky-blue\",\"navy\",\"mint\",\"white\",\"ivory\",\"peach\",\"lemon-yellow\"]}",
+          "pass": false,
+          "detail": "colors.frosting=\"white\"; colors.accents=\"gold\""
+        }
+      ],
+      "pass": false,
+      "httpMs": 12222.133582999999,
+      "counterBefore": 1,
+      "response": {
+        "turnId": "heldout-1794665953068-m02",
+        "action": "edit",
+        "patch": {
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [
+          "The backup interpreter returned malformed JSON. Your design is unchanged."
+        ],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 166.48758299998008,
+          "status": 200,
+          "interpreter": "jev",
+          "fallback": {
+            "model": "openai/gpt-4.1-nano",
+            "durationMs": 1117.7377080000006,
+            "status": 502
+          }
+        }
+      },
+      "counterAfter": 2
+    },
+    {
+      "id": "m03",
+      "category": "themes-moods",
+      "phrase": "I'd like it to feel a bit like a garden, but no little figures.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"changedAny\",\"paths\":[\"colors\"]}",
+          "pass": false,
+          "detail": "colors={\"frosting\":\"white\",\"filling\":\"ivory\",\"inscription\":\"navy\",\"accents\":\"gold\"}"
+        },
+        {
+          "rule": "{\"kind\":\"changedToAny\",\"paths\":[\"colors.frosting\",\"colors.accents\"],\"values\":[\"sage-green\",\"mint\",\"lilac\",\"lavender\",\"blush-pink\",\"peach\",\"coral\",\"red\",\"lemon-yellow\"]}",
+          "pass": false,
+          "detail": "colors.frosting=\"white\"; colors.accents=\"gold\""
+        }
+      ],
+      "pass": false,
+      "httpMs": 229.75754099999904,
+      "counterBefore": 2,
+      "response": {
+        "turnId": "heldout-1794665965301-m03",
+        "action": "edit",
+        "patch": {
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [
+          "Which topper would you like? Try a castle, unicorn, or knight."
+        ],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 223.52116600004956,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 2
+    },
+    {
+      "id": "m04",
+      "category": "themes-moods",
+      "phrase": "Can you make the colors a bit warmer, like a sunset?",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"changedAny\",\"paths\":[\"colors\"]}",
+          "pass": false,
+          "detail": "colors={\"frosting\":\"white\",\"filling\":\"ivory\",\"inscription\":\"navy\",\"accents\":\"gold\"}"
+        },
+        {
+          "rule": "{\"kind\":\"changedToAny\",\"paths\":[\"colors.frosting\",\"colors.accents\"],\"values\":[\"peach\",\"coral\",\"red\",\"gold\",\"chocolate-brown\"]}",
+          "pass": false,
+          "detail": "colors.frosting=\"white\"; colors.accents=\"gold\""
+        }
+      ],
+      "pass": false,
+      "httpMs": 1660.271999999999,
+      "counterBefore": 2,
+      "response": {
+        "turnId": "heldout-1794665965540-m04",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [
+          "Please clarify frosting color; I kept it unchanged.",
+          "The backup interpreter found no change to make. Your design is unchanged."
+        ],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 268.65045899990946,
+          "status": 200,
+          "interpreter": "jev",
+          "fallback": {
+            "model": "openai/gpt-4.1-nano",
+            "durationMs": 1092.8080409998074,
+            "status": 422
+          }
+        }
+      },
+      "counterAfter": 3
+    },
+    {
+      "id": "m05",
+      "category": "themes-moods",
+      "phrase": "Could you do the icing in black and white, nothing too kiddy?",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "black",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"changedAny\",\"paths\":[\"colors\"]}",
+          "pass": true,
+          "detail": "colors={\"frosting\":\"black\",\"filling\":\"ivory\",\"inscription\":\"navy\",\"accents\":\"gold\"}"
+        },
+        {
+          "rule": "{\"kind\":\"changedToAny\",\"paths\":[\"colors.frosting\",\"colors.accents\"],\"values\":[\"white\",\"ivory\",\"black\"]}",
+          "pass": true,
+          "detail": "colors.frosting=\"black\"; colors.accents=\"gold\""
+        }
+      ],
+      "pass": true,
+      "httpMs": 186.37737500000003,
+      "counterBefore": 3,
+      "response": {
+        "turnId": "heldout-1794665967208-m05",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "addToppings": [],
+          "removeToppings": [],
+          "colors": {
+            "frosting": "black"
+          }
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 178.8957909999881,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 3
+    },
+    {
+      "id": "t01",
+      "category": "inferred-toppings",
+      "phrase": "Can you put some berries on it?",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [
+          "raspberries"
+        ],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"includesAny\",\"path\":\"toppings\",\"values\":[\"strawberries\",\"raspberries\"]}",
+          "pass": true,
+          "detail": "toppings=[\"raspberries\"]"
+        }
+      ],
+      "pass": true,
+      "httpMs": 1466.6982080000016,
+      "counterBefore": 3,
+      "response": {
+        "turnId": "heldout-1794665967402-t01",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "occasion": null,
+          "theme": null,
+          "toppings": [
+            "raspberries"
+          ],
+          "customTopper": null,
+          "addToppings": [
+            "raspberries"
+          ]
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 172.47408300009556,
+          "status": 200,
+          "interpreter": "fallback",
+          "fallback": {
+            "model": "openai/gpt-4.1-nano",
+            "durationMs": 855.2534590000287,
+            "status": 200,
+            "costUsd": 0.00050042
+          }
+        }
+      },
+      "counterAfter": 4
+    },
+    {
+      "id": "t02",
+      "category": "inferred-toppings",
+      "phrase": "I'd like some chocolate sauce on top, not a different cake flavor.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [
+          "ganache"
+        ],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"includesAll\",\"path\":\"toppings\",\"values\":[\"ganache\"]}",
+          "pass": true,
+          "detail": "toppings=[\"ganache\"]"
+        }
+      ],
+      "pass": true,
+      "httpMs": 234.9020840000012,
+      "counterBefore": 4,
+      "response": {
+        "turnId": "heldout-1794665968892-t02",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "flavor": "chocolate",
+          "addToppings": [
+            "ganache"
+          ],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 226.04420899995603,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 4
+    },
+    {
+      "id": "t03",
+      "category": "inferred-toppings",
+      "phrase": "Maybe some sticky toffee sauce on top?",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"includesAll\",\"path\":\"toppings\",\"values\":[\"caramel\"]}",
+          "pass": false,
+          "detail": "toppings=[]"
+        }
+      ],
+      "pass": false,
+      "httpMs": 2137.319958,
+      "counterBefore": 4,
+      "response": {
+        "turnId": "heldout-1794665969133-t03",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [
+          "The backup interpreter found no change to make. Your design is unchanged."
+        ],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 184.0901250001043,
+          "status": 200,
+          "interpreter": "jev",
+          "fallback": {
+            "model": "openai/gpt-4.1-nano",
+            "durationMs": 1108.9070830000564,
+            "status": 422
+          }
+        }
+      },
+      "counterAfter": 5
+    },
+    {
+      "id": "t04",
+      "category": "inferred-toppings",
+      "phrase": "Can you sprinkle those little gold bits over it?",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [
+          "gold-stars"
+        ],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"includesAll\",\"path\":\"toppings\",\"values\":[\"gold-stars\"]}",
+          "pass": true,
+          "detail": "toppings=[\"gold-stars\"]"
+        }
+      ],
+      "pass": true,
+      "httpMs": 189.75587499999892,
+      "counterBefore": 5,
+      "response": {
+        "turnId": "heldout-1794665971274-t04",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "addToppings": [
+            "gold-stars"
+          ],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 186.68479100009426,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 5
+    },
+    {
+      "id": "o01",
+      "category": "contextual-occasions",
+      "phrase": "My sister just got engaged, so it's for her.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": "engagement",
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"occasion\",\"value\":\"engagement\"}",
+          "pass": true,
+          "detail": "occasion=\"engagement\""
+        }
+      ],
+      "pass": true,
+      "httpMs": 154.95770899999843,
+      "counterBefore": 5,
+      "response": {
+        "turnId": "heldout-1794665971469-o01",
+        "action": "edit",
+        "patch": {
+          "occasion": "engagement",
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 151.99379099998623,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 5
+    },
+    {
+      "id": "o02",
+      "category": "contextual-occasions",
+      "phrase": "We've just moved into our first flat. It's for that.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"occasion\",\"value\":\"housewarming\"}",
+          "pass": false,
+          "detail": "occasion=null"
+        }
+      ],
+      "pass": false,
+      "httpMs": 1525.1823330000007,
+      "counterBefore": 5,
+      "response": {
+        "turnId": "heldout-1794665971629-o02",
+        "action": "edit",
+        "patch": {
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [
+          "Please clarify the decoration or occasion you want. Your design is unchanged."
+        ],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 239.54712499980815,
+          "status": 200,
+          "interpreter": "jev",
+          "fallback": {
+            "model": "openai/gpt-4.1-nano",
+            "durationMs": 874.9303749999963,
+            "status": 422
+          }
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "o03",
+      "category": "contextual-occasions",
+      "phrase": "It's for my dad, he's retiring next week.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": "retirement",
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"occasion\",\"value\":\"retirement\"}",
+          "pass": true,
+          "detail": "occasion=\"retirement\""
+        }
+      ],
+      "pass": true,
+      "httpMs": 179.3702919999996,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665973161-o03",
+        "action": "edit",
+        "patch": {
+          "occasion": "retirement",
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 175.75849999999627,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "o04",
+      "category": "contextual-occasions",
+      "phrase": "My parents have been married twenty years. It's for them.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": "anniversary",
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"occasion\",\"value\":\"anniversary\"}",
+          "pass": true,
+          "detail": "occasion=\"anniversary\""
+        }
+      ],
+      "pass": true,
+      "httpMs": 170.11933299999873,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665973344-o04",
+        "action": "edit",
+        "patch": {
+          "occasion": "anniversary",
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 166.4891250000801,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "c01",
+      "category": "removals-clears",
+      "phrase": "Take all the toppings off, but keep the two figures.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [
+          "strawberries",
+          "raspberries",
+          "caramel"
+        ],
+        "toppers": [
+          "castle",
+          "princess"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [
+          "castle",
+          "princess"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"length\",\"path\":\"toppings\",\"value\":0}",
+          "pass": true,
+          "detail": "toppings=[]"
+        }
+      ],
+      "pass": true,
+      "httpMs": 168.64795900000172,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665973522-c01",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "addToppings": [],
+          "removeToppings": [
+            "strawberries",
+            "raspberries",
+            "caramel"
+          ]
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 163.46720799989998,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "c02",
+      "category": "removals-clears",
+      "phrase": "Get rid of the robot and the rocket, but leave the fruit.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [
+          "strawberries"
+        ],
+        "toppers": [
+          "robot",
+          "rocket"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {
+          "rocket": {
+            "size": "medium",
+            "position": "right",
+            "tint": null
+          },
+          "robot": {
+            "size": "medium",
+            "position": "left",
+            "tint": null
+          }
+        },
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [
+          "strawberries"
+        ],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"length\",\"path\":\"toppers\",\"value\":0}",
+          "pass": true,
+          "detail": "toppers=[]"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"topperStyles\",\"value\":{}}",
+          "pass": true,
+          "detail": "topperStyles={}"
+        }
+      ],
+      "pass": true,
+      "httpMs": 181.58120899999994,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665973699-c02",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "removeToppers": [
+            "robot",
+            "rocket"
+          ],
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 176.61129200016148,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "c03",
+      "category": "removals-clears",
+      "phrase": "Put the icing color back to normal, but leave the purple middle and gold writing.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "navy",
+          "filling": "lavender",
+          "inscription": "gold",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": null,
+          "filling": "lavender",
+          "inscription": "gold",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"colors.frosting\",\"value\":null}",
+          "pass": true,
+          "detail": "colors.frosting=null"
+        }
+      ],
+      "pass": true,
+      "httpMs": 315.41425000000163,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665973888-c03",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "addToppings": [],
+          "removeToppings": [],
+          "colors": {
+            "frosting": null
+          }
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 312.1847500000149,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "c04",
+      "category": "removals-clears",
+      "phrase": "Get rid of the words, but don't change the font or size.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "print",
+          "letterCase": "upper",
+          "size": "large",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "print",
+          "letterCase": "upper",
+          "size": "large",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": ""
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"length\",\"path\":\"inscription\",\"value\":0}",
+          "pass": true,
+          "detail": "inscription=\"\""
+        }
+      ],
+      "pass": true,
+      "httpMs": 179.21462500000052,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665974208-c04",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "inscription": "",
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 174.63341599982232,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "c05",
+      "category": "removals-clears",
+      "phrase": "Clear the occasion and take the tennis theme off. That's all.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": "anniversary",
+        "theme": "tennis",
+        "toppings": [],
+        "toppers": [
+          "castle"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [
+          "castle"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"occasion\",\"value\":null}",
+          "pass": true,
+          "detail": "occasion=null"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"theme\",\"value\":null}",
+          "pass": true,
+          "detail": "theme=null"
+        }
+      ],
+      "pass": true,
+      "httpMs": 169.06579200000124,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665974394-c05",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "occasion": null,
+          "theme": null,
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 163.7866670000367,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "x01",
+      "category": "multi-edit",
+      "phrase": "Actually, red velvet, three layers, and some raspberries, please.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "red-velvet",
+        "layers": 3,
+        "occasion": null,
+        "theme": null,
+        "toppings": [
+          "raspberries"
+        ],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"flavor\",\"value\":\"red-velvet\"}",
+          "pass": true,
+          "detail": "flavor=\"red-velvet\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"layers\",\"value\":3}",
+          "pass": true,
+          "detail": "layers=3"
+        },
+        {
+          "rule": "{\"kind\":\"includesAll\",\"path\":\"toppings\",\"values\":[\"raspberries\"]}",
+          "pass": true,
+          "detail": "toppings=[\"raspberries\"]"
+        }
+      ],
+      "pass": true,
+      "httpMs": 207.0379580000008,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665974570-x01",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "flavor": "red-velvet",
+          "layers": 3,
+          "addToppings": [
+            "raspberries"
+          ],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 202.7182909999974,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "x02",
+      "category": "multi-edit",
+      "phrase": "Swap the robot for a panda and write 'Bravo, Inez!' instead.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [
+          "robot",
+          "castle"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [
+          "castle",
+          "panda"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Bravo, Inez!"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"includesAll\",\"path\":\"toppers\",\"values\":[\"panda\",\"castle\"]}",
+          "pass": true,
+          "detail": "toppers=[\"castle\",\"panda\"]"
+        },
+        {
+          "rule": "{\"kind\":\"excludesAll\",\"path\":\"toppers\",\"values\":[\"robot\"]}",
+          "pass": true,
+          "detail": "toppers=[\"castle\",\"panda\"]"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"inscription\",\"value\":\"Bravo, Inez!\"}",
+          "pass": true,
+          "detail": "inscription=\"Bravo, Inez!\""
+        }
+      ],
+      "pass": true,
+      "httpMs": 219.61966699999903,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665974783-x02",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "removeToppers": [
+            "robot"
+          ],
+          "addToppers": [
+            "panda"
+          ],
+          "inscription": "Bravo, Inez!",
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 214.9608330000192,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "x03",
+      "category": "multi-edit",
+      "phrase": "Leave the cat, shrink the bunny a bit, and put the words in the middle.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [
+          "cat",
+          "bunny"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {
+          "bunny": {
+            "size": "large",
+            "position": "auto",
+            "tint": null
+          }
+        },
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [
+          "cat",
+          "bunny"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {
+          "bunny": {
+            "size": "large",
+            "position": "auto",
+            "tint": null
+          }
+        },
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "center"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"oneOf\",\"path\":\"topperStyles.bunny.size\",\"values\":[\"small\",\"medium\"]}",
+          "pass": false,
+          "detail": "topperStyles.bunny.size=\"large\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"inscriptionStyle.placement\",\"value\":\"center\"}",
+          "pass": true,
+          "detail": "inscriptionStyle.placement=\"center\""
+        }
+      ],
+      "pass": false,
+      "httpMs": 244.05066699999952,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665975009-x03",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "addToppings": [],
+          "removeToppings": [],
+          "inscriptionStyle": {
+            "placement": "center"
+          }
+        },
+        "notices": [
+          "Please clarify topper operation; I kept it unchanged."
+        ],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 239.1539590000175,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "x04",
+      "category": "multi-edit",
+      "phrase": "Can you do mint green icing, coral writing, and four normal candles?",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "mint",
+          "filling": "ivory",
+          "inscription": "coral",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "plain",
+          "number": null,
+          "count": 4
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"colors.frosting\",\"value\":\"mint\"}",
+          "pass": true,
+          "detail": "colors.frosting=\"mint\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"colors.inscription\",\"value\":\"coral\"}",
+          "pass": true,
+          "detail": "colors.inscription=\"coral\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.style\",\"value\":\"plain\"}",
+          "pass": true,
+          "detail": "candles.style=\"plain\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.count\",\"value\":4}",
+          "pass": true,
+          "detail": "candles.count=4"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.number\",\"value\":null}",
+          "pass": true,
+          "detail": "candles.number=null"
+        }
+      ],
+      "pass": true,
+      "httpMs": 171.26874999999927,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665975259-x04",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "candles": {
+            "style": "plain",
+            "number": null,
+            "count": 4
+          },
+          "addToppings": [],
+          "removeToppings": [],
+          "colors": {
+            "frosting": "mint",
+            "inscription": "coral"
+          }
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 166.97791599994525,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "x05",
+      "category": "multi-edit",
+      "phrase": "Let's do a lemon cheesecake instead, and lose the candles.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "number",
+          "number": "8",
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "cheesecake",
+        "flavor": "classic",
+        "layers": 1,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"base\",\"value\":\"cheesecake\"}",
+          "pass": true,
+          "detail": "base=\"cheesecake\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"flavor\",\"value\":\"classic\"}",
+          "pass": true,
+          "detail": "flavor=\"classic\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"layers\",\"value\":1}",
+          "pass": true,
+          "detail": "layers=1"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.style\",\"value\":\"none\"}",
+          "pass": true,
+          "detail": "candles.style=\"none\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.number\",\"value\":null}",
+          "pass": true,
+          "detail": "candles.number=null"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.count\",\"value\":null}",
+          "pass": true,
+          "detail": "candles.count=null"
+        }
+      ],
+      "pass": true,
+      "httpMs": 240.71137499999895,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665975437-x05",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "base": "cheesecake",
+          "flavor": "lemon",
+          "candles": {
+            "style": "none",
+            "number": null,
+            "count": null
+          },
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [
+          "Cheesecake has one baked layer in this demo. Sponge cakes support up to three layers."
+        ],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 236.16104200016707,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "p01",
+      "category": "paraphrases",
+      "phrase": "Can you stack the sponge three high? Not three whole cakes.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 3,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"layers\",\"value\":3}",
+          "pass": true,
+          "detail": "layers=3"
+        }
+      ],
+      "pass": true,
+      "httpMs": 255.7198329999992,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665975684-p01",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "base": "sponge",
+          "layers": 3,
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 251.59799999999814,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "p02",
+      "category": "paraphrases",
+      "phrase": "I need the candle number ninety-two, not ninety-two separate candles.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "number",
+          "number": "92",
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.style\",\"value\":\"number\"}",
+          "pass": true,
+          "detail": "candles.style=\"number\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.number\",\"value\":\"92\"}",
+          "pass": true,
+          "detail": "candles.number=\"92\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.count\",\"value\":null}",
+          "pass": true,
+          "detail": "candles.count=null"
+        }
+      ],
+      "pass": true,
+      "httpMs": 194.00004199999967,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665975946-p02",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "candles": {
+            "style": "number",
+            "number": "92",
+            "count": null
+          },
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 189.53829200007021,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "p03",
+      "category": "paraphrases",
+      "phrase": "Just eight normal candles, none of those number ones.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "plain",
+          "number": null,
+          "count": 8
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.style\",\"value\":\"plain\"}",
+          "pass": true,
+          "detail": "candles.style=\"plain\""
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.count\",\"value\":8}",
+          "pass": true,
+          "detail": "candles.count=8"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"candles.number\",\"value\":null}",
+          "pass": true,
+          "detail": "candles.number=null"
+        }
+      ],
+      "pass": true,
+      "httpMs": 168.77208400000018,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665976146-p03",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "candles": {
+            "style": "plain",
+            "number": null,
+            "count": 8
+          },
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 165.10550000006333,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "p04",
+      "category": "paraphrases",
+      "phrase": "Can the words say 'CHEERS, ZOË'? Keep the accent on the E.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "CHEERS, ZOË"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "must return edit action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"equals\",\"path\":\"inscription\",\"value\":\"CHEERS, ZOË\"}",
+          "pass": true,
+          "detail": "inscription=\"CHEERS, ZOË\""
+        }
+      ],
+      "pass": true,
+      "httpMs": 211.4818750000013,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665976321-p04",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "inscription": "CHEERS, ZOË",
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 206.9406669999007,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "a01",
+      "category": "ambiguity",
+      "phrase": "Can you stick some kind of animal on it?",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "valid clarification action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"clarify\"}",
+          "pass": true,
+          "detail": "edit; Which topper would you like? Try a castle, unicorn, or knight."
+        }
+      ],
+      "pass": true,
+      "httpMs": 152.12975000000006,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665976539-a01",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [
+          "Which topper would you like? Try a castle, unicorn, or knight."
+        ],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 149.49137499998324,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 6
+    },
+    {
+      "id": "a02",
+      "category": "ambiguity",
+      "phrase": "Uh, make the candles the other type, you know?",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "plain",
+          "number": null,
+          "count": 5
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "plain",
+          "number": null,
+          "count": 5
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "valid clarification action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"clarify\"}",
+          "pass": true,
+          "detail": "edit; Please clarify candles; I kept it unchanged.; The backup interpreter found no change to make. Your design is unchanged."
+        }
+      ],
+      "pass": true,
+      "httpMs": 1567.3699159999996,
+      "counterBefore": 6,
+      "response": {
+        "turnId": "heldout-1794665976696-a02",
+        "action": "edit",
+        "patch": {
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [
+          "Please clarify candles; I kept it unchanged.",
+          "The backup interpreter found no change to make. Your design is unchanged."
+        ],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 171.71058299997821,
+          "status": 200,
+          "interpreter": "jev",
+          "fallback": {
+            "model": "openai/gpt-4.1-nano",
+            "durationMs": 877.4264170001261,
+            "status": 422
+          }
+        }
+      },
+      "counterAfter": 7
+    },
+    {
+      "id": "a03",
+      "category": "ambiguity",
+      "phrase": "Swap that thing on top for something else.",
+      "initial": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [
+          "cat",
+          "dragon"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "status": 200,
+      "actual": {
+        "exists": true,
+        "base": "sponge",
+        "flavor": "chocolate",
+        "layers": 2,
+        "occasion": null,
+        "theme": null,
+        "toppings": [],
+        "toppers": [
+          "cat",
+          "dragon"
+        ],
+        "customTopper": null,
+        "colors": {
+          "frosting": "white",
+          "filling": "ivory",
+          "inscription": "navy",
+          "accents": "gold"
+        },
+        "topperStyles": {},
+        "inscriptionStyle": {
+          "font": "script",
+          "letterCase": "as-written",
+          "size": "medium",
+          "placement": "front"
+        },
+        "candles": {
+          "style": "none",
+          "number": null,
+          "count": null
+        },
+        "inscription": "Nora"
+      },
+      "checks": [
+        {
+          "rule": "must preserve every field outside onlyChange",
+          "pass": true,
+          "detail": "No unrelated state changes"
+        },
+        {
+          "rule": "valid clarification action",
+          "pass": true,
+          "detail": "edit"
+        },
+        {
+          "rule": "{\"kind\":\"clarify\"}",
+          "pass": true,
+          "detail": "edit; Which topper would you like? Try a castle, unicorn, or knight."
+        }
+      ],
+      "pass": true,
+      "httpMs": 167.79945799999768,
+      "counterBefore": 7,
+      "response": {
+        "turnId": "heldout-1794665978270-a03",
+        "action": "edit",
+        "patch": {
+          "exists": true,
+          "addToppings": [],
+          "removeToppings": []
+        },
+        "notices": [
+          "Which topper would you like? Try a castle, unicorn, or knight."
+        ],
+        "provider": {
+          "model": "jev-1.14.0",
+          "durationMs": 161.50595799996518,
+          "status": 200,
+          "interpreter": "jev"
+        }
+      },
+      "counterAfter": 7
+    }
+  ],
+  "requests": 30,
+  "observedAttempts": 7,
+  "baseline": {
+    "ok": true,
+    "configured": true,
+    "model": "jev-1.14.0",
+    "imageConfigured": true,
+    "imageModel": "black-forest-labs/flux-3-image-klein",
+    "textModel": "openai/gpt-4.1-nano",
+    "fallbackAttempts": 0
+  },
+  "after": {
+    "ok": true,
+    "configured": true,
+    "model": "jev-1.14.0",
+    "imageConfigured": true,
+    "imageModel": "black-forest-labs/flux-3-image-klein",
+    "textModel": "openai/gpt-4.1-nano",
+    "fallbackAttempts": 7
+  },
+  "novelty": [
+    {
+      "id": "m01",
+      "matches": []
+    },
+    {
+      "id": "m02",
+      "matches": []
+    },
+    {
+      "id": "m03",
+      "matches": []
+    },
+    {
+      "id": "m04",
+      "matches": []
+    },
+    {
+      "id": "m05",
+      "matches": []
+    },
+    {
+      "id": "t01",
+      "matches": []
+    },
+    {
+      "id": "t02",
+      "matches": []
+    },
+    {
+      "id": "t03",
+      "matches": []
+    },
+    {
+      "id": "t04",
+      "matches": []
+    },
+    {
+      "id": "o01",
+      "matches": []
+    },
+    {
+      "id": "o02",
+      "matches": []
+    },
+    {
+      "id": "o03",
+      "matches": []
+    },
+    {
+      "id": "o04",
+      "matches": []
+    },
+    {
+      "id": "c01",
+      "matches": []
+    },
+    {
+      "id": "c02",
+      "matches": []
+    },
+    {
+      "id": "c03",
+      "matches": []
+    },
+    {
+      "id": "c04",
+      "matches": []
+    },
+    {
+      "id": "c05",
+      "matches": []
+    },
+    {
+      "id": "x01",
+      "matches": []
+    },
+    {
+      "id": "x02",
+      "matches": []
+    },
+    {
+      "id": "x03",
+      "matches": []
+    },
+    {
+      "id": "x04",
+      "matches": []
+    },
+    {
+      "id": "x05",
+      "matches": []
+    },
+    {
+      "id": "p01",
+      "matches": []
+    },
+    {
+      "id": "p02",
+      "matches": []
+    },
+    {
+      "id": "p03",
+      "matches": []
+    },
+    {
+      "id": "p04",
+      "matches": []
+    },
+    {
+      "id": "a01",
+      "matches": []
+    },
+    {
+      "id": "a02",
+      "matches": []
+    },
+    {
+      "id": "a03",
+      "matches": []
+    }
+  ]
+}

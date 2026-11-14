@@ -72,7 +72,10 @@ test('custom edit commits before image completes; other edits serialize normally
     ? { exists: true, customTopper: { request: 'my cat Miso', assetId: null } } : { inscription: 'Eda' }),
   () => performance.now(), () => new Promise(resolve => { finish = resolve; }));
   queue.submit('custom'); await tick();
-  assert.equal(queue.getSnapshot().pending, false); assert.equal(queue.getSnapshot().imagePending, true);
+  assert.equal(queue.getSnapshot().pending, false); assert.equal(queue.getSnapshot().imagePending, false);
+  assert.equal(Boolean(finish), false, 'new custom interpretation must not generate');
+  queue.retryImage();
+  assert.equal(queue.getSnapshot().imagePending, true);
   assert.equal(queue.getSnapshot().cake.customTopper?.assetId, null);
   queue.submit('write'); await tick();
   finish({ assetId: 'fixture-miso', cached: false, model: 'fixture-image', imageGenerationMs: 30 });
@@ -92,7 +95,9 @@ test('reset guards builder but successful generation still notifies basket and e
   const queue = new DesignerQueue(async request => result(request.turnId, { exists: true, customTopper: { request: 'my cat Miso', assetId: null } }),
     () => performance.now(), () => { calls++; return new Promise(resolve => { finish = resolve; }); });
   queue.onAssetReady = event => events.push(event.assetId);
-  queue.submit('custom'); await tick(); queue.reset();
+  queue.submit('custom'); await tick();
+  assert.equal(calls, 0, 'generation requires an explicit tap');
+  queue.retryImage(); queue.reset();
   finish({ assetId: 'fixture-miso', cached: false, model: 'fixture-image', imageGenerationMs: 30 }); await tick();
   assert.equal(queue.getSnapshot().cake.customTopper, null);
   assert.deepEqual(events, ['fixture-miso']);
@@ -106,7 +111,12 @@ test('replacement ignores stale asset; failed preview leaves confirmed text and 
   const finish = new Map<string, (value: ImageResponse) => void>();
   const queue = new DesignerQueue(async request => result(request.turnId, { exists: true, customTopper: { request: request.phrase, assetId: null } }),
     () => performance.now(), request => new Promise(resolve => { finish.set(request, resolve); }));
-  queue.submit('cat'); await tick(); queue.submit('dog'); await tick();
+  queue.submit('cat'); await tick();
+  assert.equal(finish.size, 0, 'new custom request is plaque-only until tap');
+  queue.retryImage();
+  queue.submit('dog'); await tick();
+  assert.equal(finish.has('dog'), false, 'replacement must not auto-generate');
+  queue.retryImage();
   finish.get('cat')!({ assetId: 'cat-asset', cached: false, model: 'fixture', imageGenerationMs: 5 }); await tick();
   assert.equal(queue.getSnapshot().cake.customTopper?.request, 'dog');
   assert.equal(queue.getSnapshot().cake.customTopper?.assetId, null);
@@ -115,6 +125,8 @@ test('replacement ignores stale asset; failed preview leaves confirmed text and 
   const failed = new DesignerQueue(async request => result(request.turnId, { exists: true, customTopper: { request: 'cat', assetId: null } }),
     () => performance.now(), async () => { throw new Error('OPENROUTER_API_KEY missing'); });
   failed.submit('cat'); await tick();
+  assert.equal(failed.getSnapshot().imageError, null, 'no image attempt before tap');
+  failed.retryImage(); await tick();
   assert.equal(failed.getSnapshot().cake.customTopper?.request, 'cat');
   assert.equal(failed.getSnapshot().cake.customTopper?.assetId, null);
   assert.match(failed.getSnapshot().imageError!, /missing/);
@@ -127,7 +139,9 @@ test('same request after reset joins the existing generation with a new epoch; c
   const queue = new DesignerQueue(async request => result(request.turnId, { exists: true, customTopper: { request: 'pigeon', assetId: null } }),
     () => performance.now(), () => { calls++; return new Promise(resolve => { finish = resolve; }); });
   queue.onAssetReady = () => { callbacks++; };
-  queue.submit('pigeon'); await tick(); queue.reset(); queue.submit('pigeon again'); await tick();
+  queue.submit('pigeon'); await tick();
+  assert.equal(calls, 0);
+  queue.retryImage(); queue.reset(); queue.submit('pigeon again'); await tick();
   assert.equal(calls, 1);
   finish({ assetId: 'pigeon-asset', model: 'fixture', cached: false, imageGenerationMs: 10 }); await tick();
   assert.equal(queue.getSnapshot().cake.customTopper?.assetId, 'pigeon-asset');

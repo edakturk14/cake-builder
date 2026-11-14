@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { interpret, InterpretationError, validateRequest } from './jev';
-import { createTopperImageService, DEFAULT_IMAGE_MODEL, TopperImageError } from './topperImages';
+import { createTopperImageService, DEFAULT_IMAGE_MODEL, estimateImageCostUsd, TopperImageError } from './topperImages';
 import { DEFAULT_TEXT_MODEL, fallbackAttempts } from './fallback';
 
 dotenv.config({ path: '.env.local', quiet: true });
@@ -17,8 +17,9 @@ app.use('/api/topper-image/lookup', (_request, response, next) => {
 app.use(express.json({ limit: '16kb' }));
 app.get('/api/health', (_request, response) => {
   dotenv.config({ path: '.env.local', quiet: true });
+  const imageModel = process.env.OPENROUTER_IMAGE_MODEL || DEFAULT_IMAGE_MODEL;
   response.json({ ok: true, configured: Boolean(process.env.TYPESAFE_API_KEY), model: process.env.TYPESAFE_MODEL || 'jev-1.14.0',
-    imageConfigured: Boolean(process.env.OPENROUTER_API_KEY), imageModel: process.env.OPENROUTER_IMAGE_MODEL || DEFAULT_IMAGE_MODEL,
+    imageConfigured: Boolean(process.env.OPENROUTER_API_KEY), imageModel, imageEstimatedCostUsd: estimateImageCostUsd(imageModel),
     textModel: process.env.OPENROUTER_TEXT_MODEL || DEFAULT_TEXT_MODEL, fallbackAttempts });
 });
 app.post('/api/topper-image/lookup', async (request, response) => {

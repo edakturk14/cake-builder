@@ -16,5 +16,5 @@ export function useCakeDesigner(options: { onAssetReady?: (event: AssetReady) =>
     return () => { cancelAnimationFrame(first); cancelAnimationFrame(second); };
   }, [queue, snapshot.appliedTurnId]);
   useEffect(() => () => queue.cancel(), [queue]);
-  return { ...snapshot, submit: queue.submit, undo: queue.undo, reset: queue.reset, retryImage: queue.retryImage };
+  return { ...snapshot, submit: queue.submit, undo: queue.undo, reset: queue.reset, retryImage: queue.retryImage, receiveImage: queue.receiveImage };
 }

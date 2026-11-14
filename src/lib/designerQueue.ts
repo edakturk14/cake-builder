@@ -120,14 +120,26 @@ export class DesignerQueue {
   };
   private assetReady(request: string, assetId: string) {
     const key = normalizeCustomRequest(request);
-    if (!this.snapshot.cake.customTopper || normalizeCustomRequest(this.snapshot.cake.customTopper.request) !== key) return;
-    const complete = (cake: CakeState) => cake.customTopper && normalizeCustomRequest(cake.customTopper.request) === key
+    if (!this.snapshot.cake.customTopper || this.snapshot.cake.customTopper.assetId || normalizeCustomRequest(this.snapshot.cake.customTopper.request) !== key) return;
+    const complete = (cake: CakeState) => cake.customTopper && !cake.customTopper.assetId && normalizeCustomRequest(cake.customTopper.request) === key
       ? { ...cloneCake(cake), customTopper: { ...cake.customTopper, assetId } } : cake;
     this.history = this.history.map(complete);
     this.update({ cake: complete(this.snapshot.cake), imageError: null });
   }
-  retryImage = () => this.ensureImage(this.snapshot.appliedTurnId ?? undefined);
-  private ensureImage(turnId?: string) {
+  /** Cache/action UI delivers an asset without creating an Undo step. */
+  receiveImage = (request: string, assetId: string, info?: { imageGenerationMs?: number; cached?: boolean }) => {
+    const custom = this.snapshot.cake.customTopper;
+    if (!isAssetId(assetId) || !custom || custom.assetId || normalizeCustomRequest(custom.request) !== normalizeCustomRequest(request)) return;
+    this.assets.set(normalizeCustomRequest(request), assetId);
+    this.assetReady(request, assetId);
+    this.update({ readyAssets: new Map(this.assets), imagePending: false, imageError: null,
+      timings: this.snapshot.timings.map(t => t.turnId === this.snapshot.appliedTurnId
+        ? { ...t, imageGenerationMs: info?.imageGenerationMs ?? 0, imageCached: info?.cached ?? true } : t) });
+    this.onAssetReady?.({ request, assetId });
+  };
+  /** Explicit user action only. Automatic callers never set this flag. */
+  retryImage = () => this.ensureImage(this.snapshot.appliedTurnId ?? undefined, true);
+  private ensureImage(turnId?: string, explicitlyRequested = false) {
     const custom = this.snapshot.cake.customTopper;
     if (!custom || custom.assetId) { this.update({ imagePending: false, imageError: null }); return; }
     const request = custom.request, key = normalizeCustomRequest(request), ready = this.assets.get(key);
@@ -138,6 +150,9 @@ export class DesignerQueue {
     }
     const existing = this.images.get(key);
     if (existing) { existing.epochs.add(this.assetEpoch); if (turnId) existing.turnIds.add(turnId); this.update({ imagePending: true, imageError: null }); return; }
+    // Interpreted edits, rejected/no-change turns and Undo must never spend.
+    // The mounted preview actions perform only a free cache lookup by default.
+    if (!explicitlyRequested) { this.update({ imagePending: false }); return; }
     if (!this.imageTransport) return;
     const work = { epochs: new Set([this.assetEpoch]), turnIds: new Set(turnId ? [turnId] : []) };
     this.images.set(key, work);
