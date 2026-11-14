@@ -1,10 +1,11 @@
 import { isAssetId, normalizeCustomRequest } from '../shared/cake';
 import { browserImageTransport } from './designerQueue';
 
-export type CacheResult = { status: 'ready'; assetId: string } | { status: 'pending' | 'missing' };
+export type PreviewInfo = { imageGenerationMs?: number; cached?: boolean };
+export type CacheResult = ({ status: 'ready'; assetId: string } & PreviewInfo) | { status: 'pending' | 'missing' };
 export type PreviewStatus = CacheResult | { status: 'checking' | 'generating' | 'error'; message?: string };
 type Lookup = (request: string, signal: AbortSignal) => Promise<CacheResult>;
-type Generate = (request: string) => Promise<{ assetId: string }>;
+type Generate = (request: string) => Promise<{ assetId: string } & PreviewInfo>;
 
 export const lookupCachedPreview: Lookup = async (request, signal) => {
   // This endpoint only reads the cache/in-flight map. Never substitute the
@@ -33,7 +34,7 @@ type Entry = {
 /** Shared by saved items: one normalized lookup/poll loop and explicit retry. */
 export class PreviewRecovery {
   private entries = new Map<string, Entry>();
-  private generations = new Map<string, Promise<{ assetId: string }>>();
+  private generations = new Map<string, Promise<{ assetId: string } & PreviewInfo>>();
   constructor(private lookup: Lookup = lookupCachedPreview, private generate: Generate = browserImageTransport,
     private pollMs = 2000, private maxPolls = 60) {}
 
@@ -128,7 +129,9 @@ export class PreviewRecovery {
       const result = await work;
       if (entry.controller !== controller) return;
       if (!isAssetId(result.assetId)) throw new Error('Invalid preview');
-      this.publish(key, entry, { status: 'ready', assetId: result.assetId });
+      this.publish(key, entry, { status: 'ready', assetId: result.assetId,
+        ...(result.imageGenerationMs !== undefined ? { imageGenerationMs: result.imageGenerationMs } : {}),
+        ...(result.cached !== undefined ? { cached: result.cached } : {}) });
     } catch {
       if (entry.controller !== controller) return;
       this.publish(key, entry, { status: 'error', message: 'Could not generate the preview. Your saved design is unchanged.' });

@@ -24,6 +24,9 @@ export default function App() {
     setBasket(items => fulfillBasketAsset(items, request, assetId));
   }, []);
   const designer = useCakeDesigner({ onAssetReady: ({ request, assetId }) => receiveSavedAsset(request, assetId) });
+  const receiveCurrentAsset = useCallback((request: string, assetId: string, info?: { imageGenerationMs?: number; cached?: boolean }) => {
+    designer.receiveImage(request, assetId, info);
+  }, [designer.receiveImage]);
   const [command, setCommand] = useState('');
   const [lastTyped, setLastTyped] = useState('');
   const speech = useSpeechRecognition({ onFinal: (text, meta) => { setLastTyped(text); designer.submit(text, meta); } });
@@ -178,8 +181,7 @@ export default function App() {
       {pending && !cake.exists && <button type="button" className="text-button" onClick={reset}>Cancel pending edits</button>}
     </div>
     {replay === null && designer.notices.map((notice, index) => <p className="status-note" key={`${index}-${notice}`}>{notice}</p>)}
-    {replay === null && designer.imagePending && <p className="status-note image-status" role="status">Creating your topper… You can keep editing or save this design.</p>}
-    {replay === null && designer.imageError && <p className="status-note image-status" role="status">{designer.imageError} <button type="button" className="text-button" disabled={pending || designer.imagePending} onClick={designer.retryImage}>Try again</button></p>}
+    {replay === null && cake.customTopper && !cake.customTopper.assetId && <SavedPreviewRecovery request={cake.customTopper.request} onReady={receiveCurrentAsset} />}
     {replay === null && designer.error && <p className="error-note" role="alert">{designer.error}</p>}
     {replay === null && speech.error && <p className="error-note" role="alert">{speech.error}</p>}
   </div>;

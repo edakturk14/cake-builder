@@ -5,6 +5,7 @@ import {
   type CakePatch,
 } from '../src/shared/cake';
 import type { InterpretRequest } from '../src/shared/interpretation';
+import { catalogTopperForRequest, CUSTOM_TOPPER_OBJECT_NOTICE, filterCustomTopperIntent } from './customTopperIntent';
 import { TOPPER_CATALOG, TOPPER_IDS } from '../src/shared/toppers';
 import { OCCASIONS, OCCASION_IDS } from '../src/shared/occasions';
 import {
@@ -142,6 +143,7 @@ export function userPayload(request: InterpretRequest) {
 /** Demo-limit and user-input-dependent answers are intentional; open vagueness goes to the fallback. */
 export function isIntentionalNotice(notice: string): boolean {
   return [
+    CUSTOM_TOPPER_OBJECT_NOTICE,
     'Which topper would you like? Try a castle, unicorn, or knight.',
     'Up to two toppers in this demo',
     "Tiers aren't in this demo; I kept the existing layer count.",
@@ -327,22 +329,21 @@ export async function runFallback(request: InterpretRequest): Promise<FallbackSu
     throw new FallbackError('The backup interpreter returned an invalid cake edit. Your design is unchanged.', 502, model, durationMs);
   }
   const patch = sanitizePatch(parsed) ?? {};
-  // Deterministic safety net: a customTopper naming a catalog topper becomes that catalog id
-  // (custom requests trigger paid image generation; catalog ids never should).
+  // A custom field naming a prepared topper stays on the catalog path.
   if (patch && typeof patch === 'object') {
     const record = patch as Record<string, unknown>;
     const custom = record.customTopper as { request?: unknown } | undefined;
     if (custom && typeof custom.request === 'string') {
-      const normalized = custom.request.toLowerCase().replace(/^(?:a|an|the)\s+/, '').replace(/[^a-z0-9]+/g, ' ').trim();
-      const hit = TOPPER_CATALOG.find(topper => topper.id.replace(/-/g, ' ') === normalized || topper.label.toLowerCase() === normalized);
+      const hit = catalogTopperForRequest(custom.request);
       if (hit) {
-        record.addToppers = [...new Set([...(Array.isArray(record.addToppers) ? record.addToppers : []), hit.id])];
+        record.addToppers = [...new Set([...(Array.isArray(record.addToppers) ? record.addToppers : []), hit])];
         delete record.customTopper;
       }
     }
   }
   try { validateCakePatch(patch); }
   catch { throw new FallbackError('The backup interpreter returned an invalid cake edit. Your design is unchanged.', 502, model, durationMs); }
+  const customNotices = filterCustomTopperIntent(patch, request.phrase);
   let checked: ReturnType<typeof applyCakePatch>;
   try {
     assertGroundedAdditions(patch, request);
@@ -354,12 +355,12 @@ export async function runFallback(request: InterpretRequest): Promise<FallbackSu
   } catch {
     throw new FallbackError('The backup interpreter returned an invalid cake edit. Your design is unchanged.', 502, model, durationMs);
   }
-  if (JSON.stringify(checked.state) === JSON.stringify(request.state)) {
+  if (!customNotices.length && JSON.stringify(checked.state) === JSON.stringify(request.state)) {
     throw new FallbackError('The backup interpreter found no change to make. Your design is unchanged.', 422, model, durationMs);
   }
   const cost = (usage as { cost?: unknown } | undefined)?.cost;
   return {
-    patch, notices: checked.notes, model, durationMs, status: response.status,
+    patch, notices: [...customNotices, ...checked.notes], model, durationMs, status: response.status,
     ...(typeof cost === 'number' && Number.isFinite(cost) && cost >= 0 ? { costUsd: cost } : {}),
   };
 }

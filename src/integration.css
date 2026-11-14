@@ -77,3 +77,6 @@ dialog.basket-drawer { position: fixed; inset: 0 0 0 auto; margin: 0; height: 10
 .cake-preview-status p { margin: 0; }
 .cake-preview-status .text-button { margin: 0; font-size: 11px; }
 .cake-scene:has(.cake-preview-status) { margin-bottom: 100px; }
+.preview-create-button { border: 1px solid #985367; border-radius: 8px; padding: 9px 12px; background: #985367; color: #fff; font: inherit; font-size: 12px; }
+.preview-create-button:hover:not(:disabled) { background: #844458; }
+.saved-preview-recovery > .text-button { display: block; margin: 4px auto; }

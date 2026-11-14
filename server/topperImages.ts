@@ -7,6 +7,9 @@ import sharp from 'sharp';
 import { normalizeCustomRequest } from '../src/shared/cake';
 
 export const DEFAULT_IMAGE_MODEL = 'black-forest-labs/flux-3-image-klein';
+export function estimateImageCostUsd(model: string): number | null {
+  return model === DEFAULT_IMAGE_MODEL ? 0.008 : null;
+}
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const version = 'fondant-v2-defringe-anchor128-306';
 export class TopperImageError extends Error {
@@ -166,9 +169,10 @@ export function createTopperImageService(options: Options = {}) {
         await writeFile(temporary, processed);
         await rename(temporary, target);
         const cost = body.usage?.cost;
+        const estimatedCostUsd = estimateImageCostUsd(model);
         return { assetId, imageGenerationMs: clock() - started, cached: false, model,
           ...(typeof cost === 'number' && Number.isFinite(cost) && cost >= 0 ? { costUsd: cost } : {}),
-          ...(model === 'black-forest-labs/flux-3-image-klein' ? { estimatedCostUsd: 0.008 } : {}) };
+          ...(estimatedCostUsd !== null ? { estimatedCostUsd } : {}) };
       } catch (error) {
         if (error instanceof TopperImageError) throw error;
         const timeout = error instanceof Error && ['AbortError', 'TimeoutError'].includes(error.name);

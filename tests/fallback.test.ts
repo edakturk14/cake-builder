@@ -4,6 +4,8 @@ import { applyCakePatch, EMPTY_CAKE, estimateCake, cloneCake, createCake } from 
 import type { CakePatch } from '../src/shared/cake';
 import { buildQuestions, extractCandidates, interpret } from '../server/jev';
 import { fallbackSchema, isIntentionalNotice, shouldUseFallback, systemPrompt, userPayload } from '../server/fallback';
+import { catalogTopperForRequest, CUSTOM_TOPPER_OBJECT_NOTICE } from '../server/customTopperIntent';
+import { TOPPER_CATALOG } from '../src/shared/toppers';
 
 function jevPayload(phrase: string, values: Record<string, string>) {
   const questions = buildQuestions(extractCandidates(phrase));
@@ -344,8 +346,9 @@ for (const [phrase, patch, accepted] of semanticCases) test(`fallback support gu
     assert.equal(response.provider.interpreter, 'fallback');
     assert.deepEqual(applyCakePatch(before, response.patch).state, applyCakePatch(before, patch as CakePatch).state);
   } else {
-    assert.equal(response.provider.fallback?.status, 422);
-    assert.ok(response.notices.some(note => note.includes('Please clarify')));
+    const filteredCustom = response.notices.includes(CUSTOM_TOPPER_OBJECT_NOTICE);
+    assert.equal(response.provider.fallback?.status, filteredCustom ? 200 : 422);
+    assert.ok(filteredCustom || response.notices.some(note => note.includes('Please clarify')));
     assert.deepEqual(applyCakePatch(before, response.patch).state, before);
   }
   assert.equal(calls.filter(url => url.includes('openrouter.ai')).length, 1, 'no retry');
@@ -385,4 +388,235 @@ test('prompt/catalog context favors general palette inference, not a tuned scene
   assert.equal(wire.theme, 'keep');
   assert.equal(wire.customTopper, 'keep');
   assert.equal(wire.toppers, null);
+});
+
+const unsafeCustomCases = [
+  ['Can you make it look a bit more grown-up and fancy?', 'more grown-up and fancy'],
+  ['Please make it more elegant.', 'more elegant'],
+  ['I would like something sophisticated.', 'something sophisticated'],
+  ['Add some sophistication.', 'sophistication'],
+  ['Add a little elegance.', 'elegance'],
+  ['Add a blue color.', 'a blue color'],
+  ['Add a little blue.', 'blue'],
+  ['Make it elegant and add a fox.', 'elegant'],
+  ['Add a topper of something sophisticated.', 'something sophisticated'],
+  ['Add a tiny fondant lighthouse.', 'tiny fondant'],
+  ["Don't add a lighthouse.", 'a lighthouse'],
+  ['Remove a topper of our golden retriever.', 'our golden retriever'],
+  ['Would you make it fancier for an adult party?', 'fancier'],
+  ['Give the cake a classy look please.', 'a classy look'],
+  ['I want something special on top.', 'something special'],
+  ['Make it feel polished and mature.', 'polished and mature'],
+] as const;
+
+for (const [phrase, description] of unsafeCustomCases) {
+  test(`backup omits only unsafe custom object: ${phrase}`, async t => {
+    withEnv(t);
+    const before = richCake();
+    const calls = mockFetch(t, {
+      jev: jevPayload(phrase, {}),
+      fallback: { body: fallbackPayload({ exists: true, customTopper: { request: description } }, { cost: 0.0001 }) },
+    });
+    const response = await interpret({ ...request, phrase, state: before });
+    assert.equal(response.provider.interpreter, 'fallback');
+    assert.equal(response.provider.fallback?.status, 200);
+    assert.equal(response.provider.fallback?.costUsd, 0.0001, 'rejected custom output does not erase paid text usage');
+    assert.equal(response.patch.customTopper, undefined, 'cannot initiate image generation');
+    assert.deepEqual(applyCakePatch(before, response.patch).state, before, 'including its existing custom asset');
+    assert.ok(response.notices.includes(CUSTOM_TOPPER_OBJECT_NOTICE));
+    assert.equal(calls.length, 2, 'only mocked Jev and one backup, never an image request');
+  });
+
+  test(`Jev omits only unsafe custom object: ${phrase}`, async t => {
+    withEnv(t);
+    const index = extractCandidates(phrase).indexOf(description);
+    assert.ok(index >= 0, 'model selects an actual source span');
+    const calls = mockFetch(t, { jev: jevPayload(phrase, {
+      action: 'edit', customTopperAction: 'add', customTopper: `span_${index}`, scope_customTopper: 'mentioned',
+    }) });
+    const before = richCake();
+    const response = await interpret({ ...request, phrase, state: before });
+    assert.equal(response.provider.interpreter, 'jev');
+    assert.equal(response.patch.customTopper, undefined);
+    assert.deepEqual(applyCakePatch(before, response.patch).state, before);
+    assert.ok(response.notices.includes(CUSTOM_TOPPER_OBJECT_NOTICE));
+    assert.equal(calls.length, 1, 'intentional object clarification must not trigger a backup or image request');
+  });
+}
+
+for (const provider of ['jev', 'fallback'] as const) {
+  test(`${provider} preserves a valid color edit and existing custom asset when rejecting a style topper`, async t => {
+    withEnv(t);
+    const phrase = 'Make it more elegant and make the frosting gold.';
+    const index = extractCandidates(phrase).indexOf('more elegant');
+    assert.ok(index >= 0);
+    const calls = mockFetch(t, provider === 'jev' ? { jev: jevPayload(phrase, {
+      action: 'edit', customTopperAction: 'add', customTopper: `span_${index}`,
+      scope_customTopper: 'mentioned', appearance_color_frosting: 'gold', scope_appearance_color_frosting: 'mentioned',
+    }) } : {
+      jev: jevPayload(phrase, {}),
+      fallback: { body: fallbackPayload({ colors: { frosting: 'gold' }, customTopper: { request: 'more elegant' } }) },
+    });
+    const before = richCake();
+    const response = await interpret({ ...request, phrase, state: before });
+    assert.equal(response.provider.interpreter, provider);
+    assert.equal(response.patch.customTopper, undefined);
+    assert.deepEqual(applyCakePatch(before, response.patch).state, applyCakePatch(before, { colors: { frosting: 'gold' } }).state);
+    assert.ok(response.notices.includes(CUSTOM_TOPPER_OBJECT_NOTICE));
+    assert.equal(calls.length, provider === 'jev' ? 1 : 2);
+  });
+}
+
+const physicalCustomCases = [
+  ['Add a little fondant lighthouse.', 'a little fondant lighthouse'],
+  ['I want a topper of our golden retriever.', 'our golden retriever'],
+  ['Add a racing pigeon on top.', 'a racing pigeon'],
+  ["Add my grandma's face.", "my grandma's face"],
+] as const;
+
+for (const provider of ['jev', 'fallback'] as const) for (const [phrase, description] of physicalCustomCases) {
+  test(`${provider} retains a concrete custom object: ${description}`, async t => {
+    withEnv(t);
+    const index = extractCandidates(phrase).indexOf(description);
+    assert.ok(index >= 0);
+    const calls = mockFetch(t, provider === 'jev' ? { jev: jevPayload(phrase, {
+      action: 'edit', customTopperAction: 'add', customTopper: `span_${index}`, scope_customTopper: 'mentioned',
+    }) } : {
+      jev: jevPayload(phrase, {}),
+      fallback: { body: fallbackPayload({ customTopper: { request: description } }) },
+    });
+    const response = await interpret({ ...request, phrase, state: richCake() });
+    assert.equal(response.provider.interpreter, provider);
+    assert.deepEqual(response.patch.customTopper, { request: description }, 'preserve the object description, not an adjacent style span');
+    assert.ok(!response.notices.includes(CUSTOM_TOPPER_OBJECT_NOTICE));
+    assert.equal(calls.length, provider === 'jev' ? 1 : 2, 'all provider fetches mocked, no image generation');
+  });
+}
+
+test('Jev explicit custom-topper removal bypasses the addition guard', async t => {
+  withEnv(t);
+  const phrase = 'Remove the custom topper.';
+  const calls = mockFetch(t, { jev: jevPayload(phrase, { action: 'edit', customTopperAction: 'remove', scope_customTopper: 'mentioned' }) });
+  const before = richCake();
+  const response = await interpret({ ...request, phrase, state: before });
+  assert.equal(response.patch.customTopper, null);
+  assert.equal(applyCakePatch(before, response.patch).state.customTopper, null);
+  assert.ok(!response.notices.includes(CUSTOM_TOPPER_OBJECT_NOTICE));
+  assert.equal(calls.length, 1);
+});
+
+test('exact m01 state and backup output cannot create a custom-topper image request', async t => {
+  withEnv(t);
+  const phrase = 'Can you make it look a bit more grown-up and fancy?';
+  const before = createCake({
+    flavor: 'chocolate', layers: 2, inscription: 'Nora',
+    colors: { frosting: 'white', filling: 'ivory', inscription: 'navy', accents: 'gold' },
+  });
+  const calls = mockFetch(t, {
+    jev: jevPayload(phrase, {}),
+    fallback: { body: fallbackPayload({ exists: true, customTopper: { request: 'more grown-up and fancy' } }) },
+  });
+  const response = await interpret({ ...request, phrase, state: before });
+  assert.equal(response.provider.interpreter, 'fallback');
+  assert.equal(response.patch.customTopper, undefined);
+  assert.deepEqual(applyCakePatch(before, response.patch).state, before);
+  assert.equal(applyCakePatch(before, response.patch).state.customTopper, null);
+  assert.ok(response.notices.includes(CUSTOM_TOPPER_OBJECT_NOTICE));
+  assert.equal(calls.length, 2, 'mocked text only, never an image request');
+});
+
+const ordinaryObjectCases = [
+  ['Please add a fondant sailboat on top.', 'a fondant sailboat'],
+  ['Add a figure of my grandma on top.', 'my grandma'],
+  ['Put our cat Miso as a topper.', 'our cat Miso'],
+  ['Use our cat Miso as the topper.', 'our cat Miso'],
+  ['I would like a topper of my cat Miso.', 'my cat Miso'],
+  ['Please place a miniature violin on top.', 'a miniature violin'],
+  ['Add a clay-style hedgehog on top.', 'a clay-style hedgehog'],
+  ['Could you sculpt a fondant sailboat for the top?', 'a fondant sailboat'],
+  ['I want a figure of grandma on top.', 'grandma'],
+  ['Add an astronaut holding a flag.', 'an astronaut holding a flag'],
+  ['Please make a sugar telescope for the top.', 'a sugar telescope'],
+  ['Could you do a tiny windmill on top?', 'a tiny windmill'],
+  ['Put Miso on it.', 'Miso'],
+  ['Use our spaniel as the cake topper.', 'our spaniel'],
+  ['Please create a fondant microscope on top.', 'a fondant microscope'],
+  ['Make a tiny koala topper.', 'a tiny koala'],
+] as const;
+
+for (const provider of ['jev', 'fallback'] as const) for (const priorAsset of [false, true]) {
+  for (const [phrase, description] of ordinaryObjectCases) {
+    test(`${provider} accepts ordinary object request (${priorAsset ? 'ready asset' : 'no asset'}): ${phrase}`, async t => {
+      withEnv(t);
+      const index = extractCandidates(phrase).indexOf(description);
+      assert.ok(index >= 0, 'Jev selects an actual source span');
+      const before = createCake(priorAsset ? { customTopper: { request: 'my dog Biscuit', assetId: 'a'.repeat(64) } } : {});
+      const calls = mockFetch(t, provider === 'jev' ? { jev: jevPayload(phrase, {
+        action: 'edit', customTopperAction: 'add', customTopper: `span_${index}`, scope_customTopper: 'mentioned',
+      }) } : {
+        jev: jevPayload(phrase, {}),
+        fallback: { body: fallbackPayload({ customTopper: { request: description } }) },
+      });
+      const response = await interpret({ ...request, phrase, state: before });
+      assert.equal(response.provider.interpreter, provider);
+      assert.deepEqual(response.patch.customTopper, { request: description });
+      assert.ok(!response.notices.includes(CUSTOM_TOPPER_OBJECT_NOTICE));
+      assert.equal(applyCakePatch(before, response.patch).state.customTopper?.request, description);
+      assert.equal(calls.length, provider === 'jev' ? 1 : 2, 'mocked text only; no image endpoint');
+    });
+  }
+
+  for (const [phrase, description, id] of [
+    ['Put a dinosaur on top please.', 'dinosaur', 'dinosaur'],
+    ['Please add a castle to the cake.', 'a castle', 'castle'],
+    ['Use a Flower bouquet on top.', 'Flower bouquet', 'flower-bouquet'],
+  ] as const) {
+    test(`${provider} remaps custom-only ${description} to catalog (${priorAsset ? 'ready asset' : 'no asset'})`, async t => {
+      withEnv(t);
+      const index = extractCandidates(phrase).indexOf(description);
+      assert.ok(index >= 0);
+      const before = createCake(priorAsset ? { customTopper: { request: 'my dog Biscuit', assetId: 'a'.repeat(64) } } : {});
+      const calls = mockFetch(t, provider === 'jev' ? { jev: jevPayload(phrase, {
+        action: 'edit', customTopperAction: 'add', customTopper: `span_${index}`, scope_customTopper: 'mentioned',
+        // Deliberately no prepared incoming slot, the reviewer's asymmetric case.
+      }) } : {
+        jev: jevPayload(phrase, {}),
+        fallback: { body: fallbackPayload({ customTopper: { request: description } }) },
+      });
+      const response = await interpret({ ...request, phrase, state: before });
+      assert.equal(response.provider.interpreter, provider);
+      assert.equal(response.patch.customTopper, undefined);
+      assert.deepEqual(response.patch.addToppers, [id]);
+      const after = applyCakePatch(before, response.patch).state;
+      assert.deepEqual(after.toppers, [id]);
+      assert.deepEqual(after.customTopper, before.customTopper, 'catalog remapping preserves an existing custom asset');
+      assert.equal(calls.length, provider === 'jev' ? 1 : 2);
+    });
+  }
+}
+
+test('shared custom-name matcher covers every prepared catalog id and label, not portrait descriptions', () => {
+  for (const topper of TOPPER_CATALOG) {
+    for (const name of [topper.id, topper.label, `a ${topper.label}`, `the ${topper.label.toUpperCase()}`]) {
+      assert.equal(catalogTopperForRequest(name), topper.id);
+    }
+  }
+  for (const name of ['my cat Miso', 'our golden retriever', 'an astronaut holding a flag']) {
+    assert.equal(catalogTopperForRequest(name), undefined);
+  }
+});
+
+test('Jev custom-only catalog remapping deduplicates a separately selected prepared slot', async t => {
+  withEnv(t);
+  const phrase = 'Add a dinosaur.';
+  const index = extractCandidates(phrase).indexOf('dinosaur');
+  assert.ok(index >= 0);
+  const calls = mockFetch(t, { jev: jevPayload(phrase, {
+    action: 'edit', customTopperAction: 'add', customTopper: `span_${index}`, scope_customTopper: 'mentioned',
+    topperOperation: 'add', topperIncomingFirst: 'dinosaur', scope_topperOperation: 'mentioned',
+  }) });
+  const response = await interpret({ ...request, phrase, state: createCake() });
+  assert.equal(response.patch.customTopper, undefined);
+  assert.deepEqual(response.patch.addToppers, ['dinosaur']);
+  assert.equal(calls.length, 1);
 });

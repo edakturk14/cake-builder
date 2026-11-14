@@ -3,6 +3,7 @@ import { applyCakePatch, validateCakePatch, cloneCake, PLAIN_CANDLE_COUNTS, type
 import { applyAppearance, appearanceQuestions } from './appearance';
 import { OCCASIONS, OCCASION_IDS } from '../src/shared/occasions';
 import { FallbackError, runFallback, shouldUseFallback } from './fallback';
+import { catalogTopperForRequest, filterCustomTopperIntent } from './customTopperIntent';
 import type { InterpretRequest, InterpretResponse } from '../src/shared/interpretation';
 import { TOPPER_CATALOG, TOPPER_IDS, TOPPER_BY_ID, type TopperId } from '../src/shared/toppers';
 
@@ -216,7 +217,7 @@ function numberFromSpan(span: string): string | null {
   return null;
 }
 
-export function normalizeAnswers(payload: unknown, questions: Questions, candidates: string[], state: CakeState) {
+export function normalizeAnswers(payload: unknown, questions: Questions, candidates: string[], state: CakeState, phrase?: string) {
   if (!record(payload) || typeof payload.model !== 'string' || !record(payload.answers)) throw new InterpretationError('Jev returned an invalid response. Please retry.', 502);
   const answers = payload.answers;
   const notices: string[] = [];
@@ -296,10 +297,17 @@ export function normalizeAnswers(payload: unknown, questions: Questions, candida
     supportedNames[value as keyof typeof supportedNames]?.includes(normalizedSpan ?? '')
     || (isTopper(value) && [value.replace(/-/g, ' '), TOPPER_BY_ID[value].label.toLowerCase()].includes(normalizedSpan ?? '')));
   if (c.customTopperAction === 'remove') patch.customTopper = null;
-  else if (c.customTopperAction === 'add' && customSpan && !sameSupportedObject && !generic) {
-    if (customSpan.length <= 120) patch.customTopper = { request: customSpan };
-    else notices.push('Please describe the custom topper in 120 characters or fewer.');
+  else if (c.customTopperAction === 'add' && customSpan && !generic) {
+    const catalogTopper = catalogTopperForRequest(customSpan);
+    if (catalogTopper) patch.addToppers = [...new Set([...(patch.addToppers ?? []), catalogTopper])];
+    else if (!sameSupportedObject) {
+      if (customSpan.length <= 120) patch.customTopper = { request: customSpan };
+      else notices.push('Please describe the custom topper in 120 characters or fewer.');
+    }
   }
+  // Real requests use the complete phrase. Direct normalization callers can supply
+  // the existing contiguous source candidates; never assemble unrelated spans.
+  notices.push(...filterCustomTopperIntent(patch, phrase ?? candidates));
   const numberSpan = span('candleNumber');
   const number = numberSpan ? numberFromSpan(numberSpan) : null;
   if (c.candles === 'remove') patch.candles = { style: 'none', number: null, count: null };
@@ -360,7 +368,7 @@ export async function interpret(request: InterpretRequest): Promise<InterpretRes
   }
   let payload: unknown;
   try { payload = JSON.parse(body); } catch { throw new InterpretationError('Jev returned non-JSON data. Please retry.', 502, durationMs); }
-  const result = normalizeAnswers(payload, questions, candidates, request.state);
+  const result = normalizeAnswers(payload, questions, candidates, request.state, request.phrase);
   const provider: InterpretResponse['provider'] = { model: result.model, durationMs, status: response.status, interpreter: 'jev' };
   const changed = JSON.stringify(applyCakePatch(request.state, result.patch).state) !== JSON.stringify(request.state);
   const meaningful: CakePatch = { ...result.patch };
