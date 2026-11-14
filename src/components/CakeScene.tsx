@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, useState } from 'react';
 import type { CakeState } from '../shared/cake';
 import { TOPPER_BY_ID } from '../shared/toppers';
 import TOPPER_ART from '../art/toppersManifest.json';
@@ -79,6 +79,9 @@ export interface CakeSceneProps {
 /** A fixed-camera composition. Every decoration belongs to this saved design. */
 export function CakeScene({ cake, compact = false, className = '', label }: CakeSceneProps) {
   const id = useId().replace(/:/g, '');
+  const [failedAsset, setFailedAsset] = useState<string | null>(null);
+  const [imageAttempt, setImageAttempt] = useState(0);
+  const imageFailed = Boolean(cake.customTopper?.assetId && failedAsset === cake.customTopper.assetId);
   const top = cake.base === 'cheesecake' ? 0 : cake.layers === 1 ? 56 : cake.layers === 3 ? -47 : 0;
   const flavor = cake.flavor === 'classic' ? 'vanilla' : cake.flavor;
   const darkCake = cake.base !== 'cheesecake' && (cake.flavor === 'chocolate' || cake.flavor === 'red-velvet');
@@ -133,11 +136,15 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
               <image href={art.file} x={placement.center-placement.width*art.anchor.x} y={placement.contact+top-placement.height*art.anchor.y} width={placement.width} height={placement.height} filter={placement.tint?`url(#${id}-tint-${topper})`:undefined}/>
             </g>;
           })}
-          {cake.customTopper&&<CustomTopper key={cake.customTopper.assetId??cake.customTopper.request} design={cake.customTopper} placement={placements.find(item=>item.id==='custom')!} top={top}/>}
+          {cake.customTopper&&<CustomTopper key={`${cake.customTopper.assetId??cake.customTopper.request}-${imageAttempt}`} design={cake.customTopper} placement={placements.find(item=>item.id==='custom')!} top={top} imageAttempt={imageAttempt} onImageError={()=>setFailedAsset(cake.customTopper?.assetId??null)}/>}
           <CakeCandles cake={cake} top={top} toppers={placements} accent={accent} darkSurface={darkSurface} writingWidth={writingWidth}/>
           {cake.inscription&&<CakeInscription text={cake.inscription} style={cake.inscriptionStyle} color={writingColor} darkSurface={darkSurface} top={top+writingOffset} maxWidth={writingWidth}/>}
         </svg>
       )}
+      {cake.exists && imageFailed && <div className="cake-preview-status" role="status">
+        <p>Preview unavailable. Your request is saved.</p>
+        <button type="button" className="text-button" onClick={()=>{setFailedAsset(null);setImageAttempt(attempt=>attempt+1);}}>Retry loading preview (free)</button>
+      </div>}
     </div>
   );
 }

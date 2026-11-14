@@ -60,3 +60,20 @@ dialog.basket-drawer { position: fixed; inset: 0 0 0 auto; margin: 0; height: 10
   .send-button { width: 30px; height: 30px; }
   dialog.basket-drawer { padding: 20px; }
 }
+
+/* Keep the ivory/rose palette while meeting WCAG AA for small text. */
+.basket-trigger span,.eyebrow,.heading-caption,.composer-input::placeholder,
+.empty-stage p,.empty-stage p span,.page-footnote,.page-footnote span,
+.basket-item p,.suggestion-label,.options-intro,.option-price { color: #765752; }
+.text-button,.options-toggle:hover:not(:disabled) { color: #80505a; }
+.reset-button { color: #80505a!important; }
+.mic-button,.primary-button { background: #985367; border-color: #985367; }
+.mic-button:hover,.primary-button:hover:not(:disabled) { background: #844458; }
+.debug-toggle { opacity: 1; }
+.saved-preview-recovery { max-width: 100%; }
+.basket-item-info { min-width: 0; overflow-wrap: anywhere; }
+.basket-item-info .saved-preview-recovery .text-button { margin: 0; padding: 6px 0; display: block; text-align: left; }
+.cake-preview-status { position: absolute; top: 100%; left: 0; right: 0; font-size: 11px; line-height: 1.4; color: #765752; text-align: center; }
+.cake-preview-status p { margin: 0; }
+.cake-preview-status .text-button { margin: 0; font-size: 11px; }
+.cake-scene:has(.cake-preview-status) { margin-bottom: 100px; }

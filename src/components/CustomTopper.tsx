@@ -3,7 +3,7 @@ import type { CustomTopper as CustomDesign } from '../shared/cake';
 import type { PlacedTopper } from './topperLayout';
 import art from '../art/toppersManifest.json';
 
-export function CustomTopper({design,placement,top}:{design:CustomDesign;placement:PlacedTopper;top:number}){
+export function CustomTopper({design,placement,top,onImageError,imageAttempt=0}:{design:CustomDesign;placement:PlacedTopper;top:number;onImageError?:()=>void;imageAttempt?:number}){
   const [loadedAsset,setLoadedAsset]=useState<string|null>(null);
   const loaded=Boolean(design.assetId&&loadedAsset===design.assetId);
   const width=placement.width,height=placement.height;
@@ -19,7 +19,7 @@ export function CustomTopper({design,placement,top}:{design:CustomDesign;placeme
     {design.assetId&&<g key={design.assetId} className={loaded?'cake-decoration':''} data-decoration="custom-topper-generated" opacity={loaded?1:0}>
       <title>{`${design.request}, generated custom fondant topper`}</title>
       <ellipse cx={placement.center} cy={placement.contact-1+top} rx={width*.235} ry={width*.035} fill="#583622" opacity=".15"/>
-      <image href={`/api/topper-image/${encodeURIComponent(design.assetId)}`} x={placement.center-width*art.anchor.x} y={placement.contact+top-height*art.anchor.y} width={width} height={height} preserveAspectRatio="xMidYMax meet" onLoad={()=>setLoadedAsset(design.assetId)} onError={()=>setLoadedAsset(null)}/>
+      <image href={`/api/topper-image/${encodeURIComponent(design.assetId)}${imageAttempt?`?retry=${imageAttempt}`:''}`} x={placement.center-width*art.anchor.x} y={placement.contact+top-height*art.anchor.y} width={width} height={height} preserveAspectRatio="xMidYMax meet" onLoad={()=>setLoadedAsset(design.assetId)} onError={()=>{setLoadedAsset(null);onImageError?.();}}/>
     </g>}
   </>;
 }

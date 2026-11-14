@@ -92,4 +92,10 @@ See [validation and pending live acceptance checks](docs/validation.md). A passi
 
 With credentials configured, `npx tsx scripts/check-live-jev.ts` runs the real provider adapter against the demo and fourteen examples. It exits rather than replaying fixtures when the key is missing. See [live validation steps](docs/live-validation.md).
 
+### Fallback interpreter
+
+When Jev returns no meaningful change for an open-ended phrase, the server makes at most one backup call per turn to `openai/gpt-4.1-nano` via OpenRouter (configurable with `OPENROUTER_TEXT_MODEL`). It receives the confirmed cake and bounded catalogs, and returns structured patch data with explicit keep/reset semantics. The server validates and decodes it to the same `CakePatch` used by Jev, with the same pricing and constraints. Unsupported object/event additions produce clarification instead of arbitrary decorations. Successful Jev edits and intentional demo-limit clarifications never trigger the fallback; it is disabled without `OPENROUTER_API_KEY`.
+
+Responses expose `provider.interpreter` and optional `provider.fallback` timing/cost metadata. Health exposes `fallbackAttempts`. Earlier calls cost approximately $0.0004 each; the current prompt/schema has not been measured live. The latest two fresh fallback generalization probes failed, so broad semantic reliability is not established. See [fresh retest results](docs/retest-interpretation.md) and [offline-verified interpretation fixes and limitations](docs/interpretation-fixes.md).
+
 The original [build brief](docs/build-brief.md), [visual mockup](docs/cake-gallery-mockup.webp), and [artwork references](docs/references/) remain in `docs/`.

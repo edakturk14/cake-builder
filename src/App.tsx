@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { BuilderPage } from './components/BuilderPage';
 import { CakeScene } from './components/CakeScene';
 import { useCakeDesigner } from './hooks/useCakeDesigner';
@@ -9,17 +9,21 @@ import { TOPPER_BY_ID } from './shared/toppers';
 import { getAskOptions, getCakeSuggestions } from './shared/discoverability';
 import { COLOR_TARGETS, DEFAULT_INSCRIPTION_STYLE, PALETTE_BY_ID } from './shared/appearance';
 import { OCCASION_BY_ID } from './shared/occasions';
+import { SavedPreviewRecovery } from './components/SavedPreviewRecovery';
+import { RequestTimings } from './components/RequestTimings';
 import './integration.css';
 
 const BASKET_KEY = 'cake-gallery:basket:v1';
 function readBasket(): BasketItem[] {
   try { return parseBasket(localStorage.getItem(BASKET_KEY)); } catch { return []; }
 }
-function milliseconds(value: number | undefined) { return value === undefined ? '—' : `${Math.round(value)} ms`; }
 
 export default function App() {
   const [basket, setBasket] = useState<BasketItem[]>(readBasket);
-  const designer = useCakeDesigner({ onAssetReady: ({ request, assetId }) => setBasket(items => fulfillBasketAsset(items, request, assetId)) });
+  const receiveSavedAsset = useCallback((request: string, assetId: string) => {
+    setBasket(items => fulfillBasketAsset(items, request, assetId));
+  }, []);
+  const designer = useCakeDesigner({ onAssetReady: ({ request, assetId }) => receiveSavedAsset(request, assetId) });
   const [command, setCommand] = useState('');
   const [lastTyped, setLastTyped] = useState('');
   const speech = useSpeechRecognition({ onFinal: (text, meta) => { setLastTyped(text); designer.submit(text, meta); } });
@@ -156,9 +160,9 @@ export default function App() {
   ].filter(Boolean) : [];
   const transcript = speech.interimTranscript || lastTyped;
   const details = <div className="builder-details">
-    <div className="specs" aria-label="Current cake specifications">{specs.map((spec, index) => <span className="spec-pill" key={`${index}-${spec}`}>{spec}</span>)}</div>
+    <div className="specs" role="group" aria-label="Current cake specifications">{specs.map((spec, index) => <span className="spec-pill" key={`${index}-${spec}`}>{spec}</span>)}</div>
     {replay === null && <div className="cake-discovery" aria-busy={pending}>
-      <div className="suggestion-row" aria-label="Suggested cake requests"><span className="suggestion-label">Try:</span>{suggestions.map(text => <button type="button" className="suggestion-chip" key={text} disabled={pending} onClick={() => submitSuggestion(text)}>{text}</button>)}</div>
+      <div className="suggestion-row" role="group" aria-label="Suggested cake requests"><span className="suggestion-label">Try:</span>{suggestions.map(text => <button type="button" className="suggestion-chip" key={text} disabled={pending} onClick={() => submitSuggestion(text)}>{text}</button>)}</div>
       <button type="button" className="text-button options-toggle" disabled={pending} aria-expanded={optionsOpen} aria-controls="ask-options" onClick={() => setOptionsOpen(value => !value)}>See everything you can ask for <span aria-hidden="true">{optionsOpen ? '−' : '+'}</span></button>
       <section id="ask-options" className="ask-options" aria-label="Supported cake options and sample prices" hidden={!optionsOpen}>
         <p className="options-intro">Ask naturally, or use a suggestion above. Sample estimates, not bakery quotes.</p>
@@ -170,7 +174,7 @@ export default function App() {
     </div>}
     <div className="transcript" aria-live="polite">
       {transcript && replay === null && <p className={speech.interimTranscript ? 'interim' : ''}>“{transcript}”</p>}
-      {pending && <p className="status-note">Interpreting with Jev{designer.pendingCount > 1 ? ` · ${designer.pendingCount} requests queued` : '…'}</p>}
+      {pending && <p className="status-note">Interpreting your request (Jev or backup){designer.pendingCount > 1 ? ` · ${designer.pendingCount} requests queued` : '…'}</p>}
       {pending && !cake.exists && <button type="button" className="text-button" onClick={reset}>Cancel pending edits</button>}
     </div>
     {replay === null && designer.notices.map((notice, index) => <p className="status-note" key={`${index}-${notice}`}>{notice}</p>)}
@@ -193,7 +197,7 @@ export default function App() {
     {debug && <section className="debug-panel" aria-label="Local demo tools">
       <h2>Live request timing</h2>
       <p>Browser times use performance.now(). Paint is approximated by two animation frames. These are not last-audible-word measurements.</p>
-      {designer.timings.length === 0 ? <p>No live requests measured yet.</p> : <div className="timing-scroll"><table><thead><tr><th>Turn</th><th>Provider</th><th>Image generation</th><th>Request</th><th>Final transcript → paint</th></tr></thead><tbody>{designer.timings.map((timing, index) => <tr key={timing.turnId}><td title={timing.phrase}>{index === 0 ? '1 (first)' : index + 1}{timing.error ? ' · failed' : ''}</td><td>{milliseconds(timing.providerMs)}</td><td title={timing.imageError}>{timing.imageCached ? 'cached' : timing.imageError ? 'failed' : milliseconds(timing.imageGenerationMs)}</td><td>{milliseconds(timing.responseAt === undefined ? undefined : timing.responseAt - timing.fetchStartAt)}</td><td>{milliseconds(timing.approximatePaintAt === undefined ? undefined : timing.approximatePaintAt - timing.finalAt)}</td></tr>)}</tbody></table></div>}
+      {designer.timings.length === 0 ? <p>No live requests measured yet.</p> : <RequestTimings timings={designer.timings} />}
       <h2>Local fixture replay, not Jev</h2>
       <p>Opt-in visual and pricing checks only. Fixture buttons never send commands to the model.</p>
       {replay === null ? <button type="button" className="text-button" disabled={pending} onClick={enterReplay}>Enter local fixture replay</button> : <div className="fixture-controls">
@@ -217,6 +221,7 @@ export default function App() {
         <h3>{item.design.inscription || `${LABELS[item.design.flavor]} cake`}</h3>
         <p>{item.design.layers} layer{item.design.layers === 1 ? '' : 's'} · {formatMoney(item.estimate.totalCents)} each</p>
         {item.estimate.requiresQuote && <p className="status-note">Custom decoration to be quoted: {item.estimate.quoteItems.join(', ')}</p>}
+        {item.design.customTopper && !item.design.customTopper.assetId && <SavedPreviewRecovery request={item.design.customTopper.request} onReady={receiveSavedAsset} />}
         <label>Quantity <select value={item.quantity} onChange={event => setBasket(items => items.map(saved => saved.id === item.id ? { ...saved, quantity: Number(event.target.value) } : saved))}>{Array.from({ length: 10 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1}</option>)}</select></label>
         <button type="button" className="text-button" onClick={() => setBasket(items => items.filter(saved => saved.id !== item.id))}>Remove</button>
       </div>

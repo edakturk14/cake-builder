@@ -18,6 +18,7 @@ Real Jev catalog checks and isolated Chrome typed-input timing checks have now r
 8. Run `npx tsx scripts/check-live-jev.ts` for real API checks: the initial six-step flow followed by all fourteen supplied examples and their follow-ups. It exits 2 when the key is missing, never substitutes fixtures, and exits 1 on mismatches. This checks the provider adapter, not microphone capture or browser painting.
 9. Run `npx tsx scripts/check-live-appearance.ts`, `npx tsx scripts/check-live-occasions.ts`, and `npx tsx scripts/check-live-candles.ts` for the six appearance, four occasion and six candle quantity/numeral checks. They use real Jev but never call image generation.
 10. For custom-image configuration, costs, asynchronous delivery and geometry, see `docs/topper-images.md`. Adding an image key does not mean the OpenRouter account has credits. Do not retry paid generation after a billing error until credits are confirmed.
+11. Run `npx tsx scripts/check-live-fallback.ts` for the general-LLM fallback checks. It needs `OPENROUTER_API_KEY` and makes up to six real `openai/gpt-4.1-nano` calls (about $0.0004 each). It asserts normal phrases never touch the fallback, vague phrases route through it, the health `fallbackAttempts` counter matches observed calls, and spend stays within budget.
 
 ## Timing
 

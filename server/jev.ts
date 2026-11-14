@@ -2,6 +2,7 @@ import { performance } from 'node:perf_hooks';
 import { applyCakePatch, validateCakePatch, cloneCake, PLAIN_CANDLE_COUNTS, type CakePatch, type CakeState } from '../src/shared/cake';
 import { applyAppearance, appearanceQuestions } from './appearance';
 import { OCCASIONS, OCCASION_IDS } from '../src/shared/occasions';
+import { FallbackError, runFallback, shouldUseFallback } from './fallback';
 import type { InterpretRequest, InterpretResponse } from '../src/shared/interpretation';
 import { TOPPER_CATALOG, TOPPER_IDS, TOPPER_BY_ID, type TopperId } from '../src/shared/toppers';
 
@@ -360,5 +361,28 @@ export async function interpret(request: InterpretRequest): Promise<InterpretRes
   let payload: unknown;
   try { payload = JSON.parse(body); } catch { throw new InterpretationError('Jev returned non-JSON data. Please retry.', 502, durationMs); }
   const result = normalizeAnswers(payload, questions, candidates, request.state);
-  return { turnId: request.turnId, action: result.action, patch: result.patch, notices: [...result.notices], provider: { model: result.model, durationMs, status: response.status } };
+  const provider: InterpretResponse['provider'] = { model: result.model, durationMs, status: response.status, interpreter: 'jev' };
+  const changed = JSON.stringify(applyCakePatch(request.state, result.patch).state) !== JSON.stringify(request.state);
+  const meaningful: CakePatch = { ...result.patch };
+  if (request.state.exists && meaningful.exists) delete meaningful.exists; // idempotent exists is not a real answer
+  if (shouldUseFallback(result.action, meaningful, result.notices, changed)) {
+    try {
+      const fallback = await runFallback(request);
+      if (fallback) {
+        provider.interpreter = 'fallback';
+        provider.fallback = { model: fallback.model, durationMs: fallback.durationMs, status: fallback.status,
+          ...(fallback.costUsd !== undefined ? { costUsd: fallback.costUsd } : {}) };
+        return { turnId: request.turnId, action: 'edit', patch: fallback.patch, notices: fallback.notices, provider };
+      }
+      // No OPENROUTER_API_KEY: fallback disabled, the Jev answer stands as before.
+    } catch (error) {
+      if (error instanceof FallbackError) {
+        provider.fallback = { model: error.model, durationMs: error.durationMs, status: error.status };
+        return { turnId: request.turnId, action: result.action, patch: result.patch,
+          notices: [...result.notices, error.message], provider };
+      }
+      throw error;
+    }
+  }
+  return { turnId: request.turnId, action: result.action, patch: result.patch, notices: [...result.notices], provider };
 }

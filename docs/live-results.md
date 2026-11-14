@@ -290,3 +290,31 @@ Generated PNGs (transparent 256×320, anchor (128,306)):
 - `.cache/toppers/cb3fcfd70f9a99f78ceb44030bad006476ca5a00d39c836f72ff5d34a67fdfe1.png` (77,652 bytes) — generic non-identifiable elderly-woman fondant figurine (no real-person likeness), clean cutout.
 
 UI evidence: [pigeon plaque](screenshots/racing-pigeon-plaque.png), [pigeon generated](screenshots/racing-pigeon-generated.png), [grandma figurine](screenshots/grandma-generic-figurine.png). Reset-during-generation behavior is covered by mocked tests only, per instruction. See `docs/topper-images.md`.
+
+## General-LLM fallback interpreter (real OpenRouter checks)
+
+Run date: 2026-11-14. Fallback model: `openai/gpt-4.1-nano` via OpenRouter (structured `CakePatch` output, temperature 0, one 20s call per turn max). Real provider calls, no mocks. No microphone/audio tested. The dev server was not restarted (tsx watch reloaded the changes).
+
+Trigger rules verified live: the fallback fires only when Jev produced no meaningful change and no intentional demo-limit clarification; normal bounded phrases never reach it. The health `fallbackAttempts` counter matched observed fallback calls exactly (3 = 3), and `make it two layers` / `add a princess topper` stayed Jev-only with no fallback field in the response.
+
+| Phrase | Interpreter | Result | Jev ms | Fallback ms | Cost (USD) |
+|---|---|---|---:|---:|---:|
+| make it two layers | jev | 2 layers, no fallback | 186-326 | - | 0 |
+| add a princess topper | jev | princess added, no fallback | 171 | - | 0 |
+| something fruity for summer | fallback | strawberries + raspberries ($72) | 171 | 3700 | 0.000402 |
+| make it look fancy | fallback | princess gold + large, script writing | 186 | 926 | 0.000490 |
+| surprise me with a birthday cake for a 5-year-old | jev | occasion birthday (Jev handled it; no fallback needed) | 263 | - | 0 |
+| I changed my mind, no fruit | jev | strawberries + raspberries removed via bounded removal | 235 | - | 0 |
+| make it a winter wonderland cake | fallback | snowman catalog topper added ($62) | ~200 | 1513 | 0.000425 |
+| something elegant for my parents' anniversary | jev | occasion anniversary | 226 | - | 0 |
+
+Total real fallback spend across development and checks: 8 billed calls, about $0.0033, inside the approved 10-call budget. Two early schema-debug calls returned HTTP 400 (billed $0): OpenAI strict schemas reject `uniqueItems`, which was removed.
+
+Findings fixed during these checks:
+- The first strict schema used `uniqueItems`, which OpenAI structured outputs reject (HTTP 400, surfaced as a bounded "backup interpreter" notice with the design unchanged).
+- gpt-4.1-nano initially echoed the current cake into the patch (all-idempotent no-op, bounded 422). An explicit anti-echo rule fixed it; only requested changes are non-null now.
+- For "winter wonderland" the model chose `customTopper "Snowman"` even though `snowman` is a catalog id. A deterministic remap now converts any customTopper naming a catalog topper into the catalog id, so fallback answers can never trigger paid image generation for catalog figures. A prompt nudge was added as well.
+- Jev's `Please clarify <field>` notices for bounded-option vagueness (for example "something fruity for summer" clarifying flavor) no longer suppress the fallback; demo-limit and user-input-dependent notices (tiers, candle counts, two-topper limit, length limits, missing topper targets) still do.
+- Slimmed the fallback catalog payload (labels without descriptions) cutting prompt cost from about $0.0010 to about $0.0004 per call.
+
+Unit coverage: 12 mocked-fetch tests in `tests/fallback.test.ts` (trigger rules, notice classification, invalid/timeout/no-change preservation, assetId stripping, catalog remap, missing-key passthrough, queue timing fields). Suite: 131/131 pass.

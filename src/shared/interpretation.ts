@@ -13,7 +13,13 @@ export type InterpretResponse = {
   action: 'edit' | 'undo' | 'reset' | 'clarify';
   patch: CakePatch;
   notices: string[];
-  provider: { model: string; durationMs: number; status: number };
+  provider: {
+    model: string;
+    durationMs: number;
+    status: number;
+    interpreter?: 'jev' | 'fallback';
+    fallback?: { model: string; durationMs: number; status: number; costUsd?: number };
+  };
 };
 
 export type TurnTiming = {
@@ -30,6 +36,9 @@ export type TurnTiming = {
   model?: string;
   status?: number;
   error?: string;
+  interpreter?: 'jev' | 'fallback';
+  fallbackMs?: number;
+  fallbackCostUsd?: number;
   imageGenerationMs?: number;
   imageCached?: boolean;
   imageError?: string;

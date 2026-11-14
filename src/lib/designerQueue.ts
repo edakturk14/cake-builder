@@ -44,7 +44,10 @@ export const browserTransport: Transport = async (request, signal) => {
   if (!body || body.turnId !== request.turnId || !['edit', 'undo', 'reset', 'clarify'].includes(body.action)
     || !Array.isArray(body.notices) || !body.notices.every((note: unknown) => typeof note === 'string')
     || !body.provider || typeof body.provider.model !== 'string'
-    || typeof body.provider.durationMs !== 'number' || !Number.isFinite(body.provider.durationMs)) {
+    || typeof body.provider.durationMs !== 'number' || !Number.isFinite(body.provider.durationMs)
+    || (body.provider.interpreter !== undefined && !['jev', 'fallback'].includes(body.provider.interpreter))
+    || (body.provider.fallback !== undefined && (!body.provider.fallback || typeof body.provider.fallback.model !== 'string'
+      || typeof body.provider.fallback.durationMs !== 'number' || !Number.isFinite(body.provider.fallback.durationMs)))) {
     throw new Error('The server returned an invalid edit. Please retry.');
   }
   validateCakePatch(body.patch);
@@ -180,6 +183,11 @@ export class DesignerQueue {
         timing.providerMs = result.provider.durationMs;
         timing.model = result.provider.model;
         timing.status = result.provider.status;
+        timing.interpreter = result.provider.interpreter ?? 'jev';
+        if (result.provider.fallback) {
+          timing.fallbackMs = result.provider.fallback.durationMs;
+          timing.fallbackCostUsd = result.provider.fallback.costUsd;
+        }
         if (result.action === 'reset') {
           this.assetEpoch++;
           this.history = [];
