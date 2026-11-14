@@ -1,0 +1,673 @@
+{
+  "version": 1,
+  "canvas": {
+    "width": 256,
+    "height": 320
+  },
+  "renderSize": {
+    "width": 140.8,
+    "height": 176
+  },
+  "anchor": {
+    "x": 0.5,
+    "y": 0.95625
+  },
+  "items": {
+    "princess": {
+      "label": "Princess",
+      "file": "/art/toppers/princess.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        30,
+        26,
+        225,
+        306
+      ],
+      "source": "supplied princess reference"
+    },
+    "castle": {
+      "label": "Castle",
+      "file": "/art/toppers/castle.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        20,
+        26,
+        236,
+        306
+      ],
+      "source": "docs/artwork/topper-source-1.png cell 1"
+    },
+    "unicorn": {
+      "label": "Unicorn",
+      "file": "/art/toppers/unicorn.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        15,
+        26,
+        240,
+        306
+      ],
+      "source": "docs/artwork/topper-source-1.png cell 2"
+    },
+    "dinosaur": {
+      "label": "Dinosaur",
+      "file": "/art/toppers/dinosaur.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        79,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-1.png cell 3"
+    },
+    "dragon": {
+      "label": "Dragon",
+      "file": "/art/toppers/dragon.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        50,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-1.png cell 4"
+    },
+    "rainbow": {
+      "label": "Rainbow",
+      "file": "/art/toppers/rainbow.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        148,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-1.png cell 5"
+    },
+    "butterfly": {
+      "label": "Butterfly",
+      "file": "/art/toppers/butterfly.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        113,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-1.png cell 6"
+    },
+    "flower-bouquet": {
+      "label": "Flower bouquet",
+      "file": "/art/toppers/flower-bouquet.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        34,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-1.png cell 7"
+    },
+    "heart": {
+      "label": "Heart",
+      "file": "/art/toppers/heart.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        68,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-1.png cell 8"
+    },
+    "crown": {
+      "label": "Crown",
+      "file": "/art/toppers/crown.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        121,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-2.png cell 1"
+    },
+    "star-wand": {
+      "label": "Star wand",
+      "file": "/art/toppers/star-wand.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        59,
+        26,
+        196,
+        306
+      ],
+      "source": "docs/artwork/topper-source-2.png cell 2"
+    },
+    "balloons": {
+      "label": "Balloons",
+      "file": "/art/toppers/balloons.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        31,
+        26,
+        224,
+        306
+      ],
+      "source": "docs/artwork/topper-source-2.png cell 3"
+    },
+    "cat": {
+      "label": "Cat",
+      "file": "/art/toppers/cat.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        24,
+        26,
+        231,
+        306
+      ],
+      "source": "docs/artwork/topper-source-2.png cell 4"
+    },
+    "dog": {
+      "label": "Dog",
+      "file": "/art/toppers/dog.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        43,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-2.png cell 5"
+    },
+    "bunny": {
+      "label": "Bunny",
+      "file": "/art/toppers/bunny.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        37,
+        26,
+        218,
+        306
+      ],
+      "source": "docs/artwork/topper-source-2.png cell 6"
+    },
+    "teddy-bear": {
+      "label": "Teddy bear",
+      "file": "/art/toppers/teddy-bear.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        24,
+        26,
+        232,
+        306
+      ],
+      "source": "docs/artwork/topper-source-2.png cell 7"
+    },
+    "panda": {
+      "label": "Panda",
+      "file": "/art/toppers/panda.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        24,
+        26,
+        232,
+        306
+      ],
+      "source": "docs/artwork/topper-source-2.png cell 8"
+    },
+    "lion": {
+      "label": "Lion",
+      "file": "/art/toppers/lion.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        40,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-3.png cell 1"
+    },
+    "elephant": {
+      "label": "Elephant",
+      "file": "/art/toppers/elephant.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        74,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-3.png cell 2"
+    },
+    "mermaid": {
+      "label": "Mermaid",
+      "file": "/art/toppers/mermaid.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        68,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-3.png cell 3"
+    },
+    "fairy": {
+      "label": "Fairy",
+      "file": "/art/toppers/fairy.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        29,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-3.png cell 4"
+    },
+    "knight": {
+      "label": "Knight",
+      "file": "/art/toppers/knight.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        31,
+        26,
+        224,
+        306
+      ],
+      "source": "docs/artwork/topper-source-3.png cell 5"
+    },
+    "wizard": {
+      "label": "Wizard",
+      "file": "/art/toppers/wizard.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        39,
+        26,
+        217,
+        306
+      ],
+      "source": "docs/artwork/topper-source-3.png cell 6"
+    },
+    "ballerina": {
+      "label": "Ballerina",
+      "file": "/art/toppers/ballerina.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        40,
+        26,
+        216,
+        306
+      ],
+      "source": "docs/artwork/topper-source-3.png cell 7"
+    },
+    "astronaut": {
+      "label": "Astronaut",
+      "file": "/art/toppers/astronaut.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        49,
+        26,
+        206,
+        306
+      ],
+      "source": "docs/artwork/topper-source-3.png cell 8"
+    },
+    "rocket": {
+      "label": "Rocket",
+      "file": "/art/toppers/rocket.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        39,
+        26,
+        216,
+        306
+      ],
+      "source": "docs/artwork/topper-source-4.png cell 1"
+    },
+    "robot": {
+      "label": "Robot",
+      "file": "/art/toppers/robot.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        32,
+        26,
+        224,
+        306
+      ],
+      "source": "docs/artwork/topper-source-4.png cell 2"
+    },
+    "pirate-ship": {
+      "label": "Pirate ship",
+      "file": "/art/toppers/pirate-ship.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        29,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-4.png cell 3"
+    },
+    "fire-truck": {
+      "label": "Fire truck",
+      "file": "/art/toppers/fire-truck.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        117,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-4.png cell 4"
+    },
+    "train": {
+      "label": "Train",
+      "file": "/art/toppers/train.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        79,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-4.png cell 5"
+    },
+    "airplane": {
+      "label": "Airplane",
+      "file": "/art/toppers/airplane.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        132,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-4.png cell 6"
+    },
+    "race-car": {
+      "label": "Race car",
+      "file": "/art/toppers/race-car.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        143,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-4.png cell 7"
+    },
+    "superhero": {
+      "label": "Superhero",
+      "file": "/art/toppers/superhero.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        35,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-4.png cell 8"
+    },
+    "boy-figurine": {
+      "label": "Boy figurine",
+      "file": "/art/toppers/boy-figurine.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        66,
+        26,
+        190,
+        306
+      ],
+      "source": "docs/artwork/topper-source-5.png cell 1"
+    },
+    "girl-figurine": {
+      "label": "Girl figurine",
+      "file": "/art/toppers/girl-figurine.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        37,
+        26,
+        219,
+        306
+      ],
+      "source": "docs/artwork/topper-source-5.png cell 2"
+    },
+    "bride-and-groom": {
+      "label": "Bride and groom",
+      "file": "/art/toppers/bride-and-groom.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        33,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-5.png cell 3"
+    },
+    "snowman": {
+      "label": "Snowman",
+      "file": "/art/toppers/snowman.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        48,
+        26,
+        207,
+        306
+      ],
+      "source": "docs/artwork/topper-source-5.png cell 4"
+    },
+    "christmas-tree": {
+      "label": "Christmas tree",
+      "file": "/art/toppers/christmas-tree.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        26,
+        26,
+        230,
+        306
+      ],
+      "source": "docs/artwork/topper-source-5.png cell 5"
+    },
+    "pumpkin": {
+      "label": "Pumpkin",
+      "file": "/art/toppers/pumpkin.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        85,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-5.png cell 6"
+    },
+    "graduation-cap": {
+      "label": "Graduation cap",
+      "file": "/art/toppers/graduation-cap.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        135,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-5.png cell 7"
+    },
+    "baby-bootie": {
+      "label": "Baby bootie",
+      "file": "/art/toppers/baby-bootie.png",
+      "scale": 1,
+      "anchor": {
+        "x": 0.5,
+        "y": 0.95625
+      },
+      "bounds": [
+        14,
+        82,
+        242,
+        306
+      ],
+      "source": "docs/artwork/topper-source-5.png cell 8"
+    }
+  }
+}

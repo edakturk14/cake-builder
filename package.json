@@ -1,0 +1,31 @@
+{
+  "name": "cake-gallery",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n web,server \"vite --host 127.0.0.1\" \"tsx watch server/index.ts\"",
+    "build": "tsc --noEmit && vite build",
+    "start": "NODE_ENV=production tsx server/index.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.2.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vite": "^6.3.5"
+  }
+}
