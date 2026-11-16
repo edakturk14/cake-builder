@@ -54,12 +54,19 @@ test('inscription appears in the preview above the frosting on chocolate 1, 2 an
     const markup = renderToStaticMarkup(createElement(CakeScene, { cake }));
     assert.ok(markup.includes(`/art/chocolate-${layers}.png`), `chocolate ${layers} base`);
     assert.ok(markup.includes(`/art/masks/frosting-${layers}.png`), `chocolate ${layers} frosting mask`);
-    assert.ok(markup.includes('buttercream-tint'), `chocolate ${layers} natural frosting tint`);
-    assert.ok(markup.includes('data-decoration="always-white-frosting-ring"'),
-      `chocolate ${layers} keeps outer piped frosting white`);
-    assert.ok(markup.includes('frosting-center') && markup.includes('white-frosting-ring'),
-      `chocolate ${layers} splits white icing from the colorable frosting center`);
-    const matrix = markup.match(/buttercream-tint"[^>]*><feColorMatrix[^>]*values="([^"]+)"/);
+    assert.ok(markup.includes('/art/masks/side-' + layers + '.png'),
+      `chocolate ${layers} reuses the prepared side silhouette`);
+    assert.ok(markup.includes('data-mask-target="colorable-side"'),
+      `chocolate ${layers} has a luminance mask for the lower cake side`);
+    assert.ok(markup.includes('data-color-target="frosting-side"'),
+      `chocolate ${layers} recolors only the cake's side`);
+    assert.ok(markup.includes('data-decoration="always-white-top-frosting"'),
+      `chocolate ${layers} keeps the entire top frosting ivory`);
+    assert.ok(!markup.includes('frosting-center') && !markup.includes('white-frosting-ring'),
+      `chocolate ${layers} never paints a colored top ellipse`);
+    assert.ok(markup.indexOf('data-color-target="frosting-side"') < markup.indexOf('data-decoration="always-white-top-frosting"'),
+      `chocolate ${layers} paints white frosting after the tinted side`);
+    const matrix = markup.match(/side-frosting-tint"[^>]*><feColorMatrix[^>]*values="([^"]+)"/);
     assert.ok(matrix, `chocolate ${layers} has a tint matrix`);
     assert.equal(matrix[1].trim().split(/\s+/).length, 20, `chocolate ${layers} uses a valid 4x5 SVG matrix`);
     assert.ok(markup.includes('Cake inscription: Happy Birthday Eda'), `chocolate ${layers} labeled writing`);
@@ -84,8 +91,9 @@ test('crowded chocolate cake keeps tidy fruit groups and leaves old syrup drips 
   assert.ok(!scene.includes('data-decoration="ganache"'));
   assert.ok(!scene.includes('url(#undefined'));
   assert.ok(scene.includes('data-decoration="white-piping"'));
-  assert.ok(scene.indexOf('data-decoration="white-piping"') > scene.indexOf('data-color-target="frosting"'),
-    'Ivory piping must render after frosting tint');
+  assert.ok(scene.includes('data-decoration="always-white-top-frosting"'));
+  assert.ok(scene.indexOf('data-decoration="white-piping"') > scene.indexOf('data-color-target="frosting-side"'),
+    'Ivory piping must render after tinting the side');
   assert.ok(scene.includes('/art/masks/accents-1.png'), 'Use the prepared separate icing accents mask');
 });
 
@@ -109,4 +117,23 @@ test('prepared topper colors are boosted, and plain candles are thicker without 
   assert.equal((svg.match(/data-candle-body="wide"/g) ?? []).length, 5,
     'Five candles should render wider bodies');
   assert.ok(svg.includes('M-4.5 0v-59q4.5-3 9 0V0Z'), 'The candle body should be wider but preserve its 59-unit height');
+});
+
+test('top frosting never receives a color filter for any flavor or supported layer count', () => {
+  for (const flavor of ['vanilla', 'chocolate', 'red-velvet', 'lemon'] as const) {
+    for (const layers of [1, 2, 3] as const) {
+      for (const frosting of ['white', 'blush-pink', 'lavender', 'sky-blue', 'mint'] as const) {
+        const cake = applyCakePatch(createTemplateCake('classic'), { flavor, layers, colors: { frosting } }).state;
+        const markup = renderToStaticMarkup(createElement(CakeScene, { cake }));
+        assert.ok(markup.includes(`href="/art/masks/side-${layers}.png"`), `${flavor} ${layers} side mask`);
+        assert.ok(markup.includes(`href="/art/masks/frosting-${layers}.png"`), `${flavor} ${layers} white top`);
+        const tintedSide = markup.match(/<image data-color-target="frosting-side"[^>]+>/);
+        const whiteTop = markup.match(/<image data-decoration="always-white-top-frosting"[^>]+>/);
+        assert.ok(tintedSide && whiteTop, `${flavor}/${layers}/${frosting} has both layers`);
+        assert.match(tintedSide[0], /mask="url\(#.+-cake-side-mask\)"/);
+        assert.doesNotMatch(whiteTop[0], /side-frosting-tint|clip-path|mask=/);
+        assert.ok(markup.indexOf(whiteTop[0]) > markup.indexOf(tintedSide[0]), 'white top is drawn after side');
+      }
+    }
+  }
 });
