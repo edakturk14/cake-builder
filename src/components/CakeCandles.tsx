@@ -145,8 +145,16 @@ export function CakeCandles({cake,top,toppers,accent,darkSurface,writingWidth}:{
   const digits=cake.candles.number?.length||1;
   const fontSize=front?Math.min(48,80/digits):Math.min(toppers.length===2?48:68,(space.width-4)/(digits*.65));
   // Bring numeral candles closer to the visual center without covering prepared toppers.
-  const x=front?190:space.center + Math.sign(256-space.center)*Math.min(36, Math.abs(256-space.center)*.4);
-  const y=front?(cake.base==='cheesecake'?220:224):(cake.base==='cheesecake'?200:187);
+  const hasWriting = Boolean(cake.inscription);
+  const x = hasWriting && toppers.length === 0 ? 256
+    : hasWriting && toppers.length > 0 ? 173
+    : front ? 190 : space.center + Math.sign(256-space.center)*Math.min(36, Math.abs(256-space.center)*.4);
+  // A central numeral belongs behind the written message, not through it.
+  // Keep the single digit close to center but move its contact point to the
+  // rear half of the top ellipse when the cake also has writing.
+  const y = hasWriting ? (cake.base === 'cheesecake' ? 165 : 149)
+    : front ? (cake.base === 'cheesecake' ? 220 : 224)
+    : (cake.base === 'cheesecake' ? 200 : 187);
   return <g className="cake-decoration" data-decoration="number-candles" data-candle-contact={y+top} transform={`translate(${x} ${y+top})`}>
     <NumberCandle number={cake.candles.number??''} fontSize={fontSize} color={accent??(darkSurface?'#ffefbf':'#b86672')} stroke={darkSurface?'#bc8c38':'#763e47'}/>
   </g>;
