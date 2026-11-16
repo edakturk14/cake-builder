@@ -21,7 +21,7 @@ export function plainCandlePositions(cake:CakeState,toppers:PlacedTopper[],writi
   if(cake.inscription)obstacles.push(writing);
   const initial=count>8?32:count>5?42:toppers.length?56:80;
   for(const height of [initial,initial*.8,26]){
-    const scale=height/80,half=6*scale+1.5;
+    const scale=height/80,half=8*scale+1.5;
     const candidates:{point:Point;box:Rect;angle:number;distance:number}[]=[];
     let distance=0;
     for(let angle=0;angle<360;angle++){
@@ -132,9 +132,9 @@ export function CakeCandles({cake,top,toppers,accent,darkSurface,writingWidth}:{
   if(cake.candles.style==='none')return null;
   if(cake.candles.style==='plain')return <g className="cake-decoration" data-decoration="plain-candles">
     {plainCandlePositions(cake,toppers,writingWidth).sort((a,b)=>a.y-b.y).map((point,index)=><g key={index} data-plain-candle={index+1} transform={`translate(${point.x} ${point.y+top}) scale(${point.scale})`}>
-      <ellipse cy="1" rx="7" ry="2" fill="#583622" opacity=".2"/>
-      <path d="M-3 0v-59q3-3 6 0V0Z" fill={accent??'#fff0c8'} stroke="#b88c61" strokeWidth=".7"/>
-      <path d="M-2-9l4-9m-4-6 4-9m-4-6 4-9" stroke="#dfb39d" strokeWidth="1.5"/>
+      <ellipse cy="1" rx="8.5" ry="2" fill="#583622" opacity=".2"/>
+      <path data-candle-body="wide" d="M-4.5 0v-59q4.5-3 9 0V0Z" fill={accent??'#fff0c8'} stroke="#b88c61" strokeWidth=".7"/>
+      <path d="M-3.3-9l6.6-9m-6.6-6 6.6-9m-6.6-6 6.6-9" stroke="#dfb39d" strokeWidth="1.5"/>
       <path d="M0-59v-6" stroke="#684a35" strokeWidth="1.2"/>
       <path d="M0-65Q-7-74 0-84Q7-74 0-65" fill="#f2a13d" stroke="#c07a24" strokeWidth=".6"/>
       <path d="M0-68.5Q-3.6-75 0-80.5Q3.6-75 0-68.5" fill="#ffe9ad"/>
@@ -144,7 +144,8 @@ export function CakeCandles({cake,top,toppers,accent,darkSurface,writingWidth}:{
   const front=numberFront(cake,toppers);
   const digits=cake.candles.number?.length||1;
   const fontSize=front?Math.min(48,80/digits):Math.min(toppers.length===2?48:68,(space.width-4)/(digits*.65));
-  const x=front?133:space.center;
+  // Bring numeral candles closer to the visual center without covering prepared toppers.
+  const x=front?190:space.center + Math.sign(256-space.center)*Math.min(36, Math.abs(256-space.center)*.4);
   const y=front?(cake.base==='cheesecake'?220:224):(cake.base==='cheesecake'?200:187);
   return <g className="cake-decoration" data-decoration="number-candles" data-candle-contact={y+top} transform={`translate(${x} ${y+top})`}>
     <NumberCandle number={cake.candles.number??''} fontSize={fontSize} color={accent??(darkSurface?'#ffefbf':'#b86672')} stroke={darkSurface?'#bc8c38':'#763e47'}/>
