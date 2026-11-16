@@ -2,8 +2,8 @@ import { useEffect, useReducer, useRef, useState, type FormEvent } from 'react';
 import { CakeScene } from './components/CakeScene';
 import { useSpeechRecognition } from './hooks/useSpeechRecognition';
 import { PALETTE_BY_ID } from './shared/appearance';
-import { BAKERY_COLORS, BAKERY_FLAVORS, BAKERY_TEMPLATES, BAKERY_TOPPERS, BAKERY_TOPPINGS, createTemplateCake, type TemplateId } from './shared/bakery';
-import { applyCakePatch, cakeReducer, cloneCake, createBasketItem, estimateCake, formatMoney, parseBasket, type BasketItem, type CakeHistory, type CakePatch, type CakeState } from './shared/cake';
+import { BAKERY_COLORS, BAKERY_FLAVORS, BAKERY_TEMPLATES, BAKERY_TOPPERS, BAKERY_TOPPINGS, createTemplateCake, estimateBakeryCake, priceBakeryBasketItem, type TemplateId } from './shared/bakery';
+import { applyCakePatch, cakeReducer, cloneCake, createBasketItem, formatMoney, parseBasket, type BasketItem, type CakeHistory, type CakePatch, type CakeState } from './shared/cake';
 import { interpretLocalCommand } from './shared/localCommands';
 import './styles/builder.css';
 import './integration.css';
@@ -17,7 +17,7 @@ function designReducer(state: CakeHistory, action: DesignAction): CakeHistory {
   return cakeReducer(state, { type: 'apply', patch: action.patch });
 }
 function readBasket(): BasketItem[] {
-  try { return parseBasket(localStorage.getItem(BASKET_KEY)); } catch { return []; }
+  try { return parseBasket(localStorage.getItem(BASKET_KEY)).map(priceBakeryBasketItem); } catch { return []; }
 }
 const STARTER_DESIGN = createTemplateCake('classic');
 
@@ -25,7 +25,7 @@ export default function App() {
   const [selected, setSelected] = useState<TemplateId>('classic');
   const [design, dispatch] = useReducer(designReducer, { cake: STARTER_DESIGN, history: [] });
   const cake = design.cake;
-  const estimate = estimateCake(cake);
+  const estimate = estimateBakeryCake(cake);
   const [basket, setBasket] = useState<BasketItem[]>(readBasket);
   const [basketOpen, setBasketOpen] = useState(false);
   const basketDialog = useRef<HTMLDialogElement>(null);
@@ -80,7 +80,7 @@ export default function App() {
   }
   function addToBasket() {
     if (basket.length >= 20) { setNotice('The basket is full. Remove a saved cake first.'); return; }
-    setBasket(items => [...items, createBasketItem(cake)]);
+    setBasket(items => [...items, priceBakeryBasketItem(createBasketItem(cake))]);
     setBasketOpen(true);
   }
   useEffect(() => { setMessageDraft(cake.inscription); }, [cake.inscription]);
@@ -133,7 +133,7 @@ export default function App() {
       <div className="customizer-heading">
         <p className="eyebrow">A LITTLE CAKE, MADE YOUR WAY</p>
         <h1>Let's make your cake.</h1>
-        <p className="heading-caption">Choose a cake we can make, then add your own little touches.</p>
+        <p className="heading-caption">Cakes start at $58. Choose a design, then add your own little touches.</p>
       </div>
 
       <div className="customizer-workspace">
@@ -144,7 +144,7 @@ export default function App() {
             onClick={() => chooseTemplate(item.id)} aria-pressed={selected === item.id}>
             <CakeScene cake={createTemplateCake(item.id)} compact label={item.name} />
             <span className="template-card-copy"><strong>{item.name}</strong><small>{item.description}</small>
-              <span>From {formatMoney(estimateCake(createTemplateCake(item.id)).totalCents)}</span></span>
+              <span>From {formatMoney(estimateBakeryCake(createTemplateCake(item.id)).totalCents)}</span></span>
           </button>)}
         </div>
       </section>
