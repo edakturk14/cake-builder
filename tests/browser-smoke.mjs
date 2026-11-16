@@ -31,6 +31,24 @@ try {
   page.on('pageerror', error => browserErrors.push(error.message));
   await loadPage(page);
 
+  assert.equal((await page.locator('.preview-price').textContent())?.trim(), '$58',
+    'The classic cake must start at $58');
+  assert.ok((await page.locator('.template-card').first().textContent())?.includes('$58'),
+    'Starter template cards must show the NYC base price');
+
+  await page.getByRole('button', { name: 'Save cake to basket' }).click();
+  assert.ok((await page.locator('.basket-item').first().textContent())?.includes('$58'),
+    'Saved cake should retain the NYC estimate');
+  assert.ok((await page.locator('.basket-total').textContent())?.includes('$58'),
+    'Basket total should agree with the preview');
+  await page.locator('.basket-header button').click();
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.locator('.basket-trigger').click();
+  assert.ok((await page.locator('.basket-total').textContent())?.includes('$58'),
+    'Basket reload should still show the updated $58 price');
+  await page.locator('.basket-item button').filter({ hasText: 'Remove' }).click();
+  await page.locator('.basket-header button').click();
+
   const header = await page.locator('.site-header').boundingBox();
   assert.ok(header && header.height <= 53, 'Chocolate header should be no more than 53px on desktop');
   const voice = await page.locator('.customizer-preview .voice-section').boundingBox();
@@ -110,6 +128,8 @@ try {
   assert.ok(widths.document <= widths.viewport, 'No sideways scrolling at mobile width');
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.locator('.template-card').filter({ hasText: 'Chocolate Party' }).click();
+  assert.equal((await page.locator('.preview-price').textContent())?.trim(), '$64',
+    'Chocolate Party has a $58 base and $6 extra layer');
   await page.locator('.layer-options').getByRole('button', { name: '1 layer' }).click();
   await page.getByRole('button', { name: 'Sky blue' }).click();
   await page.locator('.customizer-editor').getByRole('button', { name: 'Strawberries' }).click();
