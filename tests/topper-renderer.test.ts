@@ -63,3 +63,35 @@ test('inscription appears in the preview above the frosting on chocolate 1, 2 an
     assert.ok(markup.indexOf('cake-base') < markup.indexOf('data-writing-font'), `chocolate ${layers} writing painted after base`);
   }
 });
+
+test('crowded chocolate cake keeps tidy fruit groups and leaves old syrup drips out of the preview', () => {
+  const cake = applyCakePatch(createTemplateCake('chocolate'), {
+    layers: 1,
+    toppers: ['unicorn'],
+    toppings: ['strawberries','raspberries','gold-stars','ganache','caramel'],
+    colors: { frosting: 'sky-blue' },
+  }).state;
+  const scene = renderToStaticMarkup(createElement(CakeScene, { cake }));
+  assert.ok(scene.includes('data-decoration="strawberries"'));
+  assert.ok(scene.includes('data-decoration="raspberries"'));
+  assert.ok(scene.includes('data-decoration="gold-stars"'));
+  assert.ok(scene.includes('data-decoration="unicorn"'));
+  assert.ok(!scene.includes('data-decoration="caramel"'));
+  assert.ok(!scene.includes('data-decoration="ganache"'));
+  assert.ok(!scene.includes('url(#undefined'));
+  assert.ok(scene.includes('data-decoration="white-piping"'));
+  assert.ok(scene.indexOf('data-decoration="white-piping"') > scene.indexOf('data-color-target="frosting"'),
+    'Ivory piping must render after frosting tint');
+  assert.ok(scene.includes('/art/masks/accents-1.png'), 'Use the prepared separate icing accents mask');
+});
+
+test('mixed berries shrink and occupy distinct sides rather than stacking in one pile', () => {
+  const cake = applyCakePatch(createTemplateCake('classic'), {
+    toppings: ['strawberries','raspberries'], toppers: ['unicorn'],
+  }).state;
+  const svg = renderToStaticMarkup(createElement(CakeScene, { cake }));
+  assert.equal((svg.match(/href="\/art\/strawberry-fan.png"/g) ?? []).length, 2);
+  assert.equal((svg.match(/fill="#b93451"/g) ?? []).length, 16);
+  assert.ok(svg.includes('translate(354 168)'), 'Raspberry cluster stays on the right');
+  assert.ok(svg.includes('x="119" y="158"'), 'Strawberries stay on the left');
+});
