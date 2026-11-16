@@ -1,5 +1,4 @@
 import { createCake, estimateCake, type BasketItem, type CakeEstimate, type CakePatch, type CakeState } from './cake';
-import type { PaletteId } from './appearance';
 import type { TopperId } from './toppers';
 
 /**
@@ -7,7 +6,7 @@ import type { TopperId } from './toppers';
  * All prices still come from the existing shared sample-price rules.
  * Customers can vary the sponge count from one to three layers.
  */
-export type TemplateId = 'classic' | 'chocolate' | 'red-velvet';
+export type TemplateId = 'classic' | 'chocolate' | 'red-velvet' | 'sprinkles';
 export type BakeryTemplate = {
   id: TemplateId;
   name: string;
@@ -26,9 +25,9 @@ export const BAKERY_TEMPLATES: readonly BakeryTemplate[] = [
   {
     id: 'chocolate',
     name: 'Chocolate Party',
-    description: 'Two-layer chocolate with vanilla cream',
+    description: 'Two layers with vanilla cream filling',
     design: { flavor: 'chocolate', layers: 2, occasion: 'birthday',
-      toppings: [], colors: { frosting: 'white', filling: 'blush-pink', inscription: 'chocolate-brown' } },
+      toppings: [], colors: { frosting: 'white', filling: 'ivory', inscription: 'chocolate-brown' } },
   },
   {
     id: 'red-velvet',
@@ -36,6 +35,13 @@ export const BAKERY_TEMPLATES: readonly BakeryTemplate[] = [
     description: 'Two layers of red velvet with cream-colored frosting',
     design: { flavor: 'red-velvet', layers: 2, occasion: 'birthday',
       toppings: [], colors: { frosting: 'white', filling: 'ivory', inscription: 'chocolate-brown' } },
+  },
+  {
+    id: 'sprinkles',
+    name: 'Birthday with Sprinkles',
+    description: 'Classic vanilla cake with colorful birthday sprinkles',
+    design: { flavor: 'vanilla', layers: 1, occasion: 'birthday',
+      toppings: ['sprinkles'], colors: { frosting: 'white', filling: 'ivory', inscription: 'chocolate-brown' } },
   },
 ];
 
@@ -45,10 +51,6 @@ export const BAKERY_FLAVORS = [
   { id: 'red-velvet', label: 'Red velvet' },
   { id: 'lemon', label: 'Lemon' },
 ] as const;
-
-export const BAKERY_COLORS: readonly PaletteId[] = [
-  'white', 'blush-pink', 'lavender', 'sky-blue', 'mint', 'chocolate-brown',
-];
 
 // These have dedicated prepared arrangements. Drips and ganache are reserved for curated bakery presets.
 export const BAKERY_TOPPINGS = [
