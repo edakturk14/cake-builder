@@ -4,7 +4,8 @@ import { existsSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { CakeScene } from '../src/components/CakeScene';
-import { EMPTY_CAKE, type CakeState } from '../src/shared/cake';
+import { EMPTY_CAKE, applyCakePatch, type CakeState } from '../src/shared/cake';
+import { createTemplateCake } from '../src/shared/bakery';
 import { TOPPER_CATALOG } from '../src/shared/toppers';
 import manifest from '../src/art/toppersManifest.json';
 
@@ -42,4 +43,70 @@ test('multiple saved cake renderers keep SVG paint IDs unique', () => {
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]);
   assert.ok(ids.length>20);
   assert.equal(new Set(ids).size,ids.length);
+});
+
+test('inscription appears in the preview above the frosting on chocolate 1, 2 and 3 layers', () => {
+  for (const layers of [1, 2, 3] as const) {
+    const cake = applyCakePatch(createTemplateCake('chocolate'), {
+      layers, inscription: 'Happy Birthday Eda',
+      colors: { frosting: 'lavender', inscription: 'white' },
+    }).state;
+    const markup = renderToStaticMarkup(createElement(CakeScene, { cake }));
+    assert.ok(markup.includes(`/art/chocolate-${layers}.png`), `chocolate ${layers} base`);
+    assert.ok(markup.includes(`/art/masks/frosting-${layers}.png`), `chocolate ${layers} frosting mask`);
+    assert.ok(markup.includes('buttercream-tint'), `chocolate ${layers} natural frosting tint`);
+    assert.ok(markup.includes('data-decoration="always-white-frosting-ring"'),
+      `chocolate ${layers} keeps outer piped frosting white`);
+    assert.ok(markup.includes('frosting-center') && markup.includes('white-frosting-ring'),
+      `chocolate ${layers} splits white icing from the colorable frosting center`);
+    const matrix = markup.match(/buttercream-tint"[^>]*><feColorMatrix[^>]*values="([^"]+)"/);
+    assert.ok(matrix, `chocolate ${layers} has a tint matrix`);
+    assert.equal(matrix[1].trim().split(/\s+/).length, 20, `chocolate ${layers} uses a valid 4x5 SVG matrix`);
+    assert.ok(markup.includes('Cake inscription: Happy Birthday Eda'), `chocolate ${layers} labeled writing`);
+    assert.ok(markup.includes('Happy Birthday') && markup.includes('Eda'), `chocolate ${layers} rendered lettering`);
+    assert.ok(markup.indexOf('cake-base') < markup.indexOf('data-writing-font'), `chocolate ${layers} writing painted after base`);
+  }
+});
+
+test('crowded chocolate cake keeps tidy fruit groups and leaves old syrup drips out of the preview', () => {
+  const cake = applyCakePatch(createTemplateCake('chocolate'), {
+    layers: 1,
+    toppers: ['unicorn'],
+    toppings: ['strawberries','raspberries','gold-stars','ganache','caramel'],
+    colors: { frosting: 'sky-blue' },
+  }).state;
+  const scene = renderToStaticMarkup(createElement(CakeScene, { cake }));
+  assert.ok(scene.includes('data-decoration="strawberries"'));
+  assert.ok(scene.includes('data-decoration="raspberries"'));
+  assert.ok(scene.includes('data-decoration="gold-stars"'));
+  assert.ok(scene.includes('data-decoration="unicorn"'));
+  assert.ok(!scene.includes('data-decoration="caramel"'));
+  assert.ok(!scene.includes('data-decoration="ganache"'));
+  assert.ok(!scene.includes('url(#undefined'));
+  assert.ok(scene.includes('data-decoration="white-piping"'));
+  assert.ok(scene.indexOf('data-decoration="white-piping"') > scene.indexOf('data-color-target="frosting"'),
+    'Ivory piping must render after frosting tint');
+  assert.ok(scene.includes('/art/masks/accents-1.png'), 'Use the prepared separate icing accents mask');
+});
+
+test('mixed berries shrink and occupy distinct sides rather than stacking in one pile', () => {
+  const cake = applyCakePatch(createTemplateCake('classic'), {
+    toppings: ['strawberries','raspberries'], toppers: ['unicorn'],
+  }).state;
+  const svg = renderToStaticMarkup(createElement(CakeScene, { cake }));
+  assert.equal((svg.match(/href="\/art\/strawberry-fan.png"/g) ?? []).length, 2);
+  assert.ok((svg.match(/fill="#b93451"/g) ?? []).length >= 10);
+  assert.ok(svg.includes('translate(354 168)'), 'Raspberry cluster stays on the right');
+  assert.ok(svg.includes('x="119" y="158"'), 'Strawberries stay on the left');
+});
+
+test('prepared topper colors are boosted, and plain candles are thicker without getting taller', () => {
+  const cake = applyCakePatch(createTemplateCake('pastel'), {
+    toppers: ['christmas-tree'], candles: { style: 'plain', count: 5 },
+  }).state;
+  const svg = renderToStaticMarkup(createElement(CakeScene, { cake }));
+  assert.ok(svg.includes('vibrant-topper'), 'Prepared fondant artwork should have a color saturation filter');
+  assert.equal((svg.match(/data-candle-body="wide"/g) ?? []).length, 5,
+    'Five candles should render wider bodies');
+  assert.ok(svg.includes('M-4.5 0v-59q4.5-3 9 0V0Z'), 'The candle body should be wider but preserve its 59-unit height');
 });

@@ -18,7 +18,9 @@ const clamp = (value:number,min:number,max:number) => Math.max(min,Math.min(max,
 export function placeToppers(cake: CakeState): PlacedTopper[] {
   const ids: (TopperId|'custom')[] = [...cake.toppers, ...(cake.customTopper ? ['custom' as const] : [])];
   const count=ids.length;
-  const groupScale=count>2 ? .55 : count>1 ? .78 : 1;
+  // Keep prepared figures in proportion to the cake, especially when fruit is present.
+  const hasFruit=cake.toppings.includes('strawberries')||cake.toppings.includes('raspberries');
+  const groupScale=count>2 ? .55 : count>1 ? .74 : hasFruit ? .78 : .90;
   const placed=ids.map((id,index) => {
     const style=id==='custom' ? {size:'medium' as const,position:'auto' as const,tint:null} : getTopperStyle(cake.topperStyles,id);
     const scale=groupScale*SIZE_SCALE[style.size]*(id==='custom'?1:art.items[id].scale);

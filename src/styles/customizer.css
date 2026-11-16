@@ -1,0 +1,368 @@
+/* Boutique bakery customizer. Uses the existing ivory/rose Cake Gallery palette. */
+.customizer-main { max-width: 1130px; margin: 0 auto; padding: 0 30px 45px; }
+.customizer-heading { text-align: center; padding: 14px 0 37px; }
+.customizer-heading h1 { font-size: clamp(36px,4vw,52px); }
+.customizer-heading .heading-caption { margin-top: 11px; font-size: 14px; line-height: 1.5; }
+.step-label { color: #98616d; font-size: 10px; font-weight: 600; letter-spacing: 1.65px; }
+.section-intro { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 17px; }
+.section-intro h2, .customizer-editor h2, .custom-request h2 { font-family: 'Baskervville',Georgia,serif; font-weight: 400; font-size: clamp(23px,2.5vw,31px); letter-spacing: -.5px; line-height: 1.25; margin: 8px 0 0; }
+.section-intro p { color: #765752; font-size: 12px; margin: 0 0 3px; }
+.template-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 13px; }
+.template-card { min-width: 0; display: flex; align-items: center; gap: 8px; border: 1px solid #e8d1c9; border-radius: 15px; background: #fff9f4; padding: 8px 12px 10px; text-align: left; transition: border-color .15s,box-shadow .15s,transform .15s; }
+.template-card:hover { border-color: #b57b8a; transform: translateY(-1px); }
+.template-card.is-selected { border-color: #985367; background: #fff7f2; box-shadow: 0 0 0 2px #98536719; }
+.template-card .cake-scene--compact { flex: 0 0 115px; width: 115px; height: 115px; }
+.template-card-copy { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.template-card-copy strong { font-family: 'Baskervville',Georgia,serif; font-size: 18px; font-weight: 400; line-height: 1.2; }
+.template-card-copy small { color: #765752; font-size: 11px; line-height: 1.4; }
+.template-card-copy > span { font-size: 11px; color: #935467; font-weight: 600; }
+
+.customizer-workspace { display: grid; grid-template-columns: minmax(0,1fr) minmax(360px,460px); align-items: start; gap: 28px; margin-top: 33px; }
+.customizer-preview { text-align: center; position: sticky; top: 12px; min-width: 0; }
+.customizer-preview > .step-label { display: block; margin-bottom: 1px; }
+.customizer-preview .cake-scene:not(.cake-scene--compact) { height: 435px; width: min(100%,510px); margin: 0 auto; }
+.preview-name { font: 25px 'Baskervville',Georgia,serif; margin: -7px 0 5px; }
+.preview-hint { color: #765752; font-size: 11px; line-height: 1.5; margin: 0 auto; max-width: 330px; }
+.preview-actions { display: flex; gap: 12px; justify-content: center; margin-top: 13px; }
+.preview-actions .text-button { font-size: 11px; }
+
+.customizer-editor { border: 1px solid #ead4cb; background: #fffaf5; border-radius: 18px; padding: 24px 25px; box-shadow: 0 10px 30px #57362909; }
+.customizer-editor h2 { margin-bottom: 17px; }
+.edit-group { border: 0; min-width: 0; padding: 18px 0; margin: 0; border-top: 1px solid #eedfd8; }
+.edit-group > label, .edit-group > legend { color: #4d3031; font-size: 12px; font-weight: 600; line-height: 1.5; margin-bottom: 11px; display: block; padding: 0; }
+.edit-group select,.edit-group input,.quote-form input,.quote-form textarea { display: block; width: 100%; border: 1px solid #e5cdc4; color: #482d2e; background: #fff; border-radius: 9px; padding: 11px 12px; min-width: 0; font-size: 13px; }
+.edit-group select:focus-visible,.edit-group input:focus-visible,.quote-form input:focus-visible,.quote-form textarea:focus-visible { outline: 2px solid #985367; outline-offset: 1px; }
+.color-options { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.color-choice { display: grid; place-items: center; width: 38px; height: 38px; border: 1.5px solid transparent; border-radius: 50%; background: transparent; padding: 3px; }
+.color-choice span { width: 29px; height: 29px; border: 1px solid #482d2e20; border-radius: 50%; display: block; }
+.color-choice.is-selected { border-color: #985367; }
+.subtle-caption { display: block; color: #765752; font-size: 11px; margin-top: 10px; line-height: 1.6; }
+.option-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.option-chip { background: #fbf1eb; border: 1px solid #e5cfc7; color: #684449; border-radius: 25px; padding: 9px 12px; font-size: 11px; line-height: 1.2; }
+.option-chip:hover { border-color: #b57a89; }
+.option-chip.is-selected { background: #f1dce2; border-color: #b67587; color: #71394e; }
+.quiet { font-size: 11px; font-weight: 400; color: #876e66; }
+.inline-edit { display: flex; align-items: center; gap: 8px; }
+.inline-edit input { flex: 1; }
+.secondary-button { background: #fff6f3; border: 1px solid #b57487; border-radius: 9px; color: #824456; font-weight: 500; padding: 10px 14px; white-space: nowrap; font-size: 12px; }
+.secondary-button:hover:not(:disabled) { background: #f6e2e7; }
+.candle-edit { margin-top: 10px; }
+.candle-edit label { color: #765752; font-size: 12px; }
+.candle-edit input { max-width: 75px; }
+.order-summary { border-top: 1px solid #eedfd8; padding-top: 23px; display: flex; flex-direction: column; gap: 12px; }
+.order-summary > div:first-child { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.order-summary > div:first-child span { font-size: 13px; }
+.order-summary > div:first-child strong { font-family: 'Baskervville',Georgia,serif; font-size: 31px; font-weight: 400; }
+.order-summary details { color: #765752; font-size: 11px; }
+.order-summary details summary { cursor: pointer; }
+.order-summary ul { list-style: none; margin: 9px 0; padding: 0; }
+.order-summary li { display: flex; justify-content: space-between; gap: 16px; padding: 4px 0; }
+.order-summary .primary-button { width: 100%; }
+.order-summary small { text-align: center; color: #765752; font-size: 10px; line-height: 1.5; }
+
+.voice-section { max-width: 800px; margin: 54px auto 0; padding: 24px; border: 1px solid #e6cdc9; border-radius: 16px; background: #fff8f2; }
+.voice-section .section-intro { margin-bottom: 6px; }
+.voice-examples { color: #765752; font-size: 12px; line-height: 1.5; margin: 3px 0 14px; }
+.voice-section .composer { background: #fff; }
+.voice-section .mic-button { font-size: 12px; }
+.voice-transcript,.user-notice { font-size: 12px; color: #6e4b50; line-height: 1.5; margin: 10px 0 0; }
+.user-notice { color: #834e5b; }
+.custom-request { max-width: 800px; margin: 22px auto 0; padding: 24px; border: 1px dashed #cd9da2; border-radius: 16px; background: #f9e8e4a8; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; }
+.custom-request > div:first-child { max-width: 525px; }
+.custom-request h2 { font-size: 24px; }
+.custom-request p { font-size: 12px; color: #765752; line-height: 1.6; margin: 10px 0 0; }
+.quote-form { flex: 1 0 100%; padding-top: 16px; border-top: 1px solid #debdc0; display: flex; flex-direction: column; gap: 10px; }
+.quote-form > label,.quote-fields label { display: block; color: #684449; font-size: 12px; font-weight: 600; }
+.quote-fields { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.quote-fields label input { margin-top: 6px; }
+.quote-form > .secondary-button { align-self: flex-start; }
+.quote-form .quote-warning { margin: 0 0 6px; font-size: 11px; color: #784d4d; }
+.customizer-main > .page-footnote { text-align: center; margin: 26px auto 0; line-height: 1.5; }
+
+@media(max-width:950px) {
+  .customizer-workspace { grid-template-columns: minmax(0,1fr); gap: 16px; }
+  .customizer-preview { position: static; }
+  .customizer-editor { max-width: 700px; margin: 0 auto; width: 100%; }
+  .template-card { flex-direction: column; text-align: center; }
+  .template-card-copy { align-items: center; }
+}
+@media(max-width:620px) {
+  .customizer-main { padding: 0 16px 30px; }
+  .customizer-heading { padding: 5px 0 25px; }
+  .customizer-heading .heading-caption { font-size: 12px; }
+  .section-intro { align-items: start; }
+  .section-intro p { max-width: 130px; text-align: right; font-size: 10px; }
+  .template-grid { gap: 7px; }
+  .template-card { padding: 7px 5px 11px; }
+  .template-card .cake-scene--compact { flex-basis: 86px; width: 90px; height: 86px; }
+  .template-card .cake-scene--compact .cake-art { height: 108px; }
+  .template-card-copy strong { font-size: 14px; }
+  .template-card-copy small { font-size: 9px; }
+  .template-card-copy > span { font-size: 10px; }
+  .customizer-workspace { margin-top: 16px; }
+  .customizer-preview .cake-scene:not(.cake-scene--compact) { height: 355px; }
+  .customizer-editor { padding: 21px 18px; }
+  .voice-section,.custom-request { padding: 18px; }
+  .voice-section .composer { flex-wrap: wrap; }
+  .voice-section .composer-input { min-width: 105px; }
+  .quote-fields { grid-template-columns: 1fr; }
+}
+@media(max-width:370px) {
+  .template-card .cake-scene--compact { width: 75px; height: 72px; flex-basis: 72px; }
+  .template-card-copy strong { font-size: 12px; }
+  .template-card-copy small { font-size: 8px; }
+  .customizer-preview .cake-scene:not(.cake-scene--compact) { height: 320px; }
+}
+
+
+/* v2: compact chocolate-shop layout. The main actions sit in the first viewport. */
+.builder-page {
+  background: #fbf3ed;
+}
+.site-header {
+  max-width: none;
+  width: 100%;
+  height: 60px;
+  padding: 8px max(20px, calc((100% - 1490px) / 2 + 20px));
+  background: #4c3029;
+  color: #fff4e8;
+}
+.site-header .brand { font-size: 22px; letter-spacing: -.5px; }
+.site-header .brand svg { height: 32px; width: 29px; color: #f1c4ac; }
+.site-header .basket-trigger { color: #fff4e8; }
+.site-header .basket-trigger span { color: #e4bead; }
+
+.customizer-main { max-width: 1500px; padding: 0 22px 32px; }
+.customizer-heading { padding: 11px 0 18px; text-align: center; }
+.customizer-heading h1 { font-size: clamp(29px, 3vw, 39px); }
+.customizer-heading .eyebrow { margin: 0 0 4px; }
+.customizer-heading .heading-caption { font-size: 12px; margin-top: 6px; }
+
+.customizer-workspace {
+  display: grid;
+  grid-template-columns: 235px minmax(360px, 1fr) 345px;
+  align-items: start;
+  gap: 18px;
+  margin: 0;
+}
+.template-picker { min-width: 0; }
+.template-picker .section-intro { display: block; margin: 6px 0 12px; }
+.template-picker .section-intro h2 { font-size: 22px; line-height: 1.25; margin-top: 5px; }
+.template-picker .section-intro p { margin-top: 5px; font-size: 11px; text-align: left; }
+.template-grid { display: flex; flex-direction: column; gap: 10px; }
+.template-card {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  align-items: center;
+  text-align: left;
+  gap: 6px;
+  min-height: 104px;
+  padding: 9px;
+  border-radius: 12px;
+}
+.template-card .cake-scene--compact {
+  flex: initial;
+  width: 86px;
+  height: 82px;
+}
+.template-card .cake-scene--compact .cake-art { height: 100px; margin-top: -6px; }
+.template-card-copy { align-items: start; gap: 5px; }
+.template-card-copy strong { font-size: 16px; line-height: 1.2; }
+.template-card-copy small { font-size: 10px; line-height: 1.35; }
+.template-card-copy > span { font-size: 11px; }
+
+.customizer-preview { min-width: 0; position: relative; top: auto; }
+.customizer-preview > .step-label { margin: 5px 0 0; }
+.customizer-preview .cake-scene:not(.cake-scene--compact) {
+  height: clamp(315px, 39vh, 400px);
+  width: min(100%, 520px);
+  margin: -6px auto -14px;
+}
+.preview-summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 15px;
+}
+.preview-summary .preview-name {
+  font-size: 22px;
+  margin: 0;
+}
+.preview-price {
+  font-family: 'Baskervville', Georgia, serif;
+  font-size: 20px;
+  color: #784049;
+}
+.preview-inscription { color: #69433f; font-size: 12px; margin: 7px 0 0; }
+.preview-inscription strong { font-weight: 600; }
+.preview-hint { margin: 5px auto 0; font-size: 11px; }
+.preview-actions { margin: 6px 0 0; gap: 12px; }
+
+.customizer-editor {
+  width: 100%;
+  max-width: none;
+  max-height: calc(100dvh - 132px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 16px 18px;
+  border-radius: 14px;
+}
+.customizer-editor h2 { font-size: 24px; margin: 4px 0 9px; }
+.edit-group { padding: 10px 0; }
+.edit-group > label, .edit-group > legend { margin: 0 0 8px; }
+.edit-group select, .edit-group input { padding: 9px 11px; }
+.color-options { gap: 8px; }
+.color-choice { height: 35px; width: 35px; }
+.color-choice span { width: 27px; height: 27px; }
+.edit-group .subtle-caption { margin-top: 4px; font-size: 10px; }
+.option-chips { gap: 6px; }
+.option-chip { padding: 7px 9px; font-size: 11px; }
+.inline-edit { gap: 7px; }
+.inline-edit input { min-width: 0; }
+.secondary-button { padding: 9px 12px; }
+
+.layer-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.layer-choice {
+  background: #fff7f2;
+  border: 1px solid #dfc3b8;
+  color: #75504a;
+  border-radius: 9px;
+  min-height: 39px;
+  padding: 6px;
+  line-height: 1.1;
+}
+.layer-choice strong { font: 22px 'Baskervville', Georgia, serif; }
+.layer-choice span { font-size: 11px; }
+.layer-choice.is-selected { border-color: #95556b; box-shadow: inset 0 0 0 1px #95556b; background: #f4e1e3; color: #6c3947; }
+
+.order-summary { padding-top: 15px; gap: 9px; }
+.order-summary > div:first-child strong { font-size: 27px; }
+
+.customizer-preview .voice-section {
+  width: min(100%, 660px);
+  max-width: none;
+  margin: 13px auto 0;
+  padding: 13px 15px 14px;
+  background: #f5e7dc;
+  border-color: #dcc0b1;
+  border-radius: 13px;
+  text-align: left;
+}
+.customizer-preview .voice-section .section-intro { margin: 0 0 5px; align-items: end; }
+.customizer-preview .voice-section .section-intro h2 { font-size: 22px; margin-top: 2px; }
+.customizer-preview .voice-section .section-intro p { font-size: 10px; max-width: 115px; text-align: right; }
+.customizer-preview .voice-examples { margin: 3px 0 9px; font-size: 11px; }
+.customizer-preview .voice-section .composer {
+  padding: 4px 6px;
+  gap: 7px;
+  min-height: 46px;
+  background: #fffaf6;
+}
+.customizer-preview .voice-section .mic-button {
+  background: #57382e;
+  border-radius: 8px;
+  min-height: 35px;
+  padding: 9px 11px;
+  font-size: 11px;
+}
+.customizer-preview .voice-section .mic-button:hover:not(:disabled) { background: #3e2923; }
+.customizer-preview .voice-section .mic-button.is-listening { background: #985367; }
+.customizer-preview .voice-section .composer-input { padding: 6px 0; font-size: 12px; }
+.customizer-preview .voice-section .secondary-button { padding: 8px 11px; }
+.customizer-preview .voice-transcript,
+.customizer-preview .user-notice { font-size: 11px; margin: 5px 0 0; }
+
+.custom-request { margin-top: 28px; }
+@media (max-width: 1180px) {
+  .customizer-workspace { grid-template-columns: 190px minmax(280px, 1fr) 320px; gap: 11px; }
+  .template-card { grid-template-columns: 66px minmax(0, 1fr); min-height: 90px; padding: 7px; }
+  .template-card .cake-scene--compact { width: 65px; height: 72px; }
+  .template-card .cake-scene--compact .cake-art { height: 90px; }
+  .template-card-copy strong { font-size: 14px; }
+  .customizer-editor { padding: 13px; }
+}
+@media (max-width: 900px) {
+  .customizer-workspace { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .template-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .template-card { display: flex; flex-direction: column; text-align: center; padding: 8px; }
+  .template-card .cake-scene--compact { flex: 0 0 80px; width: 84px; height: 80px; }
+  .template-card-copy { align-items: center; }
+  .template-picker .section-intro { margin-top: 0; }
+  .customizer-preview { position: static; }
+  .customizer-preview .cake-scene:not(.cake-scene--compact) { height: 340px; }
+  .customizer-preview .voice-section { margin-top: 13px; }
+  .customizer-editor { overflow: visible; max-height: none; max-width: 660px; }
+}
+@media (max-width: 600px) {
+  .site-header { height: 54px; padding: 8px 16px; }
+  .site-header .brand { font-size: 19px; }
+  .site-header .brand svg { width: 25px; height: 28px; }
+  .site-header .basket-trigger { font-size: 11px; }
+  .customizer-main { padding: 0 14px 24px; }
+  .customizer-heading { padding: 10px 0 16px; }
+  .customizer-heading h1 { font-size: 29px; }
+  .customizer-heading .heading-caption { font-size: 11px; }
+  .template-picker .section-intro h2 { font-size: 20px; }
+  .template-grid { gap: 6px; }
+  .template-card { padding: 6px 4px; }
+  .template-card .cake-scene--compact { flex-basis: 70px; width: 76px; height: 70px; }
+  .template-card .cake-scene--compact .cake-art { height: 85px; }
+  .template-card-copy strong { font-size: 12px; }
+  .template-card-copy small { font-size: 9px; }
+  .template-card-copy > span { font-size: 10px; }
+  .customizer-preview .cake-scene:not(.cake-scene--compact) { height: 320px; }
+  .customizer-preview .voice-section { padding: 12px; }
+  .customizer-preview .voice-section .composer { flex-wrap: nowrap; }
+  .customizer-preview .voice-section .composer-input { min-width: 75px; }
+  .customizer-preview .voice-section .mic-button { padding: 8px; }
+  .customizer-preview .voice-section .secondary-button { padding: 8px; }
+}
+@media (max-width: 370px) {
+  .template-card-copy small { display: none; }
+  .template-card .cake-scene--compact { width: 67px; }
+  .customizer-preview .cake-scene:not(.cake-scene--compact) { height: 290px; }
+  .customizer-preview .voice-section .section-intro p { display: none; }
+}
+
+/* Small examples make the voice shortcut discoverable without scrolling. */
+.voice-quick-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.voice-quick-actions button {
+  font-size: 10px; color: #684139; border: 1px solid #d7b8a7;
+  border-radius: 16px; padding: 5px 9px; background: #fff8f1;
+}
+.voice-quick-actions button:hover { background: #f4dccd; border-color: #bc8b76; }
+.customizer-preview .voice-section .mic-button { gap: 6px; }
+
+/* Prepared topper thumbnails: show customers the actual decoration, not just a label. */
+.customizer-editor .topper-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px 4px 4px;
+  max-width: 100%;
+  text-align: left;
+}
+.customizer-editor .topper-choice img {
+  display: block;
+  width: 31px;
+  height: 34px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+.customizer-editor .topper-choice span { white-space: nowrap; }
+
+/* Final compact header: keep the chocolate color but reclaim a little height. */
+@media (min-width: 601px) {
+  .site-header { height: 51px; padding-top: 5px; padding-bottom: 5px; }
+  .site-header .brand { font-size: 20px; }
+  .site-header .brand svg { height: 27px; width: 25px; }
+  .site-header .basket-trigger { font-size: 12px; }
+}
+@media (max-width: 600px) {
+  .site-header { height: 48px; padding-top: 5px; padding-bottom: 5px; }
+}
+.preview-unsaved { font-size: 10px; color: #876f67; font-weight: 400; }
+.customizer-editor .topper-choice img { filter: saturate(1.32) contrast(1.06); }
+
+.customizer-editor .topper-choice img[src$="christmas-tree.png"] { filter: saturate(1.6) contrast(1.10); }

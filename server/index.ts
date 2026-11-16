@@ -32,6 +32,10 @@ app.post('/api/topper-image/lookup', async (request, response) => {
 });
 app.post('/api/topper-image', async (request, response) => {
   response.set('Cache-Control', 'no-store');
+  if (process.env.ENABLE_PAID_PROVIDERS !== 'true') {
+    response.status(403).json({ error: 'Paid image previews are disabled for this bakery demo.', status: 403 });
+    return;
+  }
   dotenv.config({ path: '.env.local', quiet: true });
   try { response.json(await images.generate(request.body)); }
   catch (error) {
@@ -50,6 +54,10 @@ app.get('/api/topper-image/:assetId', (request, response) => {
 });
 app.post('/api/interpret', async (request, response) => {
   response.set('Cache-Control', 'no-store');
+  if (process.env.ENABLE_PAID_PROVIDERS !== 'true') {
+    response.status(403).json({ error: 'The AI interpreter is disabled. Use the free cake controls and local voice commands.', status: 403 });
+    return;
+  }
   try {
     response.json(await interpret(validateRequest(request.body)));
   } catch (error) {
