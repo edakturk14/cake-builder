@@ -46,7 +46,7 @@ try {
   assert.ok(inkBox && inkBox.width > 8 && inkBox.height > 4, 'Lettering cannot be invisible or collapsed');
 
   for (const layers of [1, 2, 3]) {
-    await page.locator('.layer-options').getByRole('button', { name: new RegExp('^' + layers + ' layers?
+    await page.locator('.layer-options').getByRole('button', { name: new RegExp('^' + layers + ' layers?$') }).click();
     assert.ok((await page.locator('.customizer-preview .cake-base').getAttribute('href'))?.includes('-' + layers + '.png'), 'Layer artwork must update');
     assert.ok((await page.locator('.preview-inscription').textContent())?.includes('Happy Birthday Eda'), 'Changing layers must preserve writing');
   }
