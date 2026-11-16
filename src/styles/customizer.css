@@ -333,3 +333,21 @@
 }
 .voice-quick-actions button:hover { background: #f4dccd; border-color: #bc8b76; }
 .customizer-preview .voice-section .mic-button { gap: 6px; }
+
+/* Prepared topper thumbnails: show customers the actual decoration, not just a label. */
+.customizer-editor .topper-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px 4px 4px;
+  max-width: 100%;
+  text-align: left;
+}
+.customizer-editor .topper-choice img {
+  display: block;
+  width: 31px;
+  height: 34px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+.customizer-editor .topper-choice span { white-space: nowrap; }
