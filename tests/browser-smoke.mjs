@@ -71,28 +71,3 @@ try {
 } finally {
   await browser?.close();
 }
-) }).click();
-    assert.ok((await page.locator('.customizer-preview .cake-base').getAttribute('href'))?.includes('-' + layers + '.png'), 'Layer artwork must update');
-    assert.ok((await page.locator('.preview-inscription').textContent())?.includes('Happy Birthday Eda'), 'Changing layers must preserve writing');
-  }
-
-  await page.getByRole('button', { name: 'Lavender' }).click();
-  assert.equal(await page.locator('.customizer-preview [data-color-target="frosting"]').count(), 1);
-  assert.ok((await page.locator('.customizer-preview .cake-art').innerHTML()).includes('buttercream-tint'), 'Use the texture-preserving frosting tint');
-
-  await page.locator('#cake-command').fill('Make it two layers');
-  await page.locator('.voice-section form').getByRole('button', { name: 'Apply' }).click();
-  assert.ok((await page.locator('.customizer-preview .cake-base').getAttribute('href'))?.includes('-2.png'), 'Typed voice shortcut must update layers without an API');
-  assert.deepEqual(paidRequests, [], 'Customer customization must not call paid model or image endpoints');
-  assert.deepEqual(browserErrors, [], 'No runtime errors');
-
-  await page.setViewportSize({ width: 390, height: 844 });
-  const widths = await page.evaluate(() => ({
-    document: document.documentElement.scrollWidth,
-    viewport: window.innerWidth,
-  }));
-  assert.ok(widths.document <= widths.viewport, 'No sideways scrolling at mobile width');
-  console.log('PASS: compact layout, Apply writing, visible inscription, 1–3 layers, natural color controls, typed edit, mobile width, no paid requests');
-} finally {
-  await browser?.close();
-}
