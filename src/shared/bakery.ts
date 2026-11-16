@@ -28,7 +28,7 @@ export const BAKERY_TEMPLATES: readonly BakeryTemplate[] = [
     name: 'Chocolate Party',
     description: 'Two-layer chocolate with vanilla cream',
     design: { flavor: 'chocolate', layers: 2, occasion: 'birthday',
-      toppings: [], colors: { frosting: 'ivory', filling: 'blush-pink', inscription: 'chocolate-brown' } },
+      toppings: [], colors: { frosting: 'white', filling: 'blush-pink', inscription: 'chocolate-brown' } },
   },
   {
     id: 'pastel',
