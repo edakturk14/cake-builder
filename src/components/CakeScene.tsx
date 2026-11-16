@@ -131,7 +131,7 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
           </defs>
           <ellipse cx="263" cy="428" rx="175" ry="25" fill={`url(#${id}-shadow)`} />
           <image href={`/art/${cake.base === 'cheesecake' ? 'cheesecake' : `${flavor}-${cake.layers}`}.png`} width="512" height="512" className="cake-base" />
-          {cake.colors.frosting && <image data-color-target="frosting" href={`/art/masks/frosting-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-buttercream-tint)`} opacity=".86" style={{ mixBlendMode: "color" }}/>}
+          {cake.colors.frosting && <image data-color-target="frosting" href={`/art/masks/frosting-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-buttercream-tint)`} opacity=".88"/>}
           {coloredParts.map(part=><image key={part} data-color-target={part} href={`/art/masks/${part}-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-color-${part})`}/>)}
           {/* The artwork's pink piped accents are a separate mask. Restore them to ivory after coloring the buttercream. */}
           <image data-decoration="white-piping" href={`/art/masks/accents-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-ivory-piping)`}/>
