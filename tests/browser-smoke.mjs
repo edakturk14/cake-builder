@@ -77,14 +77,22 @@ try {
   }
 
   await page.getByRole('button', { name: 'Lavender' }).click();
-  assert.equal(await page.locator('.customizer-preview [data-color-target="frosting"]').count(), 1);
-  assert.ok((await page.locator('.customizer-preview .cake-art').innerHTML()).includes('buttercream-tint'), 'Use the texture-preserving frosting tint');
-  assert.equal(await page.locator('.customizer-preview [data-decoration="always-white-frosting-ring"]').count(), 1,
-    'White top icing should remain separate from the colored frosting');
-  const whiteRing = await page.locator('.customizer-preview [data-decoration="always-white-frosting-ring"]').getAttribute('mask');
-  assert.ok(whiteRing?.includes('white-frosting-ring'), 'The white frosting must be masked to the outer piping');
-  const colorClip = await page.locator('.customizer-preview [data-color-target="frosting"]').getAttribute('clip-path');
-  assert.ok(colorClip?.includes('frosting-center'), 'Only the lower/inner frosting should change color');
+  assert.equal(await page.locator('.customizer-preview [data-color-target="frosting-side"]').count(), 1,
+    'Cake side receives the chosen frosting color');
+  const sideMask = await page.locator('.customizer-preview [data-color-target="frosting-side"]').getAttribute('mask');
+  assert.ok(sideMask?.includes('cake-side-mask'), 'Colored icing must be clipped by the actual side silhouette');
+  const sideImage = await page.locator('.customizer-preview [data-mask-target="colorable-side"] image').getAttribute('href');
+  assert.ok(sideImage?.includes('/art/masks/side-3.png'), 'Three-layer cake uses the matching side-only mask');
+  assert.equal(await page.locator('.customizer-preview [data-decoration="always-white-top-frosting"]').count(), 1,
+    'The entire top frosting is a separate white layer');
+  const whiteTop = page.locator('.customizer-preview [data-decoration="always-white-top-frosting"]');
+  assert.equal(await whiteTop.getAttribute('filter')?.then(value => value?.includes('ivory-piping')), true);
+  assert.equal(await whiteTop.getAttribute('clip-path'), null, 'White frosting must not be cropped to a ring');
+  assert.equal(await whiteTop.getAttribute('mask'), null, 'White frosting must not have a hole in its center');
+  const coloredSide = page.locator('.customizer-preview [data-color-target="frosting-side"]');
+  assert.equal(await coloredSide.getAttribute('clip-path'), null, 'No top ellipse should be used for frosting color');
+  await mkdir('screenshots', { recursive: true });
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/white-top-lavender-side-3-layers.png' });
 
   await page.locator('#candle-style').selectOption('plain');
   assert.equal(await page.locator('.customizer-preview [data-plain-candle]').count(), 5,
@@ -131,6 +139,9 @@ try {
   assert.equal((await page.locator('.preview-price').textContent())?.trim(), '$64',
     'Chocolate Party has a $58 base and $6 extra layer');
   await page.locator('.layer-options').getByRole('button', { name: '1 layer' }).click();
+  await page.getByRole('button', { name: 'Lavender' }).click();
+  assert.ok((await page.locator('.customizer-preview [data-mask-target="colorable-side"] image').getAttribute('href'))?.includes('/art/masks/side-1.png'));
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/white-top-lavender-side-1-layer.png' });
   await page.getByRole('button', { name: 'Sky blue' }).click();
   await page.locator('.customizer-editor').getByRole('button', { name: 'Strawberries' }).click();
   await page.locator('.customizer-editor').getByRole('button', { name: 'Raspberries' }).click();
