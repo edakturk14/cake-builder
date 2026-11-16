@@ -7,7 +7,7 @@ import type { TopperId } from './toppers';
  * All prices still come from the existing shared sample-price rules.
  * Customers can vary the sponge count from one to three layers.
  */
-export type TemplateId = 'classic' | 'chocolate' | 'pastel';
+export type TemplateId = 'classic' | 'chocolate' | 'red-velvet';
 export type BakeryTemplate = {
   id: TemplateId;
   name: string;
@@ -31,11 +31,11 @@ export const BAKERY_TEMPLATES: readonly BakeryTemplate[] = [
       toppings: [], colors: { frosting: 'white', filling: 'blush-pink', inscription: 'chocolate-brown' } },
   },
   {
-    id: 'pastel',
-    name: 'Pastel Celebration',
-    description: 'Pink buttercream and gold stars',
-    design: { flavor: 'vanilla', layers: 1, occasion: 'birthday',
-      toppings: ['gold-stars'], colors: { frosting: 'blush-pink', inscription: 'chocolate-brown', accents: 'gold' } },
+    id: 'red-velvet',
+    name: 'Red Velvet',
+    description: 'Two layers of red velvet with cream-colored frosting',
+    design: { flavor: 'red-velvet', layers: 2, occasion: 'birthday',
+      toppings: [], colors: { frosting: 'white', filling: 'ivory', inscription: 'chocolate-brown' } },
   },
 ];
 
