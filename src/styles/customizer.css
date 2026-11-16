@@ -364,3 +364,5 @@
 }
 .preview-unsaved { font-size: 10px; color: #876f67; font-weight: 400; }
 .customizer-editor .topper-choice img { filter: saturate(1.32) contrast(1.06); }
+
+.customizer-editor .topper-choice img[src$="christmas-tree.png"] { filter: saturate(1.6) contrast(1.10); }
