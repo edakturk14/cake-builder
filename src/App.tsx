@@ -154,12 +154,21 @@ export default function App() {
           <form className="composer" onSubmit={submitCommand}>
             <button type="button" className={'mic-button' + (speech.listening ? ' is-listening' : '')}
               onClick={speech.toggle} disabled={!speech.supported} aria-pressed={speech.listening}>
-              {speech.listening ? 'Stop listening' : 'Use voice'}</button>
+              <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                <rect x="9" y="3" width="6" height="12" rx="3" stroke="currentColor" strokeWidth="1.8"/>
+                <path d="M6 11v1a6 6 0 0 0 12 0v-1M12 18v3m-3 0h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+              </svg>
+              <span>{speech.listening ? 'Stop listening' : 'Talk now'}</span></button>
             <label htmlFor="cake-command" className="sr-only">Type a cake change</label>
             <input id="cake-command" className="composer-input" value={command} onChange={event => setCommand(event.target.value)}
               maxLength={250} placeholder="Or type an edit..."/>
             <button type="submit" className="secondary-button" disabled={!command.trim()}>Apply</button>
           </form>
+          <div className="voice-quick-actions" aria-label="Try a cake edit">
+            <button type="button" onClick={() => handleCommand('Make it three layers')}>3 layers</button>
+            <button type="button" onClick={() => handleCommand('Make it pink')}>Pink frosting</button>
+            <button type="button" onClick={() => handleCommand('Write Eda')}>Write Eda</button>
+          </div>
           {!speech.supported && <p className="subtle-caption">Voice isn't supported here; controls and text still work.</p>}
           {speech.listening && <p className="subtle-caption">Listening for a cake change…</p>}
           {speech.interimTranscript && <p className="voice-transcript">“{speech.interimTranscript}”</p>}
