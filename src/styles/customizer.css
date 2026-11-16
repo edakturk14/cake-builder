@@ -324,3 +324,12 @@
   .customizer-preview .cake-scene:not(.cake-scene--compact) { height: 290px; }
   .customizer-preview .voice-section .section-intro p { display: none; }
 }
+
+/* Small examples make the voice shortcut discoverable without scrolling. */
+.voice-quick-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.voice-quick-actions button {
+  font-size: 10px; color: #684139; border: 1px solid #d7b8a7;
+  border-radius: 16px; padding: 5px 9px; background: #fff8f1;
+}
+.voice-quick-actions button:hover { background: #f4dccd; border-color: #bc8b76; }
+.customizer-preview .voice-section .mic-button { gap: 6px; }
