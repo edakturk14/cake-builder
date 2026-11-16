@@ -68,7 +68,8 @@ export function interpretLocalCommand(text: string, _cake: CakeState): LocalComm
   // A sculpture is not a small decoration sitting on a normal round cake.
   if (/(?:whole|entire)\s+cake.*\b(?:castle|shape|shaped|sculpt)/i.test(lower)
     || /\b(?:cake\s+(?:shaped like|in the shape of)|sculpt(?:ed)?\s+cake|turn\s+(?:the|my|this)\s+cake\s+into|make\s+(?:the|my|this)\s+cake\s+(?:into|look like))\b/i.test(lower)
-    || /\b(?:three|four|five|\d+)\s+tiers?\b/i.test(lower)) {
+    || /\b(?:three|four|five|\d+)\s+tiers?\b/i.test(lower)
+    || /\b(?:[\w-]+-shaped\s+cake|make\s+a\s+\w+\s+shaped\s+cake)\b/i.test(lower)) {
     return { kind: 'custom', message: 'A shaped or tiered cake needs a bakery quote. Your description is saved in the request form.' };
   }
   if (/\b(?:layers?|tiers?|stack(?:ed|ing)?)\b/i.test(lower)) {
