@@ -33,6 +33,14 @@ Each layer count uses existing prepared cake images. This does not mean the syst
 
 The compact desktop page places starter designs on the left, live cake and speech/typing in the center, and personalization controls on the right. On narrow screens these become a vertical flow.
 
+## Cake art guardrails
+
+- **Ganache and caramel drizzle are no longer selectable as free-form toppings.** The previous drawn syrup paths looked like gold sticks and dark paint when stacked with fruit. Real chocolate-drip or caramel finishes should become prepared bakery templates with their own approved artwork.
+- The menu offers **strawberries, raspberries and gold stars**. Customers can select up to **two**, and mixed berries are rendered in smaller, separate clusters on the left and right edges, leaving the center for figurines, writing and candles.
+- The pink piped accents already have their own artwork mask (`public/art/masks/accents-*.png`). The renderer now restores that piping to ivory-white **after** tinting the main buttercream surface. White trim should therefore remain white when frosting color changes.
+- Prepared toppers include **balloons, Christmas tree, snowman, castle, unicorn, princess, flowers, rainbow and generic racing kart**, all using the existing artwork library. They render smaller when berries are present. A Santa figurine would require new approved fondant artwork rather than silently drawing an inaccurate substitute.
+- The underlying cake images are still prepared illustration/raster artwork, not photographs supplied by a bakery. Rendering improvements do not turn them into actual product photos.
+
 ## Cost controls and safety
 
 - Ordinary customization buttons and text commands use local React state. No Jev, OpenRouter or other LLM provider is called by the new page.
