@@ -133,7 +133,7 @@ export default function App() {
       <div className="customizer-heading">
         <p className="eyebrow">A LITTLE CAKE, MADE YOUR WAY</p>
         <h1>Let's make your cake.</h1>
-        <p className="heading-caption">Cakes start at $58. Choose a design, then add your own little touches.</p>
+        <p className="heading-caption">Choose a design, then add your own little touches.</p>
       </div>
 
       <div className="customizer-workspace">
@@ -151,7 +151,6 @@ export default function App() {
 
 
         <section className="customizer-preview" aria-label="Live cake preview">
-          <span className="step-label">YOUR CAKE, SO FAR</span>
           <CakeScene cake={previewCake} />
           <div className="preview-summary">
             <p className="preview-name">{template.name}</p>
