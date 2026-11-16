@@ -3,7 +3,7 @@ import { CakeScene } from './components/CakeScene';
 import { useSpeechRecognition } from './hooks/useSpeechRecognition';
 import { PALETTE_BY_ID } from './shared/appearance';
 import { BAKERY_COLORS, BAKERY_FLAVORS, BAKERY_TEMPLATES, BAKERY_TOPPERS, BAKERY_TOPPINGS, createTemplateCake, type TemplateId } from './shared/bakery';
-import { cakeReducer, cloneCake, createBasketItem, estimateCake, formatMoney, parseBasket, type BasketItem, type CakeHistory, type CakePatch, type CakeState } from './shared/cake';
+import { applyCakePatch, cakeReducer, cloneCake, createBasketItem, estimateCake, formatMoney, parseBasket, type BasketItem, type CakeHistory, type CakePatch, type CakeState } from './shared/cake';
 import { interpretLocalCommand } from './shared/localCommands';
 import './styles/builder.css';
 import './integration.css';
@@ -45,12 +45,20 @@ export default function App() {
     setSelected(id);
     setNotice('Selected a new design. Customize it below.');
   }
-  function edit(patch: CakePatch) { dispatch({ type: 'edit', patch }); setNotice(''); }
+  function edit(patch: CakePatch, confirmation = '') {
+    const next = applyCakePatch(cake, patch).state;
+    if (next.toppings.filter(topping => BAKERY_TOPPINGS.some(item => item.id === topping)).length > 2) {
+      setNotice('Choose up to two decorations so your cake stays balanced. Remove one to add another.');
+      return;
+    }
+    dispatch({ type: 'edit', patch });
+    setNotice(confirmation);
+  }
   function handleCommand(text: string) {
     setLastCommand(text);
     const result = interpretLocalCommand(text, cake);
-    setNotice(result.message);
-    if (result.kind === 'edit') dispatch({ type: 'edit', patch: result.patch });
+    if (result.kind === 'edit') edit(result.patch, result.message);
+    else setNotice(result.message);
     if (result.kind === 'undo') dispatch({ type: 'undo' });
     if (result.kind === 'reset') { setSelected('classic'); dispatch({ type: 'select', cake: createTemplateCake('classic') }); }
     if (result.kind === 'custom') { setRequest(previous => ({ ...previous, description: text })); setQuoteOpen(true); }
@@ -214,7 +222,7 @@ export default function App() {
             {cake.inscription && <button type="button" className="text-button" onClick={() => edit({ inscription: '' })}>Clear writing</button>}
           </div>
           <fieldset className="edit-group">
-            <legend>Add something sweet</legend>
+            <legend>Add something sweet <span className="quiet">(up to two)</span></legend>
             <div className="option-chips">{BAKERY_TOPPINGS.map(item => <button type="button" key={item.id}
               className={'option-chip' + (cake.toppings.includes(item.id) ? ' is-selected' : '')}
               aria-pressed={cake.toppings.includes(item.id)}
@@ -228,8 +236,11 @@ export default function App() {
               <button type="button" className={'option-chip' + (!cake.toppers.length ? ' is-selected' : '')}
                 aria-pressed={!cake.toppers.length} onClick={() => edit({ toppers: [] })}>None</button>
               {BAKERY_TOPPERS.map(item => <button type="button" key={item.id}
-                className={'option-chip' + (cake.toppers[0] === item.id ? ' is-selected' : '')}
-                aria-pressed={cake.toppers[0] === item.id} onClick={() => edit({ toppers: [item.id] })}>{item.label}</button>)}
+                className={'option-chip topper-choice' + (cake.toppers[0] === item.id ? ' is-selected' : '')}
+                aria-pressed={cake.toppers[0] === item.id} onClick={() => edit({ toppers: [item.id] })}>
+                <img src={`/art/toppers/${item.id}.png`} alt="" width="36" height="40" loading="lazy"/>
+                <span>{item.label}</span>
+              </button>)}
             </div>
           </fieldset>
           <div className="edit-group">
