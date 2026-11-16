@@ -73,6 +73,23 @@ try {
     'Remove the redundant central preview label');
   await mkdir('screenshots', { recursive: true });
   await page.screenshot({ path: 'screenshots/balanced-workbench.png', animations: 'disabled' });
+  const galleryChoices = page.locator('.template-card');
+  assert.equal(await galleryChoices.count(), 3, 'Exactly three starter cake cards are offered');
+  assert.ok((await galleryChoices.nth(0).textContent())?.includes('Classic Birthday'));
+  assert.ok((await galleryChoices.nth(1).textContent())?.includes('Chocolate Party'));
+  assert.ok((await galleryChoices.nth(2).textContent())?.includes('Red Velvet'));
+  assert.equal(await page.locator('.template-card').filter({ hasText: /Pastel Celebration|Cheesecake/ }).count(), 0);
+  await galleryChoices.nth(2).click();
+  assert.ok((await page.locator('.customizer-preview .cake-base').getAttribute('href'))?.includes('/art/red-velvet-2.png'),
+    'Red Velvet starter must use the two-layer red velvet sponge artwork');
+  assert.equal(await page.locator('.layer-choice.is-selected').count(), 1);
+  assert.ok((await page.locator('.layer-choice.is-selected').textContent())?.includes('2'),
+    'Red Velvet starts as a two-layer cake');
+  assert.equal((await page.locator('.preview-price').textContent())?.trim(), '$64');
+  await mkdir('screenshots', { recursive: true });
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/red-velvet-two-layers.png' });
+  await galleryChoices.nth(0).click();
+
   const header = await page.locator('.site-header').boundingBox();
   assert.ok(header && header.height <= 53, 'Chocolate header should be no more than 53px on desktop');
   const voice = await page.locator('.customizer-preview .voice-section').boundingBox();
