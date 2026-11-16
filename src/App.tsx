@@ -72,8 +72,11 @@ export default function App() {
   }
   function applyMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (messageDraft.trim().length > 30) { setNotice('Please keep the cake message to 30 characters.'); return; }
-    edit({ inscription: messageDraft.trim() });
+    const written = messageDraft.trim();
+    if (written.length > 30) { setNotice('Please keep the cake message to 30 characters.'); return; }
+    // The live preview already shows the typed message. Apply commits it to
+    // the confirmed cake so it also survives Undo and basket snapshots.
+    edit({ inscription: written }, written ? `Added “${written}” to your cake.` : 'Removed the cake message.');
   }
   function addToBasket() {
     if (basket.length >= 20) { setNotice('The basket is full. Remove a saved cake first.'); return; }
@@ -107,6 +110,11 @@ export default function App() {
     } catch { setQuoteStatus('Could not copy automatically. Please copy your request manually.'); }
   }
   const template = BAKERY_TEMPLATES.find(item => item.id === selected) ?? BAKERY_TEMPLATES[0];
+  // Render the pending inscription as the customer types, so Apply never
+  // appears to do nothing even before the draft has been committed.
+  const previewMessage = messageDraft.trim();
+  const previewCake: CakeState = previewMessage === cake.inscription
+    ? cake : { ...cake, inscription: previewMessage };
   const count = basket.reduce((sum, item) => sum + item.quantity, 0);
   const numberValid = /^\d{1,2}$/.test(candleNumber) && Number(candleNumber) > 0;
 
@@ -144,12 +152,15 @@ export default function App() {
 
         <section className="customizer-preview" aria-label="Live cake preview">
           <span className="step-label">YOUR CAKE, SO FAR</span>
-          <CakeScene cake={cake} />
+          <CakeScene cake={previewCake} />
           <div className="preview-summary">
             <p className="preview-name">{template.name}</p>
             <span className="preview-price">{formatMoney(estimate.totalCents)}</span>
           </div>
-          {cake.inscription && <p className="preview-inscription" role="status">On your cake: <strong>{cake.inscription}</strong></p>}
+          {previewCake.inscription && <p className="preview-inscription" role="status">
+            On your cake: <strong>{previewCake.inscription}</strong>
+            {previewCake.inscription !== cake.inscription && <span className="preview-unsaved"> · Previewing (click Apply to save)</span>}
+          </p>}
           <p className="preview-hint">{cake.layers} sponge layer{cake.layers === 1 ? '' : 's'} · Illustrative preview</p>
           <div className="preview-actions">
             <button type="button" className="text-button" onClick={() => { dispatch({ type: 'undo' }); setNotice('Undid the last edit.'); }} disabled={!design.history.length}>Undo last change</button>
