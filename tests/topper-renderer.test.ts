@@ -106,7 +106,7 @@ test('mixed berries shrink and occupy distinct sides rather than stacking in one
 });
 
 test('prepared topper colors are boosted, and plain candles are thicker without getting taller', () => {
-  const cake = applyCakePatch(createTemplateCake('pastel'), {
+  const cake = applyCakePatch(createTemplateCake('red-velvet'), {
     toppers: ['christmas-tree'], candles: { style: 'plain', count: 5 },
   }).state;
   const svg = renderToStaticMarkup(createElement(CakeScene, { cake }));
@@ -136,4 +136,12 @@ test('smooth top accepts frosting color while the original cake body and piped t
       }
     }
   }
+});
+
+test('Red Velvet starter renders the prepared two-layer red sponge, not an invented design', () => {
+  const cake = createTemplateCake('red-velvet');
+  const markup = renderToStaticMarkup(createElement(CakeScene, { cake }));
+  assert.ok(markup.includes('href="/art/red-velvet-2.png"'), 'Uses the existing red velvet artwork');
+  assert.ok(markup.includes('href="/art/masks/frosting-2.png"'), 'Uses the two-layer frosting mask');
+  assert.ok(!markup.includes('/art/vanilla-1.png'), 'Does not use the old Pastel starter');
 });
