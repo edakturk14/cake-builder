@@ -1,8 +1,7 @@
 import { useEffect, useReducer, useRef, useState, type FormEvent } from 'react';
 import { CakeScene } from './components/CakeScene';
 import { useSpeechRecognition } from './hooks/useSpeechRecognition';
-import { PALETTE_BY_ID } from './shared/appearance';
-import { BAKERY_COLORS, BAKERY_FLAVORS, BAKERY_TEMPLATES, BAKERY_TOPPERS, BAKERY_TOPPINGS, createTemplateCake, estimateBakeryCake, priceBakeryBasketItem, type TemplateId } from './shared/bakery';
+import { BAKERY_FLAVORS, BAKERY_TEMPLATES, BAKERY_TOPPERS, BAKERY_TOPPINGS, createTemplateCake, estimateBakeryCake, priceBakeryBasketItem, type TemplateId } from './shared/bakery';
 import { applyCakePatch, cakeReducer, cloneCake, createBasketItem, formatMoney, parseBasket, type BasketItem, type CakeHistory, type CakePatch, type CakeState } from './shared/cake';
 import { interpretLocalCommand } from './shared/localCommands';
 import './styles/builder.css';
@@ -47,7 +46,7 @@ export default function App() {
   }
   function edit(patch: CakePatch, confirmation = '') {
     const next = applyCakePatch(cake, patch).state;
-    if (next.toppings.filter(topping => BAKERY_TOPPINGS.some(item => item.id === topping)).length > 2) {
+    if (next.toppings.filter(topping => topping === 'sprinkles' || BAKERY_TOPPINGS.some(item => item.id === topping)).length > 2) {
       setNotice('Choose up to two decorations so your cake stays balanced. Remove one to add another.');
       return;
     }
@@ -133,12 +132,12 @@ export default function App() {
       <div className="customizer-heading">
         <p className="eyebrow">A LITTLE CAKE, MADE YOUR WAY</p>
         <h1>Let's make your cake.</h1>
-        <p className="heading-caption">Cakes start at $58. Choose a design, then add your own little touches.</p>
+        <p className="heading-caption">Choose a design, then add your own little touches.</p>
       </div>
 
       <div className="customizer-workspace">
       <section className="template-picker" aria-labelledby="template-title">
-        <div className="section-intro"><div><span className="step-label">01 / CHOOSE YOUR CAKE</span><h2 id="template-title">Start with a favorite</h2></div><p>Three designs to get you started</p></div>
+        <div className="section-intro"><div><span className="step-label">01 / CHOOSE YOUR CAKE</span><h2 id="template-title">Start with a favorite</h2></div><p>Four designs to get you started</p></div>
         <div className="template-grid">
           {BAKERY_TEMPLATES.map(item => <button type="button" key={item.id} className={'template-card' + (selected === item.id ? ' is-selected' : '')}
             onClick={() => chooseTemplate(item.id)} aria-pressed={selected === item.id}>
@@ -151,7 +150,6 @@ export default function App() {
 
 
         <section className="customizer-preview" aria-label="Live cake preview">
-          <span className="step-label">YOUR CAKE, SO FAR</span>
           <CakeScene cake={previewCake} />
           <div className="preview-summary">
             <p className="preview-name">{template.name}</p>
@@ -169,7 +167,7 @@ export default function App() {
 
         <section className="voice-section" aria-labelledby="voice-title">
           <div className="section-intro"><div><span className="step-label">OR JUST TELL IT</span><h2 id="voice-title">Talk to your cake</h2></div><p>No extra API key needed</p></div>
-          <p className="voice-examples">Try “Make it lavender,” “Add a layer,” or “Write Happy Birthday, Eda.”</p>
+          <p className="voice-examples">Try “Add strawberries,” “Add a layer,” or “Write Happy Birthday, Eda.”</p>
           <form className="composer" onSubmit={submitCommand}>
             <button type="button" className={'mic-button' + (speech.listening ? ' is-listening' : '')}
               onClick={speech.toggle} disabled={!speech.supported} aria-pressed={speech.listening}>
@@ -185,7 +183,7 @@ export default function App() {
           </form>
           <div className="voice-quick-actions" aria-label="Try a cake edit">
             <button type="button" onClick={() => handleCommand('Make it three layers')}>3 layers</button>
-            <button type="button" onClick={() => handleCommand('Make it pink')}>Pink frosting</button>
+            <button type="button" onClick={() => handleCommand('Add strawberries')}>Strawberries</button>
             <button type="button" onClick={() => handleCommand('Write Eda')}>Write Eda</button>
           </div>
           {!speech.supported && <p className="subtle-caption">Voice isn't supported here; controls and text still work.</p>}
@@ -215,14 +213,6 @@ export default function App() {
               </button>)}
             </div>
             <small className="subtle-caption">Sponge layers, not stacked tiers. Up to three.</small>
-          </fieldset>
-          <fieldset className="edit-group">
-            <legend>Frosting color</legend>
-            <div className="color-options">{BAKERY_COLORS.map(color => <button type="button" key={color}
-              className={'color-choice' + (cake.colors.frosting === color ? ' is-selected' : '')}
-              aria-pressed={cake.colors.frosting === color} aria-label={PALETTE_BY_ID[color].label} title={PALETTE_BY_ID[color].label}
-              onClick={() => edit({ colors: { frosting: color } })}><span style={{ backgroundColor: PALETTE_BY_ID[color].hex }} /></button>)}</div>
-            <small className="subtle-caption">{cake.colors.frosting ? PALETTE_BY_ID[cake.colors.frosting].label : 'Natural frosting'}</small>
           </fieldset>
           <div className="edit-group">
             <label htmlFor="writing">Message on your cake <span className="quiet">(up to 30 characters)</span></label>

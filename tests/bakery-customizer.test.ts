@@ -5,7 +5,7 @@ import { BAKERY_STARTING_PRICE_CENTS, BAKERY_TEMPLATES, createTemplateCake, esti
 import { interpretLocalCommand } from '../src/shared/localCommands';
 
 test('starter cakes have fixed heights, prepared toppings, and known prices', () => {
-  assert.equal(BAKERY_TEMPLATES.length, 3);
+  assert.equal(BAKERY_TEMPLATES.length, 4);
   for (const template of BAKERY_TEMPLATES) {
     const cake = createTemplateCake(template.id);
     assert.equal(cake.exists, true);
@@ -17,13 +17,12 @@ test('starter cakes have fixed heights, prepared toppings, and known prices', ()
   assert.equal(createTemplateCake('chocolate').layers, 2);
 });
 
-test('typed or spoken color, topping and writing edits need no model', () => {
+test('typed or spoken topping and writing edits need no model', () => {
   const base = createTemplateCake('classic');
-  const command = interpretLocalCommand('Make it pink, add strawberries and write Happy 30th on top', base);
+  const command = interpretLocalCommand('Add strawberries and write Happy 30th on top', base);
   assert.equal(command.kind, 'edit');
   if (command.kind !== 'edit') return;
   const next = applyCakePatch(base, command.patch).state;
-  assert.equal(next.colors.frosting, 'blush-pink');
   assert.deepEqual(next.toppings, ['strawberries']);
   assert.equal(next.inscription, 'Happy 30th');
   assert.equal(next.layers, 1);
@@ -126,7 +125,8 @@ test('NYC bakery prices start at $58 for every sponge flavor, with extras charge
     assert.equal(priced.lines.reduce((total, line) => total + line.amountCents, 0), priced.totalCents);
   }
   assert.equal(estimateBakeryCake(createTemplateCake('chocolate')).totalCents, 6400);
-  assert.equal(estimateBakeryCake(createTemplateCake('pastel')).totalCents, 6200);
+  assert.equal(estimateBakeryCake(createTemplateCake('red-velvet')).totalCents, 6400);
+  assert.equal(estimateBakeryCake(createTemplateCake('sprinkles')).totalCents, 6200);
   const decorated = applyCakePatch(createTemplateCake('classic'), {
     layers: 3, addToppings: ['strawberries'], toppers: ['unicorn'],
   }).state;
@@ -149,4 +149,44 @@ test('NYC bakery pricing survives basket saves and reloads without changing old 
   assert.deepEqual(reloaded.estimate.lines, saved.estimate.lines);
   assert.equal(estimateCake(cake).totalCents, 3800 + 600 + 700,
     'The older shared demo fixtures keep their original prices');
+});
+
+test('starter gallery has four prepared cakes including red velvet and birthday sprinkles, with no cheesecake', () => {
+  assert.deepEqual(BAKERY_TEMPLATES.map(item => item.id), ['classic', 'chocolate', 'red-velvet', 'sprinkles']);
+  assert.deepEqual(BAKERY_TEMPLATES.map(item => item.name), ['Classic Birthday', 'Chocolate Party', 'Red Velvet', 'Birthday with Sprinkles']);
+  const redVelvet = createTemplateCake('red-velvet');
+  assert.equal(redVelvet.exists, true);
+  assert.equal(redVelvet.base, 'sponge');
+  assert.equal(redVelvet.flavor, 'red-velvet');
+  assert.equal(redVelvet.layers, 2);
+  assert.deepEqual(redVelvet.toppings, []);
+  assert.equal(redVelvet.colors.frosting, 'white');
+  assert.equal(estimateBakeryCake(redVelvet).totalCents, 6400);
+  assert.equal(BAKERY_TEMPLATES.some(template => template.id === ('cheesecake' as string)), false);
+  const birthday = createTemplateCake('sprinkles');
+  assert.equal(birthday.flavor, 'vanilla');
+  assert.equal(birthday.layers, 1);
+  assert.deepEqual(birthday.toppings, ['sprinkles']);
+  assert.equal(estimateBakeryCake(birthday).totalCents, 6200);
+  const chocolate = createTemplateCake('chocolate');
+  assert.equal(chocolate.colors.filling, 'ivory', 'Chocolate Party has vanilla cream, not pink filling');
+});
+
+test('the limited bakery prototype ignores voice recoloring and can add/remove sprinkles', () => {
+  const classic = createTemplateCake('classic');
+  const change = interpretLocalCommand('Make it pink', classic);
+  assert.equal(change.kind, 'help');
+  if (change.kind === 'help') assert.match(change.message, /Frosting colors are fixed/);
+  const add = interpretLocalCommand('Add sprinkles', classic);
+  assert.equal(add.kind, 'edit');
+  if (add.kind === 'edit') {
+    const withSprinkles = applyCakePatch(classic, add.patch).state;
+    assert.deepEqual(withSprinkles.toppings, ['sprinkles']);
+    assert.equal(estimateBakeryCake(withSprinkles).totalCents, 6200);
+    const remove = interpretLocalCommand('Remove sprinkles', withSprinkles);
+    assert.equal(remove.kind, 'edit');
+    if (remove.kind === 'edit') {
+      assert.deepEqual(applyCakePatch(withSprinkles, remove.patch).state.toppings, []);
+    }
+  }
 });

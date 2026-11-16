@@ -5,7 +5,7 @@ export type { TopperId } from './toppers';
 export type { OccasionId } from './occasions';
 export type { CakeColors, InscriptionStyle, TopperStyle, TopperStyles } from './appearance';
 
-export const TOPPINGS = ['strawberries', 'raspberries', 'ganache', 'caramel', 'gold-stars'] as const;
+export const TOPPINGS = ['strawberries', 'raspberries', 'ganache', 'caramel', 'gold-stars', 'sprinkles'] as const;
 export const THEMES = ['mario', 'formula-one', 'spain-world-cup', 'tennis', 'jensen-huang'] as const;
 export const DESIGN_EXAMPLES: Record<typeof THEMES[number], string> = {
   mario: 'a Mario cake', 'formula-one': 'a Formula One cake', 'spain-world-cup': 'a Spain World Cup cake',
@@ -242,7 +242,7 @@ export function createCake(overrides: CakePatch = {}): CakeState {
 export const PRICING = {
   flavors: { vanilla: 3800, chocolate: 4200, 'red-velvet': 4400, lemon: 4000, classic: 4400 },
   additionalLayer: 600,
-  toppings: { strawberries: 700, raspberries: 700, ganache: 500, caramel: 400, 'gold-stars': 400 },
+  toppings: { strawberries: 700, raspberries: 700, ganache: 500, caramel: 400, 'gold-stars': 400, sprinkles: 400 },
   themes: { mario: 1200, 'formula-one': 1200, 'spain-world-cup': 1200, tennis: 1000, 'jensen-huang': 1500 },
   plainCandles: 300, numberCandles: 500,
 } as const;
@@ -254,7 +254,7 @@ export const CANDLE_OPTIONS = CANDLE_STYLES.map(id => ({
 }));
 export const LABELS = {
   vanilla: 'Vanilla', chocolate: 'Chocolate', 'red-velvet': 'Red velvet', lemon: 'Lemon', classic: 'Classic baked cheesecake',
-  strawberries: 'Strawberries', raspberries: 'Raspberries', ganache: 'Chocolate ganache', caramel: 'Caramel drizzle', 'gold-stars': 'Gold stars',
+  strawberries: 'Strawberries', raspberries: 'Raspberries', ganache: 'Chocolate ganache', caramel: 'Caramel drizzle', 'gold-stars': 'Gold stars', sprinkles: 'Birthday sprinkles',
   mario: 'Mario theme kit', 'formula-one': 'Formula One kit', 'spain-world-cup': 'Spain World Cup kit', tennis: 'Tennis kit', 'jensen-huang': 'Jensen Huang figurine',
 } as const;
 

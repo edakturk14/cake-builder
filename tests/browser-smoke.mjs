@@ -49,6 +49,56 @@ try {
   await page.locator('.basket-item button').filter({ hasText: 'Remove' }).click();
   await page.locator('.basket-header button').click();
 
+  // Desktop visual hierarchy: symmetric side panels and a distinctive wordmark.
+  const panels = await page.evaluate(() => {
+    const left = document.querySelector('.template-picker')?.getBoundingClientRect();
+    const right = document.querySelector('.customizer-editor')?.getBoundingClientRect();
+    return left && right
+      ? { left:{x:left.x,y:left.y,width:left.width,height:left.height},
+          right:{x:right.x,y:right.y,width:right.width,height:right.height} }
+      : null;
+  });
+  assert.ok(panels, 'Both side panels must exist');
+  assert.ok(Math.abs(panels.left.width - panels.right.width) < 2,
+    'Left and right panels should have the same width');
+  assert.ok(Math.abs(panels.left.y - panels.right.y) < 2,
+    'Left and right panels should align vertically');
+  assert.ok(Math.abs(panels.left.height - panels.right.height) < 3,
+    'Left and right panels should have matching height');
+  assert.ok((await page.locator('.brand').evaluate(element => getComputedStyle(element).fontFamily)).includes('Fraunces'),
+    'Brand wordmark should use the new distinctive font');
+  assert.equal(await page.locator('.customizer-heading .heading-caption').textContent(),
+    'Choose a design, then add your own little touches.');
+  assert.equal(await page.getByText('YOUR CAKE, SO FAR').count(), 0,
+    'Remove the redundant central preview label');
+  await mkdir('screenshots', { recursive: true });
+  await page.screenshot({ path: 'screenshots/balanced-workbench.png', animations: 'disabled' });
+  const galleryChoices = page.locator('.template-card');
+  assert.equal(await galleryChoices.count(), 4, 'Exactly four starter cake cards are offered');
+  assert.ok((await galleryChoices.nth(0).textContent())?.includes('Classic Birthday'));
+  assert.ok((await galleryChoices.nth(1).textContent())?.includes('Chocolate Party'));
+  assert.ok((await galleryChoices.nth(2).textContent())?.includes('Red Velvet'));
+  assert.ok((await galleryChoices.nth(3).textContent())?.includes('Birthday with Sprinkles'));
+  assert.equal(await page.locator('.template-card').filter({ hasText: /Pastel Celebration|Cheesecake/ }).count(), 0);
+  await galleryChoices.nth(2).click();
+  assert.ok((await page.locator('.customizer-preview .cake-base').getAttribute('href'))?.includes('/art/red-velvet-2.png'),
+    'Red Velvet starter must use the two-layer red velvet sponge artwork');
+  assert.equal(await page.locator('.layer-choice.is-selected').count(), 1);
+  assert.ok((await page.locator('.layer-choice.is-selected').textContent())?.includes('2'),
+    'Red Velvet starts as a two-layer cake');
+  assert.equal((await page.locator('.preview-price').textContent())?.trim(), '$64');
+  await mkdir('screenshots', { recursive: true });
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/red-velvet-two-layers.png' });
+  await galleryChoices.nth(3).click();
+  assert.ok((await page.locator('.customizer-preview .cake-base').getAttribute('href'))?.includes('/art/vanilla-1.png'),
+    'Birthday with Sprinkles uses the original classic vanilla cake artwork');
+  assert.ok((await page.locator('.customizer-preview [data-decoration="sprinkles"] [data-sprinkle]').count()) >= 25,
+    'Sprinkles are actually visible on the birthday preset');
+  assert.equal((await page.locator('.preview-price').textContent())?.trim(), '$62',
+    'Birthday with Sprinkles costs $58 plus $4 sprinkles');
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/birthday-with-sprinkles.png' });
+  await galleryChoices.nth(0).click();
+
   const header = await page.locator('.site-header').boundingBox();
   assert.ok(header && header.height <= 53, 'Chocolate header should be no more than 53px on desktop');
   const voice = await page.locator('.customizer-preview .voice-section').boundingBox();
@@ -76,15 +126,18 @@ try {
     assert.ok((await page.locator('.preview-inscription').textContent())?.includes('Happy Birthday Eda'), 'Changing layers must preserve writing');
   }
 
-  await page.getByRole('button', { name: 'Lavender' }).click();
-  assert.equal(await page.locator('.customizer-preview [data-color-target="frosting"]').count(), 1);
-  assert.ok((await page.locator('.customizer-preview .cake-art').innerHTML()).includes('buttercream-tint'), 'Use the texture-preserving frosting tint');
-  assert.equal(await page.locator('.customizer-preview [data-decoration="always-white-frosting-ring"]').count(), 1,
-    'White top icing should remain separate from the colored frosting');
-  const whiteRing = await page.locator('.customizer-preview [data-decoration="always-white-frosting-ring"]').getAttribute('mask');
-  assert.ok(whiteRing?.includes('white-frosting-ring'), 'The white frosting must be masked to the outer piping');
-  const colorClip = await page.locator('.customizer-preview [data-color-target="frosting"]').getAttribute('clip-path');
-  assert.ok(colorClip?.includes('frosting-center'), 'Only the lower/inner frosting should change color');
+  assert.equal(await page.locator('.color-options').count(), 0, 'No frosting color picker in the prototype');
+  const plainMarkup = await page.locator('.customizer-preview .cake-art').innerHTML();
+  assert.ok(!plainMarkup.includes('smooth-top-tint') && !plainMarkup.includes('white-piped-swirls'),
+    'Original prepared frosting stays visible without custom masks');
+  await page.locator('#cake-command').fill('Make it pink');
+  await page.locator('.voice-section form').getByRole('button', { name: 'Apply' }).click();
+  assert.ok((await page.locator('.user-notice').textContent())?.includes('Frosting colors are fixed'),
+    'Voice must reject frosting recoloring instead of silently claiming success');
+  const unchangedMarkup = await page.locator('.customizer-preview .cake-art').innerHTML();
+  assert.equal(unchangedMarkup, plainMarkup, 'Rejected frosting recoloring never changes the cake');
+  await mkdir('screenshots', { recursive: true });
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/original-frosting-no-overlays.png' });
 
   await page.locator('#candle-style').selectOption('plain');
   assert.equal(await page.locator('.customizer-preview [data-plain-candle]').count(), 5,
@@ -131,14 +184,16 @@ try {
   assert.equal((await page.locator('.preview-price').textContent())?.trim(), '$64',
     'Chocolate Party has a $58 base and $6 extra layer');
   await page.locator('.layer-options').getByRole('button', { name: '1 layer' }).click();
-  await page.getByRole('button', { name: 'Sky blue' }).click();
+  assert.ok((await page.locator('.customizer-preview .cake-art').innerHTML()).includes('data-color-target="filling"'),
+    'Chocolate filling remains a separately prepared vanilla-colored layer');
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/chocolate-vanilla-filling.png' });
   await page.locator('.customizer-editor').getByRole('button', { name: 'Strawberries' }).click();
   await page.locator('.customizer-editor').getByRole('button', { name: 'Raspberries' }).click();
   await page.locator('.customizer-editor').getByRole('button', { name: 'Unicorn' }).click();
   const updatedScene = await page.locator('.customizer-preview .cake-art').innerHTML();
   assert.ok(!updatedScene.includes('data-decoration="caramel"'), 'No gold caramel sticks');
   assert.ok(!updatedScene.includes('data-decoration="ganache"'), 'No drawn ganache drips');
-  assert.ok(updatedScene.includes('data-decoration="white-piping"'), 'Ivory piping stays separate');
+  assert.ok(!updatedScene.includes('data-decoration="white-piped-swirls"'), 'No added white icing overlay');
   assert.ok(updatedScene.includes('data-decoration="raspberries"'), 'Raspberries arranged on cake');
   assert.ok(updatedScene.includes('data-decoration="strawberries"'), 'Strawberries arranged on cake');
   await page.locator('.customizer-editor').getByRole('button', { name: 'Gold stars' }).click();
@@ -151,7 +206,7 @@ try {
   const treePreview = await page.locator('.customizer-preview [data-decoration="christmas-tree"] image').getAttribute('filter');
   assert.ok(treePreview?.includes('festive-tree'), 'Christmas tree gets a more saturated, greener prepared-art filter');
   await page.locator('.customizer-preview').screenshot({ path: 'screenshots/vibrant-christmas-tree.png' });
-    console.log('PASS: compact layout, Apply writing, visible inscription, 1–3 layers, natural color controls, typed edit, mobile width, no paid requests');
+    console.log('PASS: four cake presets, plain frosting, sprinkles, vanilla filling, layout, writing, layers, candles, basket, voice, mobile width and no paid requests');
 } finally {
   await browser?.close();
 }

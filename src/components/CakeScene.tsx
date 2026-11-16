@@ -14,27 +14,6 @@ function colorMatrix(hex:string,blend=1){
   const keep=1-blend;
   return `${keep||r} 0 0 0 ${keep?r*blend:0} 0 ${keep||g} 0 0 ${keep?g*blend:0} 0 0 ${keep||b} 0 ${keep?b*blend:0} 0 0 0 1 0`;
 }
-/**
- * Tint the original buttercream texture instead of painting it a flat color.
- * Retains the source photo's highlights and shaded piping.
- */
-function buttercreamMatrix(hex: string) {
-  const rgb = hex.replace('#', '').match(/../g)!.map(channel => parseInt(channel, 16) / 255);
-  const sourceLuminance = [0.2126, 0.7152, 0.0722];
-  const original = 0.38, tint = 0.62, shadow = 0.78, highlight = 0.22;
-  const coefficients = rgb.map((channel, output) => [
-    ...sourceLuminance.map((luma, input) => (output === input ? original : 0) + tint * channel * shadow * luma),
-    0, // no dependence on source alpha in RGB; alpha is preserved by the last row
-    tint * channel * highlight,
-  ]);
-  return coefficients.flat().concat([0, 0, 0, 1, 0]).join(' ');
-}
-
-function lightColor(hex:string){
-  const [r,g,b]=hex.replace('#','').match(/../g)!.map(channel=>parseInt(channel,16)/255);
-  return r*.2126+g*.7152+b*.0722>.55;
-}
-
 function ThemeDecorations({ theme, id }: { theme: CakeState['theme']; id: string }) {
   if (!theme) return null;
   return <g className="cake-decoration" data-decoration={`theme-${theme}`}>
@@ -89,8 +68,9 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
   const imageFailed = Boolean(cake.customTopper?.assetId && failedAsset === cake.customTopper.assetId);
   const top = cake.base === 'cheesecake' ? 0 : cake.layers === 1 ? 56 : cake.layers === 3 ? -47 : 0;
   const flavor = cake.flavor === 'classic' ? 'vanilla' : cake.flavor;
-  const darkCake = cake.base !== 'cheesecake' && (cake.flavor === 'chocolate' || cake.flavor === 'red-velvet');
-  const darkSurface=cake.colors.frosting ? !lightColor(PALETTE_BY_ID[cake.colors.frosting].hex) : darkCake;
+  // All bakery presets use the light top frosting baked into their prepared artwork.
+  // The retired frosting-color state must not change inscription/candle contrast.
+  const darkSurface = false;
   const placements=placeToppers(cake);
   const crowded=placements.length>2;
   const writingWidth=crowded||cake.inscriptionStyle.placement==='center'||(cake.candles.count??0)>8||cake.toppings.some(topping=>topping==='strawberries'||topping==='raspberries')?180:236;
@@ -98,11 +78,7 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
   const accent=cake.colors.accents?PALETTE_BY_ID[cake.colors.accents].hex:undefined;
   const writingColor=paletteHex(cake.colors.inscription,darkSurface?'#ffedb9':'#562d30');
   const maskVariant=cake.base==='cheesecake'?'cheesecake':cake.layers;
-  // The upper piped buttercream ring is ivory; only the smooth central
-  // frosting surface changes color. These ellipses follow the baked
-  // 1/2/3-layer artwork's vertical offsets.
-  const innerFrosting = { cx: 256, cy: 168 + top, rx: 140, ry: 64 };
-  const hasPipedRing = cake.base === 'sponge';
+  const cakeArtPath = `/art/${cake.base === 'cheesecake' ? 'cheesecake' : `${flavor}-${cake.layers}`}.png`;
   const coloredParts=(['filling'] as const).filter(part=>cake.colors[part]);
   const description = label ?? (cake.exists
     ? `${cake.layers}-layer ${cake.base === 'cheesecake' ? 'cheesecake' : flavor} cake${cake.theme ? `, ${cake.theme.replaceAll('-', ' ')} theme` : ''}${cake.toppers.map(id => `, ${TOPPER_BY_ID[id].label} topper`).join('')}${cake.customTopper ? `, custom topper: ${cake.customTopper.request}` : ''}${cake.toppings.length ? `, ${cake.toppings.join(', ')}` : ''}${cake.candles.style === 'number' ? `, ${cake.candles.number} candle` : cake.candles.style === 'plain' ? ', birthday candles' : ''}${cake.inscription ? `, icing reads ${cake.inscription}` : ''}`
@@ -125,15 +101,6 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
             <linearGradient id={`${id}-red`} x2=".2" y2="1"><stop stopColor="#ec7560" /><stop offset=".4" stopColor="#d53a2d" /><stop offset="1" stopColor="#9f261d" /></linearGradient>
             <linearGradient id={`${id}-jacket`}><stop stopColor="#181c1c" /><stop offset=".5" stopColor="#454a47" /><stop offset="1" stopColor="#232827" /></linearGradient>
             <radialGradient id={`${id}-skin`} cx=".35" cy=".3"><stop stopColor="#e1b991" /><stop offset="1" stopColor="#b88766" /></radialGradient>
-            {hasPipedRing && <>
-              <clipPath id={`${id}-frosting-center`} clipPathUnits="userSpaceOnUse">
-                <ellipse cx={innerFrosting.cx} cy={innerFrosting.cy} rx={innerFrosting.rx} ry={innerFrosting.ry} />
-              </clipPath>
-              <mask id={`${id}-white-frosting-ring`} maskUnits="userSpaceOnUse" x="0" y="-80" width="512" height="550">
-                <rect x="0" y="-80" width="512" height="550" fill="#fff" />
-                <ellipse cx={innerFrosting.cx} cy={innerFrosting.cy} rx={innerFrosting.rx} ry={innerFrosting.ry} fill="#000" />
-              </mask>
-            </>}
             <filter id={`${id}-vibrant-topper`} colorInterpolationFilters="sRGB">
               <feColorMatrix type="saturate" values="1.38" />
             </filter>
@@ -141,26 +108,14 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
               <feColorMatrix type="saturate" values="1.6" />
               <feColorMatrix type="matrix" values="1.02 0 0 0 0  0 1.12 0 0 0  0 0 .96 0 0  0 0 0 1 0" />
             </filter>
-            <filter id={`${id}-ivory-piping`} colorInterpolationFilters="sRGB">
-              <feColorMatrix type="matrix" values={colorMatrix('#fff9ed')} />
-            </filter>
-            {cake.colors.frosting && <filter id={`${id}-buttercream-tint`} colorInterpolationFilters="sRGB">
-              <feColorMatrix type="matrix" values={buttercreamMatrix(PALETTE_BY_ID[cake.colors.frosting].hex)} />
-            </filter>}
             {coloredParts.map(part=><filter key={part} id={`${id}-color-${part}`} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values={colorMatrix(PALETTE_BY_ID[cake.colors[part]!].hex)}/></filter>)}
             {placements.filter(item=>item.tint).map(item=><filter key={item.id} id={`${id}-tint-${item.id}`} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values={colorMatrix(PALETTE_BY_ID[item.tint!].hex,.2)}/></filter>)}
           </defs>
           <ellipse cx="263" cy="428" rx="175" ry="25" fill={`url(#${id}-shadow)`} />
-          <image href={`/art/${cake.base === 'cheesecake' ? 'cheesecake' : `${flavor}-${cake.layers}`}.png`} width="512" height="512" className="cake-base" />
-          {cake.colors.frosting && <image data-color-target="frosting" href={`/art/masks/frosting-${maskVariant}.png`} width="512" height="512"
-            clipPath={hasPipedRing ? `url(#${id}-frosting-center)` : undefined}
-            filter={`url(#${id}-buttercream-tint)`} opacity=".93" />}
-          {hasPipedRing && <image data-decoration="always-white-frosting-ring" href={`/art/masks/frosting-${maskVariant}.png`}
-            width="512" height="512" mask={`url(#${id}-white-frosting-ring)`}
-            filter={`url(#${id}-ivory-piping)`} />}
+          <image href={cakeArtPath} width="512" height="512" className="cake-base" />
           {coloredParts.map(part=><image key={part} data-color-target={part} href={`/art/masks/${part}-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-color-${part})`}/>)}
-          {/* The artwork's pink piped accents are a separate mask. Restore them to ivory after coloring the buttercream. */}
-          <image data-decoration="white-piping" href={`/art/masks/accents-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-ivory-piping)`}/>
+          {/* Keep the cake's original frosting image untouched. Only the selected
+              sponge filling receives a preset flavor color. */}
           <g transform={`translate(0 ${top})`}>
             <FruitDecorations toppings={cake.toppings} hasInscription={Boolean(cake.inscription)} hasTopper={Boolean(placements.length || cake.candles.style !== "none")} accent={accent} />
             <g transform={`translate(0 ${cake.inscriptionStyle.placement==='center'?-48:0})`}><ThemeDecorations theme={cake.theme} id={id} /></g>

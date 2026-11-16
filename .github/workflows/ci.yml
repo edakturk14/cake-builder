@@ -27,14 +27,25 @@ jobs:
           npx playwright install --with-deps chromium
           npm run dev > /tmp/cake-gallery-dev.log 2>&1 &
           node tests/browser-smoke.mjs
+          node tests/frosting-visual.mjs
       - name: Save cake screenshot for visual review
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cake-fruit-and-unicorn
           path: |
+            screenshots/red-velvet-two-layers.png
+            screenshots/birthday-with-sprinkles.png
+            screenshots/balanced-workbench.png
+            screenshots/original-frosting-no-overlays.png
+            screenshots/chocolate-vanilla-filling.png
             screenshots/fruit-unicorn.png
             screenshots/message-white-icing-five-candles.png
             screenshots/message-white-icing-number-candle.png
             screenshots/vibrant-christmas-tree.png
+            screenshots/frosting-original-before.png
+            screenshots/frosting-original-after.png
+            screenshots/chocolate-vanilla-cream.png
+            screenshots/red-velvet-original-frosting.png
+            screenshots/birthday-sprinkles-default.png
           if-no-files-found: ignore
