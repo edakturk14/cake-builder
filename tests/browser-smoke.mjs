@@ -49,6 +49,28 @@ try {
   await page.locator('.basket-item button').filter({ hasText: 'Remove' }).click();
   await page.locator('.basket-header button').click();
 
+  // Desktop visual hierarchy: symmetric side panels and a distinctive wordmark.
+  const panels = await page.evaluate(() => {
+    const left = document.querySelector('.template-picker')?.getBoundingClientRect();
+    const right = document.querySelector('.customizer-editor')?.getBoundingClientRect();
+    return left && right
+      ? { left:{x:left.x,y:left.y,width:left.width,height:left.height},
+          right:{x:right.x,y:right.y,width:right.width,height:right.height} }
+      : null;
+  });
+  assert.ok(panels, 'Both side panels must exist');
+  assert.ok(Math.abs(panels.left.width - panels.right.width) < 2,
+    'Left and right panels should have the same width');
+  assert.ok(Math.abs(panels.left.y - panels.right.y) < 2,
+    'Left and right panels should align vertically');
+  assert.ok(Math.abs(panels.left.height - panels.right.height) < 3,
+    'Left and right panels should have matching height');
+  assert.ok((await page.locator('.brand').evaluate(element => getComputedStyle(element).fontFamily)).includes('Fraunces'),
+    'Brand wordmark should use the new distinctive font');
+  assert.equal(await page.locator('.customizer-heading .heading-caption').textContent(),
+    'Choose a design, then add your own little touches.');
+  assert.equal(await page.getByText('YOUR CAKE, SO FAR').count(), 0,
+    'Remove the redundant central preview label');
   const header = await page.locator('.site-header').boundingBox();
   assert.ok(header && header.height <= 53, 'Chocolate header should be no more than 53px on desktop');
   const voice = await page.locator('.customizer-preview .voice-section').boundingBox();
@@ -77,22 +99,20 @@ try {
   }
 
   await page.getByRole('button', { name: 'Lavender' }).click();
-  assert.equal(await page.locator('.customizer-preview [data-color-target="frosting-side"]').count(), 1,
-    'Cake side receives the chosen frosting color');
-  const sideMask = await page.locator('.customizer-preview [data-color-target="frosting-side"]').getAttribute('mask');
-  assert.ok(sideMask?.includes('cake-side-mask'), 'Colored icing must be clipped by the actual side silhouette');
-  const sideImage = await page.locator('.customizer-preview [data-mask-target="colorable-side"] image').getAttribute('href');
-  assert.ok(sideImage?.includes('/art/masks/side-3.png'), 'Three-layer cake uses the matching side-only mask');
-  assert.equal(await page.locator('.customizer-preview [data-decoration="always-white-top-frosting"]').count(), 1,
-    'The entire top frosting is a separate white layer');
-  const whiteTop = page.locator('.customizer-preview [data-decoration="always-white-top-frosting"]');
-  assert.equal(await whiteTop.getAttribute('filter')?.then(value => value?.includes('ivory-piping')), true);
-  assert.equal(await whiteTop.getAttribute('clip-path'), null, 'White frosting must not be cropped to a ring');
-  assert.equal(await whiteTop.getAttribute('mask'), null, 'White frosting must not have a hole in its center');
-  const coloredSide = page.locator('.customizer-preview [data-color-target="frosting-side"]');
-  assert.equal(await coloredSide.getAttribute('clip-path'), null, 'No top ellipse should be used for frosting color');
+  assert.equal(await page.locator('.customizer-preview [data-color-target="smooth-top-frosting"]').count(), 1,
+    'Smooth top should receive the chosen frosting color');
+  const smoothTop = page.locator('.customizer-preview [data-color-target="smooth-top-frosting"]');
+  const colorClip = await smoothTop.getAttribute('clip-path');
+  assert.ok(colorClip?.includes('smooth-top-only'), 'Chosen color must be limited to the smooth central surface');
+  assert.equal(await smoothTop.getAttribute('mask'), null, 'Smooth top does not use a side mask');
+  const whitePiping = page.locator('.customizer-preview [data-decoration="white-piped-swirls"]');
+  assert.equal(await whitePiping.count(), 1, 'Prepared piped swirls must render separately');
+  assert.ok((await whitePiping.getAttribute('filter'))?.includes('ivory-piping'), 'Swirls must remain white');
+  assert.equal(await whitePiping.getAttribute('clip-path'), null, 'Piped swirls must not be clipped');
+  assert.equal(await page.locator('.customizer-preview [data-mask-target="colorable-side"]').count(), 0,
+    'Do not recolor the cake body');
   await mkdir('screenshots', { recursive: true });
-  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/white-top-lavender-side-3-layers.png' });
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/lavender-smooth-top-3-layers.png' });
 
   await page.locator('#candle-style').selectOption('plain');
   assert.equal(await page.locator('.customizer-preview [data-plain-candle]').count(), 5,
@@ -140,8 +160,8 @@ try {
     'Chocolate Party has a $58 base and $6 extra layer');
   await page.locator('.layer-options').getByRole('button', { name: '1 layer' }).click();
   await page.getByRole('button', { name: 'Lavender' }).click();
-  assert.ok((await page.locator('.customizer-preview [data-mask-target="colorable-side"] image').getAttribute('href'))?.includes('/art/masks/side-1.png'));
-  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/white-top-lavender-side-1-layer.png' });
+  assert.ok((await page.locator('.customizer-preview [data-color-target="smooth-top-frosting"]').getAttribute('href'))?.includes('/art/masks/frosting-1.png'));
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/lavender-smooth-top-1-layer.png' });
   await page.getByRole('button', { name: 'Sky blue' }).click();
   await page.locator('.customizer-editor').getByRole('button', { name: 'Strawberries' }).click();
   await page.locator('.customizer-editor').getByRole('button', { name: 'Raspberries' }).click();
@@ -149,7 +169,7 @@ try {
   const updatedScene = await page.locator('.customizer-preview .cake-art').innerHTML();
   assert.ok(!updatedScene.includes('data-decoration="caramel"'), 'No gold caramel sticks');
   assert.ok(!updatedScene.includes('data-decoration="ganache"'), 'No drawn ganache drips');
-  assert.ok(updatedScene.includes('data-decoration="white-piping"'), 'Ivory piping stays separate');
+  assert.ok(updatedScene.includes('data-decoration="white-piped-swirls"'), 'Ivory piping stays separate');
   assert.ok(updatedScene.includes('data-decoration="raspberries"'), 'Raspberries arranged on cake');
   assert.ok(updatedScene.includes('data-decoration="strawberries"'), 'Strawberries arranged on cake');
   await page.locator('.customizer-editor').getByRole('button', { name: 'Gold stars' }).click();
