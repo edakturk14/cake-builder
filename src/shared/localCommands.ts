@@ -53,7 +53,7 @@ function removeRequested(text: string, item: RegExp): boolean {
  * Deterministic and zero-LLM-cost interpreter for a deliberately small menu.
  * Unrecognized prompts must never be converted into made-up objects or prices.
  */
-export function interpretLocalCommand(text: string, _cake: CakeState): LocalCommand {
+export function interpretLocalCommand(text: string, cake: CakeState): LocalCommand {
   const phrase = text.trim();
   const lower = phrase.toLowerCase();
   if (!lower) return { kind: 'help', message: 'Choose an option or tell me what you want to change.' };
@@ -72,11 +72,26 @@ export function interpretLocalCommand(text: string, _cake: CakeState): LocalComm
     || /\b(?:[\w-]+-shaped\s+cake|make\s+a\s+\w+\s+shaped\s+cake)\b/i.test(lower)) {
     return { kind: 'custom', message: 'A shaped or tiered cake needs a bakery quote. Your description is saved in the request form.' };
   }
-  if (/\b(?:layers?|tiers?|stack(?:ed|ing)?)\b/i.test(lower)) {
-    return { kind: 'help', message: 'Cake heights are fixed for these three designs. Pick another style, or request a custom shape.' };
+  // A tier is a separate cake, not another sponge layer.
+  if (/\btiers?\b/i.test(lower)) {
+    return { kind: 'custom', message: 'Stacked tiers need a custom bakery quote.' };
   }
 
   const patch: CakePatch = {};
+  const requestedLayers = lower.match(/\b(?:make\s+(?:it\s+)?|change\s+(?:it\s+)?to\s+|with\s+|give\s+(?:me\s+)?|a\s+)?(one|two|three|[123])[-\s]layers?\b|\b(?:layers?\s+(?:to|of)\s+)(one|two|three|[123])\b/);
+  const layerNumber = requestedLayers ? requestedNumber(requestedLayers[1] ?? requestedLayers[2]) : null;
+  const addLayer = /\b(?:add|give\s+(?:it|me)|another)\s+(?:one\s+|an?\s+)?(?:extra\s+)?layer\b/i.test(lower);
+  const removeLayer = /\b(?:remove|lose|take\s+off)\s+(?:one\s+|an?\s+)?layer\b/i.test(lower);
+  if (layerNumber !== null) patch.layers = layerNumber as CakeState['layers'];
+  else if (addLayer || removeLayer) {
+    const next = cake.layers + (addLayer ? 1 : -1);
+    if (next < 1 || next > 3) {
+      return { kind: 'help', message: 'Choose 1, 2 or 3 sponge layers for this cake.' };
+    }
+    patch.layers = next as CakeState['layers'];
+  } else if (/\b(?:layers?|stack(?:ed|ing)?)\b/i.test(lower)) {
+    return { kind: 'help', message: 'Choose 1, 2 or 3 sponge layers, or request a custom shape.' };
+  }
 
   const flavor = lower.match(/\b(red velvet|vanilla|chocolate|lemon)\b/);
   if (flavor && !/\b(?:chocolate brown|chocolate icing|chocolate frosting)\b/.test(lower)) {
@@ -123,7 +138,8 @@ export function interpretLocalCommand(text: string, _cake: CakeState): LocalComm
   const writing = phrase.match(/\b(?:write|(?:change|set)\s+(?:the\s+)?(?:name|message)\s+to)\s+(.+)$/i);
   if (writing) {
     const message = writing[1].replace(/^(?:["“']+)/, '').replace(/(?:["”']+)$/, '')
-      .replace(/\s+(?:on\s+(?:top|the cake)|please)\s*$/i, '').trim();
+      .replace(/\s+(?:on\s+(?:top|the cake)|please)\s*$/i, '')
+      .replace(/\s+(?:and|then)\s+(?:make|add|remove|change|put)\b.*$/i, '').trim();
     if (message.length > 30) return { kind: 'help', message: 'Please keep your cake message to 30 characters.' };
     if (message) patch.inscription = message;
   }
