@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { applyCakePatch, estimateCake } from '../src/shared/cake';
-import { BAKERY_TEMPLATES, createTemplateCake } from '../src/shared/bakery';
+import { applyCakePatch, createBasketItem, estimateCake, parseBasket } from '../src/shared/cake';
+import { BAKERY_STARTING_PRICE_CENTS, BAKERY_TEMPLATES, createTemplateCake, estimateBakeryCake, priceBakeryBasketItem } from '../src/shared/bakery';
 import { interpretLocalCommand } from '../src/shared/localCommands';
 
 test('starter cakes have fixed heights, prepared toppings, and known prices', () => {
@@ -113,4 +113,40 @@ test('holiday, birthday and racing fondant toppers are available as prepared des
   const request = interpretLocalCommand('Add a Christmas tree on top', cake);
   assert.equal(request.kind, 'edit');
   if (request.kind === 'edit') assert.deepEqual(applyCakePatch(cake, request.patch).state.toppers, ['christmas-tree']);
+});
+
+test('NYC bakery prices start at $58 for every sponge flavor, with extras charged separately', () => {
+  assert.equal(BAKERY_STARTING_PRICE_CENTS, 5800);
+  for (const flavor of ['vanilla', 'chocolate', 'red-velvet', 'lemon'] as const) {
+    const cake = applyCakePatch(createTemplateCake('classic'), { flavor }).state;
+    const priced = estimateBakeryCake(cake);
+    assert.equal(priced.totalCents, 5800, flavor);
+    assert.equal(priced.lines[0].id, 'base');
+    assert.equal(priced.lines[0].amountCents, 5800);
+    assert.equal(priced.lines.reduce((total, line) => total + line.amountCents, 0), priced.totalCents);
+  }
+  assert.equal(estimateBakeryCake(createTemplateCake('chocolate')).totalCents, 6400);
+  assert.equal(estimateBakeryCake(createTemplateCake('pastel')).totalCents, 6200);
+  const decorated = applyCakePatch(createTemplateCake('classic'), {
+    layers: 3, addToppings: ['strawberries'], toppers: ['unicorn'],
+  }).state;
+  const priced = estimateBakeryCake(decorated);
+  assert.equal(priced.totalCents, 5800 + 1200 + 700 + 1000);
+  assert.equal(priced.lines.reduce((total, line) => total + line.amountCents, 0), priced.totalCents);
+  assert.equal(estimateBakeryCake(createTemplateCake('classic')).requiresQuote, false);
+});
+
+test('NYC bakery pricing survives basket saves and reloads without changing old demo fixtures', () => {
+  const cake = applyCakePatch(createTemplateCake('classic'), {
+    layers: 2, addToppings: ['raspberries'], inscription: 'Eda',
+  }).state;
+  const original = createBasketItem(cake, 'nyc-cake');
+  const saved = priceBakeryBasketItem(original);
+  assert.equal(saved.estimate.totalCents, 5800 + 600 + 700);
+  assert.equal(saved.design.inscription, 'Eda');
+  const reloaded = priceBakeryBasketItem(parseBasket(JSON.stringify([saved]))[0]);
+  assert.equal(reloaded.estimate.totalCents, saved.estimate.totalCents);
+  assert.deepEqual(reloaded.estimate.lines, saved.estimate.lines);
+  assert.equal(estimateCake(cake).totalCents, 3800 + 600 + 700,
+    'The older shared demo fixtures keep their original prices');
 });
