@@ -34,6 +34,7 @@ jobs:
         with:
           name: cake-fruit-and-unicorn
           path: |
+            screenshots/balanced-workbench.png
             screenshots/fruit-unicorn.png
             screenshots/message-white-icing-five-candles.png
             screenshots/message-white-icing-number-candle.png
