@@ -17,7 +17,7 @@ Open http://127.0.0.1:5173. The Vite web app works without configuring `.env.loc
 
 ## What customers can do
 
-1. Choose **Classic Birthday**, **Chocolate Party**, or **Pastel Celebration**.
+1. Choose **Classic Birthday**, **Chocolate Party**, or **Red Velvet**. Red Velvet starts with two red sponge layers and cream-colored frosting. No cheesecake template is offered.
 2. Choose **1, 2, or 3 sponge layers**, change the flavor, select from six frosting colors, add/remove prepared toppings, choose one topper, set a short inscription and choose candles.
 3. Optionally type or speak simple edits such as "Make it pink, add strawberries and write Eda." The deterministic interpreter lives in `src/shared/localCommands.ts`. Browser speech recognition may use a browser-provided online service and isn't available in every browser; controls and typing always remain available.
 4. Review sample pricing and save a snapshot to a browser-local basket. Quantities/removal/reload are supported.
