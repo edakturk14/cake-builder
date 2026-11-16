@@ -136,7 +136,7 @@ export default function App() {
 
         <section className="customizer-preview" aria-label="Live cake preview">
           <span className="step-label">YOUR CAKE, SO FAR</span>
-          <CakeScene cake={cake} label={template.name + ' customized'} />
+          <CakeScene cake={cake} />
           <div className="preview-summary">
             <p className="preview-name">{template.name}</p>
             <span className="preview-price">{formatMoney(estimate.totalCents)}</span>
