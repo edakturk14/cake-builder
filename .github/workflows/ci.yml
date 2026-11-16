@@ -36,4 +36,5 @@ jobs:
             screenshots/fruit-unicorn.png
             screenshots/message-white-icing-five-candles.png
             screenshots/message-white-icing-number-candle.png
+            screenshots/vibrant-christmas-tree.png
           if-no-files-found: ignore
