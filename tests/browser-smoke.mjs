@@ -71,6 +71,8 @@ try {
     'Choose a design, then add your own little touches.');
   assert.equal(await page.getByText('YOUR CAKE, SO FAR').count(), 0,
     'Remove the redundant central preview label');
+  await mkdir('screenshots', { recursive: true });
+  await page.screenshot({ path: 'screenshots/balanced-workbench.png', animations: 'disabled' });
   const header = await page.locator('.site-header').boundingBox();
   assert.ok(header && header.height <= 53, 'Chocolate header should be no more than 53px on desktop');
   const voice = await page.locator('.customizer-preview .voice-section').boundingBox();
