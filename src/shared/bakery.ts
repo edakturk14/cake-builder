@@ -5,7 +5,7 @@ import type { TopperId } from './toppers';
 /**
  * Starter catalog for a bakery to replace with products it really makes.
  * All prices still come from the existing shared sample-price rules.
- * Product height is fixed; changing layer counts is deliberately not offered.
+ * Customers can vary the sponge count from one to three layers.
  */
 export type TemplateId = 'classic' | 'chocolate' | 'pastel';
 export type BakeryTemplate = {
@@ -26,9 +26,9 @@ export const BAKERY_TEMPLATES: readonly BakeryTemplate[] = [
   {
     id: 'chocolate',
     name: 'Chocolate Party',
-    description: 'Two-layer chocolate with ganache',
+    description: 'Two-layer chocolate with vanilla cream',
     design: { flavor: 'chocolate', layers: 2, occasion: 'birthday',
-      toppings: ['ganache'], colors: { frosting: 'chocolate-brown', filling: 'blush-pink', inscription: 'white' } },
+      toppings: [], colors: { frosting: 'ivory', filling: 'blush-pink', inscription: 'chocolate-brown' } },
   },
   {
     id: 'pastel',
@@ -50,21 +50,24 @@ export const BAKERY_COLORS: readonly PaletteId[] = [
   'white', 'blush-pink', 'lavender', 'sky-blue', 'mint', 'chocolate-brown',
 ];
 
+// These have dedicated prepared arrangements. Drips and ganache are reserved for curated bakery presets.
 export const BAKERY_TOPPINGS = [
   { id: 'strawberries', label: 'Strawberries' },
   { id: 'raspberries', label: 'Raspberries' },
-  { id: 'ganache', label: 'Chocolate ganache' },
-  { id: 'caramel', label: 'Caramel drizzle' },
   { id: 'gold-stars', label: 'Gold stars' },
 ] as const;
 
+// Reuse the existing prepared fondant artwork rather than generating unpredictable user-specific figures.
 export const BAKERY_TOPPERS: readonly { id: TopperId; label: string }[] = [
   { id: 'princess', label: 'Princess' },
-  { id: 'castle', label: 'Castle topper' },
+  { id: 'castle', label: 'Castle' },
   { id: 'unicorn', label: 'Unicorn' },
-  { id: 'dinosaur', label: 'Dinosaur' },
+  { id: 'balloons', label: 'Balloons' },
   { id: 'flower-bouquet', label: 'Flowers' },
   { id: 'rainbow', label: 'Rainbow' },
+  { id: 'christmas-tree', label: 'Christmas tree' },
+  { id: 'snowman', label: 'Snowman' },
+  { id: 'race-car', label: 'Racing kart' },
 ];
 
 export function createTemplateCake(id: TemplateId): CakeState {
