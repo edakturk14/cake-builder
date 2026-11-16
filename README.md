@@ -18,18 +18,20 @@ Open http://127.0.0.1:5173. The Vite web app works without configuring `.env.loc
 ## What customers can do
 
 1. Choose **Classic Birthday**, **Chocolate Party**, or **Pastel Celebration**.
-2. Change the flavor, choose from six icing colors, add/remove prepared toppings, choose up to one prepared topper, set a short inscription and choose candles.
+2. Choose **1, 2, or 3 sponge layers**, change the flavor, select from six frosting colors, add/remove prepared toppings, choose one topper, set a short inscription and choose candles.
 3. Optionally type or speak simple edits such as "Make it pink, add strawberries and write Eda." The deterministic interpreter lives in `src/shared/localCommands.ts`. Browser speech recognition may use a browser-provided online service and isn't available in every browser; controls and typing always remain available.
 4. Review sample pricing and save a snapshot to a browser-local basket. Quantities/removal/reload are supported.
 5. For sculpted cakes, castle-shaped cakes or unsupported designs, open the custom request **draft**. It can be copied, but is not sent to any bakery.
 
 All starter products and visible edit options are defined in `src/shared/bakery.ts`, which is the place for a bakery to supply its actual menu. Existing pricing comes from `src/shared/cake.ts` and remains **sample pricing, not a bakery quote**.
 
-### Why heights are fixed
+### Layers and frosting rendering
 
-The original prototype swapped entire raster assets for one-, two- and three-layer cakes, with separate masks and offsets for decorations. This could cause visual inconsistencies when layer counts changed. The new flow offers **fixed-height designs only**, with one- and two-layer artwork already prepared. "Add layers" and "tiers" don't silently change geometry or price. Complex shapes go to the custom request draft.
+The three starter templates have starting layer counts, but customers can change any sponge cake to **1, 2 or 3 sponge layers**, by clicking or saying e.g. "Make it three layers" or "Add a layer." An extra sponge layer updates sample pricing. **Stacked tiers** and sculpted shapes are custom quotes, not layer-count edits.
 
-The underlying older scene renderer and state support for three layers remain available for legacy saved designs and fixture tests. This is a product-scope change, **not** proof that every old raster alignment defect has been fixed.
+Each layer count uses existing prepared cake images. This does not mean the system generates a new cake image or fixes all artistic inconsistencies in the original assets. The frosting now uses a texture-preserving buttercream tint that keeps more of the original shading, rather than painting a harsh flat color over it.
+
+The compact desktop page places starter designs on the left, live cake and speech/typing in the center, and personalization controls on the right. On narrow screens these become a vertical flow.
 
 ## Cost controls and safety
 
@@ -53,6 +55,6 @@ npm test
 npm run build
 ```
 
-The new `tests/bakery-customizer.test.ts` covers the fixed templates, voice/text edits, one-topper rule, fixed-height restrictions, shape-to-quote routing and unchanged price calculation. Older tests remain for the original cake state, renderer and provider adapters.
+The new `tests/bakery-customizer.test.ts` covers templates, 1–3-layer text/voice edits, one-topper rules, shape-to-quote routing and sample pricing. `tests/topper-renderer.test.ts` checks that inscriptions are drawn over each chocolate layer variant and keep their natural color tint. The GitHub workflow also runs `tests/browser-smoke.mjs` in headless Chromium, exercising **Apply** on the actual inscription input, layer buttons, typed commands, mobile overflow and avoidance of paid endpoints.
 
 For historical context on the earlier unrestricted voice-first experiment, see `docs/build-brief.md`, `docs/validation.md` and `docs/retest-interpretation.md`.
