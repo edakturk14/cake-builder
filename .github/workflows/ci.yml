@@ -35,13 +35,17 @@ jobs:
           name: cake-fruit-and-unicorn
           path: |
             screenshots/red-velvet-two-layers.png
+            screenshots/birthday-with-sprinkles.png
             screenshots/balanced-workbench.png
+            screenshots/original-frosting-no-overlays.png
+            screenshots/chocolate-vanilla-filling.png
             screenshots/fruit-unicorn.png
             screenshots/message-white-icing-five-candles.png
             screenshots/message-white-icing-number-candle.png
             screenshots/vibrant-christmas-tree.png
-            screenshots/lavender-smooth-top-1-layer.png
-            screenshots/lavender-smooth-top-3-layers.png
-            screenshots/frosting-white-smooth-top.png
-            screenshots/frosting-lavender-smooth-top.png
+            screenshots/frosting-original-before.png
+            screenshots/frosting-original-after.png
+            screenshots/chocolate-vanilla-cream.png
+            screenshots/red-velvet-original-frosting.png
+            screenshots/birthday-sprinkles-default.png
           if-no-files-found: ignore
