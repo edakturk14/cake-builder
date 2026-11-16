@@ -13,6 +13,21 @@ function colorMatrix(hex:string,blend=1){
   const keep=1-blend;
   return `${keep||r} 0 0 0 ${keep?r*blend:0} 0 ${keep||g} 0 0 ${keep?g*blend:0} 0 0 ${keep||b} 0 ${keep?b*blend:0} 0 0 0 1 0`;
 }
+/**
+ * Tint the original buttercream texture instead of painting it a flat color.
+ * Retains the source photo's highlights and shaded piping.
+ */
+function buttercreamMatrix(hex: string) {
+  const rgb = hex.replace('#', '').match(/../g)!.map(channel => parseInt(channel, 16) / 255);
+  const sourceLuminance = [0.2126, 0.7152, 0.0722];
+  const original = 0.38, tint = 0.62, shadow = 0.78, highlight = 0.22;
+  const coefficients = rgb.map((channel, output) => [
+    ...sourceLuminance.map((luma, input) => (output === input ? original : 0) + tint * channel * shadow * luma),
+    tint * channel * highlight,
+  ]);
+  return coefficients.flat().concat([0, 0, 0, 1, 0]).join(' ');
+}
+
 function lightColor(hex:string){
   const [r,g,b]=hex.replace('#','').match(/../g)!.map(channel=>parseInt(channel,16)/255);
   return r*.2126+g*.7152+b*.0722>.55;
@@ -93,7 +108,7 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
   const accent=cake.colors.accents?PALETTE_BY_ID[cake.colors.accents].hex:undefined;
   const writingColor=paletteHex(cake.colors.inscription,darkSurface?'#ffedb9':'#562d30');
   const maskVariant=cake.base==='cheesecake'?'cheesecake':cake.layers;
-  const coloredParts=(['frosting','filling','accents'] as const).filter(part=>cake.colors[part]);
+  const coloredParts=(['filling','accents'] as const).filter(part=>cake.colors[part]);
   const description = label ?? (cake.exists
     ? `${cake.layers}-layer ${cake.base === 'cheesecake' ? 'cheesecake' : flavor} cake${cake.theme ? `, ${cake.theme.replaceAll('-', ' ')} theme` : ''}${cake.toppers.map(id => `, ${TOPPER_BY_ID[id].label} topper`).join('')}${cake.customTopper ? `, custom topper: ${cake.customTopper.request}` : ''}${cake.toppings.length ? `, ${cake.toppings.join(', ')}` : ''}${cake.candles.style === 'number' ? `, ${cake.candles.number} candle` : cake.candles.style === 'plain' ? ', birthday candles' : ''}${cake.inscription ? `, icing reads ${cake.inscription}` : ''}`
     : 'Your cake will appear here');
@@ -117,11 +132,15 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
             <radialGradient id={`${id}-raspberry`} cx=".35" cy=".25"><stop stopColor="#ec6c75" /><stop offset=".5" stopColor="#bf354c" /><stop offset="1" stopColor="#8c2339" /></radialGradient>
             <linearGradient id={`${id}-jacket`}><stop stopColor="#181c1c" /><stop offset=".5" stopColor="#454a47" /><stop offset="1" stopColor="#232827" /></linearGradient>
             <radialGradient id={`${id}-skin`} cx=".35" cy=".3"><stop stopColor="#e1b991" /><stop offset="1" stopColor="#b88766" /></radialGradient>
+            {cake.colors.frosting && <filter id={`${id}-buttercream-tint`} colorInterpolationFilters="sRGB">
+              <feColorMatrix type="matrix" values={buttercreamMatrix(PALETTE_BY_ID[cake.colors.frosting].hex)} />
+            </filter>}
             {coloredParts.map(part=><filter key={part} id={`${id}-color-${part}`} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values={colorMatrix(PALETTE_BY_ID[cake.colors[part]!].hex)}/></filter>)}
             {placements.filter(item=>item.tint).map(item=><filter key={item.id} id={`${id}-tint-${item.id}`} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values={colorMatrix(PALETTE_BY_ID[item.tint!].hex,.2)}/></filter>)}
           </defs>
           <ellipse cx="263" cy="428" rx="175" ry="25" fill={`url(#${id}-shadow)`} />
           <image href={`/art/${cake.base === 'cheesecake' ? 'cheesecake' : `${flavor}-${cake.layers}`}.png`} width="512" height="512" className="cake-base" />
+          {cake.colors.frosting && <image data-color-target="frosting" href={`/art/masks/frosting-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-buttercream-tint)`}/>}
           {coloredParts.map(part=><image key={part} data-color-target={part} href={`/art/masks/${part}-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-color-${part})`}/>)}
           <g transform={`translate(0 ${top})`}>
             <ToppingDecorations toppings={cake.toppings} id={id} hasInscription={Boolean(cake.inscription)} accent={accent} />
