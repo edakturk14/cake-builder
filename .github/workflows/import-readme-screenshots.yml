@@ -1,0 +1,41 @@
+name: Import README screenshots (one-time)
+
+on:
+  push:
+    branches:
+      - docs/readme-screenshots
+    paths:
+      - .github/workflows/import-readme-screenshots.yml
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  save-verified-screenshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download verified screenshots from the merged main build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/cake-gallery-shots"
+          gh run download 43926456788 --repo edakturk14/cake-builder --name cake-fruit-and-unicorn --dir "$RUNNER_TEMP/cake-gallery-shots"
+          for f in balanced-workbench.png birthday-sprinkles-default.png red-velvet-two-layers.png chocolate-vanilla-cream.png fruit-unicorn.png; do
+            test -s "$RUNNER_TEMP/cake-gallery-shots/$f"
+          done
+      - name: Commit permanent screenshots to documentation
+        run: |
+          mkdir -p docs/screenshots
+          cp "$RUNNER_TEMP/cake-gallery-shots/balanced-workbench.png" docs/screenshots/builder-desktop.png
+          cp "$RUNNER_TEMP/cake-gallery-shots/birthday-sprinkles-default.png" docs/screenshots/birthday-sprinkles.png
+          cp "$RUNNER_TEMP/cake-gallery-shots/red-velvet-two-layers.png" docs/screenshots/red-velvet.png
+          cp "$RUNNER_TEMP/cake-gallery-shots/chocolate-vanilla-cream.png" docs/screenshots/chocolate-party.png
+          cp "$RUNNER_TEMP/cake-gallery-shots/fruit-unicorn.png" docs/screenshots/customized-cake.png
+          git add docs/screenshots
+          if git diff --cached --quiet; then exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "docs: add verified Cake Gallery screenshots"
+          git push origin HEAD:docs/readme-screenshots
