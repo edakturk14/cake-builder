@@ -55,6 +55,10 @@ test('inscription appears in the preview above the frosting on chocolate 1, 2 an
     assert.ok(markup.includes(`/art/chocolate-${layers}.png`), `chocolate ${layers} base`);
     assert.ok(markup.includes(`/art/masks/frosting-${layers}.png`), `chocolate ${layers} frosting mask`);
     assert.ok(markup.includes('buttercream-tint'), `chocolate ${layers} natural frosting tint`);
+    assert.ok(markup.includes('data-decoration="always-white-frosting-ring"'),
+      `chocolate ${layers} keeps outer piped frosting white`);
+    assert.ok(markup.includes('frosting-center') && markup.includes('white-frosting-ring'),
+      `chocolate ${layers} splits white icing from the colorable frosting center`);
     const matrix = markup.match(/buttercream-tint"[^>]*><feColorMatrix[^>]*values="([^"]+)"/);
     assert.ok(matrix, `chocolate ${layers} has a tint matrix`);
     assert.equal(matrix[1].trim().split(/\s+/).length, 20, `chocolate ${layers} uses a valid 4x5 SVG matrix`);
@@ -94,4 +98,15 @@ test('mixed berries shrink and occupy distinct sides rather than stacking in one
   assert.ok((svg.match(/fill="#b93451"/g) ?? []).length >= 10);
   assert.ok(svg.includes('translate(354 168)'), 'Raspberry cluster stays on the right');
   assert.ok(svg.includes('x="119" y="158"'), 'Strawberries stay on the left');
+});
+
+test('prepared topper colors are boosted, and plain candles are thicker without getting taller', () => {
+  const cake = applyCakePatch(createTemplateCake('pastel'), {
+    toppers: ['christmas-tree'], candles: { style: 'plain', count: 5 },
+  }).state;
+  const svg = renderToStaticMarkup(createElement(CakeScene, { cake }));
+  assert.ok(svg.includes('vibrant-topper'), 'Prepared fondant artwork should have a color saturation filter');
+  assert.equal((svg.match(/data-candle-body="wide"/g) ?? []).length, 5,
+    'Five candles should render wider bodies');
+  assert.ok(svg.includes('M-4.5 0v-59q4.5-3 9 0V0Z'), 'The candle body should be wider but preserve its 59-unit height');
 });
