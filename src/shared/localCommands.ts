@@ -18,8 +18,6 @@ const colors: readonly { id: PaletteId; pattern: RegExp }[] = [
 const toppings: readonly { id: Topping; pattern: RegExp }[] = [
   { id: 'strawberries', pattern: /\bstrawberr(?:y|ies)\b/i },
   { id: 'raspberries', pattern: /\braspberr(?:y|ies)\b/i },
-  { id: 'ganache', pattern: /\bganache\b/i },
-  { id: 'caramel', pattern: /\bcaramel\b/i },
   { id: 'gold-stars', pattern: /\b(?:gold|golden)\s+stars?\b/i },
 ];
 
@@ -30,6 +28,10 @@ const toppers: readonly { id: TopperId; pattern: RegExp }[] = [
   { id: 'dinosaur', pattern: /\b(?:dinosaur|dino)\b/i },
   { id: 'flower-bouquet', pattern: /\b(?:flowers|flower bouquet)\b/i },
   { id: 'rainbow', pattern: /\brainbow\b/i },
+  { id: 'balloons', pattern: /\bballoons?\b/i },
+  { id: 'christmas-tree', pattern: /\b(?:christmas tree|xmas tree)\b/i },
+  { id: 'snowman', pattern: /\bsnowman\b/i },
+  { id: 'race-car', pattern: /\b(?:racing kart|race car|go[- ]kart|mario kart)\b/i },
 ];
 
 const numberWords: Readonly<Record<string, number>> = {
@@ -77,7 +79,15 @@ export function interpretLocalCommand(text: string, cake: CakeState): LocalComma
     return { kind: 'custom', message: 'Stacked tiers need a custom bakery quote.' };
   }
 
-  const patch: CakePatch = {};
+  // Drips and chocolate ganache need pre-designed finishes, not the old SVG drizzles.
+  if (/\b(?:ganache|caramel drizzle|chocolate drip)\b/i.test(lower)) {
+    const removal = /\b(?:remove|take off|without|no)\b/i.test(lower);
+    if (removal) return { kind: 'edit', patch: {
+      removeToppings: [/ganache/i.test(lower) ? 'ganache' : 'caramel'],
+    }, message: 'Removed the older drip decoration.' };
+    return { kind: 'help', message: 'Chocolate drips and caramel finishes are only available as prepared bakery designs. Choose berries or gold stars for now.' };
+  }
+    const patch: CakePatch = {};
   const requestedLayers = lower.match(/\b(?:make\s+(?:it\s+)?|change\s+(?:it\s+)?to\s+|with\s+|give\s+(?:me\s+)?|a\s+)?(one|two|three|[123])[-\s]layers?\b|\b(?:layers?\s+(?:to|of)\s+)(one|two|three|[123])\b/);
   const layerNumber = requestedLayers ? requestedNumber(requestedLayers[1] ?? requestedLayers[2]) : null;
   const addLayer = /\b(?:add|give\s+(?:it|me)|another)\s+(?:one\s+|an?\s+)?(?:extra\s+)?layer\b/i.test(lower);
