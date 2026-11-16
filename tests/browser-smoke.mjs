@@ -5,6 +5,7 @@
  */
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
+import { mkdir } from 'node:fs/promises';
 
 const base = 'http://127.0.0.1:5173/';
 let browser;
@@ -67,7 +68,26 @@ try {
     viewport: window.innerWidth,
   }));
   assert.ok(widths.document <= widths.viewport, 'No sideways scrolling at mobile width');
-  console.log('PASS: compact layout, Apply writing, visible inscription, 1–3 layers, natural color controls, typed edit, mobile width, no paid requests');
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.locator('.template-card').filter({ hasText: 'Chocolate Party' }).click();
+  await page.locator('.layer-options').getByRole('button', { name: '1 layer' }).click();
+  await page.getByRole('button', { name: 'Sky blue' }).click();
+  await page.locator('.customizer-editor').getByRole('button', { name: 'Strawberries' }).click();
+  await page.locator('.customizer-editor').getByRole('button', { name: 'Raspberries' }).click();
+  await page.locator('.customizer-editor').getByRole('button', { name: 'Unicorn' }).click();
+  const updatedScene = await page.locator('.customizer-preview .cake-art').innerHTML();
+  assert.ok(!updatedScene.includes('data-decoration="caramel"'), 'No gold caramel sticks');
+  assert.ok(!updatedScene.includes('data-decoration="ganache"'), 'No drawn ganache drips');
+  assert.ok(updatedScene.includes('data-decoration="white-piping"'), 'Ivory piping stays separate');
+  assert.ok(updatedScene.includes('data-decoration="raspberries"'), 'Raspberries arranged on cake');
+  assert.ok(updatedScene.includes('data-decoration="strawberries"'), 'Strawberries arranged on cake');
+  await page.locator('.customizer-editor').getByRole('button', { name: 'Gold stars' }).click();
+  assert.equal(await page.locator('.customizer-editor').getByRole('button', { name: 'Gold stars' }).getAttribute('aria-pressed'), 'false',
+    'A third decoration is rejected, not silently piled on');
+  await page.waitForTimeout(350);
+  await mkdir('screenshots', { recursive: true });
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/fruit-unicorn.png' });
+    console.log('PASS: compact layout, Apply writing, visible inscription, 1–3 layers, natural color controls, typed edit, mobile width, no paid requests');
 } finally {
   await browser?.close();
 }
