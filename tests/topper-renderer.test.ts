@@ -4,7 +4,8 @@ import { existsSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { CakeScene } from '../src/components/CakeScene';
-import { EMPTY_CAKE, type CakeState } from '../src/shared/cake';
+import { EMPTY_CAKE, applyCakePatch, type CakeState } from '../src/shared/cake';
+import { createTemplateCake } from '../src/shared/bakery';
 import { TOPPER_CATALOG } from '../src/shared/toppers';
 import manifest from '../src/art/toppersManifest.json';
 
@@ -42,4 +43,20 @@ test('multiple saved cake renderers keep SVG paint IDs unique', () => {
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]);
   assert.ok(ids.length>20);
   assert.equal(new Set(ids).size,ids.length);
+});
+
+test('inscription appears in the preview above the frosting on chocolate 1, 2 and 3 layers', () => {
+  for (const layers of [1, 2, 3] as const) {
+    const cake = applyCakePatch(createTemplateCake('chocolate'), {
+      layers, inscription: 'Happy Birthday Eda',
+      colors: { frosting: 'lavender', inscription: 'white' },
+    }).state;
+    const markup = renderToStaticMarkup(createElement(CakeScene, { cake }));
+    assert.ok(markup.includes(`/art/chocolate-${layers}.png`), `chocolate ${layers} base`);
+    assert.ok(markup.includes(`/art/masks/frosting-${layers}.png`), `chocolate ${layers} frosting mask`);
+    assert.ok(markup.includes('buttercream-tint'), `chocolate ${layers} natural frosting tint`);
+    assert.ok(markup.includes('Cake inscription: Happy Birthday Eda'), `chocolate ${layers} labeled writing`);
+    assert.ok(markup.includes('Happy Birthday') && markup.includes('Eda'), `chocolate ${layers} rendered lettering`);
+    assert.ok(markup.indexOf('cake-base') < markup.indexOf('data-writing-font'), `chocolate ${layers} writing painted after base`);
+  }
 });
