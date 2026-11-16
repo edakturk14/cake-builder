@@ -366,3 +366,64 @@
 .customizer-editor .topper-choice img { filter: saturate(1.32) contrast(1.06); }
 
 .customizer-editor .topper-choice img[src$="christmas-tree.png"] { filter: saturate(1.6) contrast(1.10); }
+
+/* v4: balanced bakery workbench. Matching side panels frame the central cake. */
+.site-header .brand {
+  font-family: 'Fraunces', 'Baskervville', Georgia, serif;
+  font-weight: 650;
+  font-variation-settings: 'opsz' 42;
+  letter-spacing: -.6px;
+}
+@media (min-width: 901px) {
+  .customizer-main { max-width: 1400px; }
+  .customizer-workspace {
+    grid-template-columns: minmax(245px, 275px) minmax(320px, 1fr) minmax(245px, 275px);
+    gap: clamp(12px, 1.6vw, 24px);
+    align-items: start;
+  }
+  .template-picker, .customizer-editor {
+    box-sizing: border-box;
+    padding: 17px;
+    width: 100%;
+    border: 1px solid #ead4cb;
+    background: #fffaf5;
+    border-radius: 14px;
+    box-shadow: 0 8px 23px #57362909;
+    min-height: min(680px, max(540px, calc(100dvh - 160px)));
+  }
+  .template-picker .section-intro { margin: 0 0 12px; }
+  .template-picker .section-intro h2, .customizer-editor h2 {
+    font-family: 'Baskervville', Georgia, serif;
+    font-weight: 400;
+    font-size: 23px;
+    letter-spacing: -.4px;
+    margin: 5px 0 9px;
+    line-height: 1.2;
+  }
+  .template-picker .section-intro p { font-size: 11px; line-height: 1.45; margin: 4px 0 0; }
+  .template-grid { gap: 11px; }
+  .template-card {
+    display: grid; grid-template-columns: 85px minmax(0,1fr);
+    min-height: 108px;
+    text-align: left;
+  }
+  .template-card .cake-scene--compact { width: 82px; height: 82px; flex: initial; }
+  .template-card-copy { align-items: flex-start; }
+  .customizer-editor { max-height: min(680px, max(540px, calc(100dvh - 160px))); overflow-y: auto; }
+  .customizer-preview { align-self: start; }
+  .customizer-preview .cake-scene:not(.cake-scene--compact) { margin-top: 0; }
+}
+@media (min-width:901px) and (max-width:1160px) {
+  .customizer-workspace {
+    grid-template-columns: minmax(215px, 240px) minmax(320px, 1fr) minmax(215px, 240px);
+    gap: 12px;
+  }
+  .template-picker, .customizer-editor { padding: 13px; }
+  .template-card { grid-template-columns: 65px minmax(0,1fr); min-height: 95px; }
+  .template-card .cake-scene--compact { width: 63px; height: 72px; }
+}
+@media (max-width:900px) {
+  .template-picker { border: 1px solid #ead4cb; border-radius: 14px; background: #fffaf5; padding: 15px; }
+  .template-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .template-picker .section-intro h2, .customizer-editor h2 { font-size: 22px; }
+}
