@@ -1,24 +1,15 @@
 import type { CakePatch, CakeState, Topping } from './cake';
-import type { PaletteId } from './appearance';
 import type { TopperId } from './toppers';
 
 export type LocalCommand =
   | { kind: 'edit'; patch: CakePatch; message: string }
   | { kind: 'undo' | 'reset' | 'help' | 'custom'; message: string };
 
-const colors: readonly { id: PaletteId; pattern: RegExp }[] = [
-  { id: 'chocolate-brown', pattern: /\b(?:chocolate brown|brown frosting|brown icing|brown buttercream)\b/i },
-  { id: 'blush-pink', pattern: /\b(?:pink|blush|rose)\b/i },
-  { id: 'lavender', pattern: /\b(?:lavender|lilac|purple)\b/i },
-  { id: 'sky-blue', pattern: /\b(?:sky blue|baby blue|blue)\b/i },
-  { id: 'mint', pattern: /\b(?:mint|mint green|light green)\b/i },
-  { id: 'white', pattern: /\b(?:white|ivory|cream colored)\b/i },
-];
-
 const toppings: readonly { id: Topping; pattern: RegExp }[] = [
   { id: 'strawberries', pattern: /\bstrawberr(?:y|ies)\b/i },
   { id: 'raspberries', pattern: /\braspberr(?:y|ies)\b/i },
   { id: 'gold-stars', pattern: /\b(?:gold|golden)\s+stars?\b/i },
+  { id: 'sprinkles', pattern: /\b(?:sprinkles?|rainbow sprinkles?)\b/i },
 ];
 
 const toppers: readonly { id: TopperId; pattern: RegExp }[] = [
@@ -87,6 +78,13 @@ export function interpretLocalCommand(text: string, cake: CakeState): LocalComma
     }, message: 'Removed the older drip decoration.' };
     return { kind: 'help', message: 'Chocolate drips and caramel finishes are only available as prepared bakery designs. Choose berries or gold stars for now.' };
   }
+  // This prototype uses its prepared cake artwork and fixed frosting.
+  // Never silently accept an unsupported voice-command color edit.
+  if (/\b(?:pink|blush|lavender|lilac|purple|sky blue|baby blue|mint green|brown frosting|green frosting|frosting colou?r|icing colou?r)\b/i.test(lower)
+    && /\b(?:make|turn|change|frosting|icing|buttercream|color|colour)\b/i.test(lower)) {
+    return { kind: 'help', message: 'Frosting colors are fixed for these cakes. You can still add decorations, change layers, or write a message.' };
+  }
+
     const patch: CakePatch = {};
   const requestedLayers = lower.match(/\b(?:make\s+(?:it\s+)?|change\s+(?:it\s+)?to\s+|with\s+|give\s+(?:me\s+)?|a\s+)?(one|two|three|[123])[-\s]layers?\b|\b(?:layers?\s+(?:to|of)\s+)(one|two|three|[123])\b/);
   const layerNumber = requestedLayers ? requestedNumber(requestedLayers[1] ?? requestedLayers[2]) : null;
@@ -107,11 +105,6 @@ export function interpretLocalCommand(text: string, cake: CakeState): LocalComma
   if (flavor && !/\b(?:chocolate brown|chocolate icing|chocolate frosting)\b/.test(lower)) {
     const value = flavor[1] === 'red velvet' ? 'red-velvet' : flavor[1];
     patch.flavor = value as CakeState['flavor'];
-  }
-
-  if (/\b(?:make|turn|change|frosting|icing|buttercream|colour|color)\b/i.test(lower)) {
-    const color = colors.find(item => item.pattern.test(lower));
-    if (color) patch.colors = { frosting: color.id };
   }
 
   for (const topping of toppings) {
