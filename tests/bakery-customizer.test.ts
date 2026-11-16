@@ -126,7 +126,7 @@ test('NYC bakery prices start at $58 for every sponge flavor, with extras charge
     assert.equal(priced.lines.reduce((total, line) => total + line.amountCents, 0), priced.totalCents);
   }
   assert.equal(estimateBakeryCake(createTemplateCake('chocolate')).totalCents, 6400);
-  assert.equal(estimateBakeryCake(createTemplateCake('pastel')).totalCents, 6200);
+  assert.equal(estimateBakeryCake(createTemplateCake('red-velvet')).totalCents, 6400);
   const decorated = applyCakePatch(createTemplateCake('classic'), {
     layers: 3, addToppings: ['strawberries'], toppers: ['unicorn'],
   }).state;
@@ -149,4 +149,18 @@ test('NYC bakery pricing survives basket saves and reloads without changing old 
   assert.deepEqual(reloaded.estimate.lines, saved.estimate.lines);
   assert.equal(estimateCake(cake).totalCents, 3800 + 600 + 700,
     'The older shared demo fixtures keep their original prices');
+});
+
+test('starter gallery has exactly three cakes, with a two-layer red velvet replacing pastel and no cheesecake', () => {
+  assert.deepEqual(BAKERY_TEMPLATES.map(item => item.id), ['classic', 'chocolate', 'red-velvet']);
+  assert.deepEqual(BAKERY_TEMPLATES.map(item => item.name), ['Classic Birthday', 'Chocolate Party', 'Red Velvet']);
+  const redVelvet = createTemplateCake('red-velvet');
+  assert.equal(redVelvet.exists, true);
+  assert.equal(redVelvet.base, 'sponge');
+  assert.equal(redVelvet.flavor, 'red-velvet');
+  assert.equal(redVelvet.layers, 2);
+  assert.deepEqual(redVelvet.toppings, []);
+  assert.equal(redVelvet.colors.frosting, 'white');
+  assert.equal(estimateBakeryCake(redVelvet).totalCents, 6400);
+  assert.equal(BAKERY_TEMPLATES.some(template => template.id === ('cheesecake' as string)), false);
 });
