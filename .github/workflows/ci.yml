@@ -32,5 +32,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cake-fruit-and-unicorn
-          path: screenshots/fruit-unicorn.png
+          path: |
+            screenshots/fruit-unicorn.png
+            screenshots/message-white-icing-five-candles.png
+            screenshots/message-white-icing-number-candle.png
           if-no-files-found: ignore
