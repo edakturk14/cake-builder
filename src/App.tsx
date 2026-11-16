@@ -116,10 +116,11 @@ export default function App() {
     <main className="customizer-main">
       <div className="customizer-heading">
         <p className="eyebrow">A LITTLE CAKE, MADE YOUR WAY</p>
-        <h1>Make it yours.</h1>
+        <h1>Let's make your cake.</h1>
         <p className="heading-caption">Choose a cake we can make, then add your own little touches.</p>
       </div>
 
+      <div className="customizer-workspace">
       <section className="template-picker" aria-labelledby="template-title">
         <div className="section-intro"><div><span className="step-label">01 / CHOOSE YOUR CAKE</span><h2 id="template-title">Start with a favorite</h2></div><p>Three designs to get you started</p></div>
         <div className="template-grid">
@@ -132,16 +133,40 @@ export default function App() {
         </div>
       </section>
 
-      <div className="customizer-workspace">
+
         <section className="customizer-preview" aria-label="Live cake preview">
           <span className="step-label">YOUR CAKE, SO FAR</span>
           <CakeScene cake={cake} label={template.name + ' customized'} />
-          <p className="preview-name">{template.name}</p>
-          <p className="preview-hint">Illustrative preview. Cake height is fixed for each design.</p>
+          <div className="preview-summary">
+            <p className="preview-name">{template.name}</p>
+            <span className="preview-price">{formatMoney(estimate.totalCents)}</span>
+          </div>
+          {cake.inscription && <p className="preview-inscription" role="status">On your cake: <strong>{cake.inscription}</strong></p>}
+          <p className="preview-hint">{cake.layers} sponge layer{cake.layers === 1 ? '' : 's'} · Illustrative preview</p>
           <div className="preview-actions">
             <button type="button" className="text-button" onClick={() => { dispatch({ type: 'undo' }); setNotice('Undid the last edit.'); }} disabled={!design.history.length}>Undo last change</button>
             <button type="button" className="text-button" onClick={() => { dispatch({ type: 'select', cake: createTemplateCake(selected) }); setNotice('Restored the original design.'); }}>Reset design</button>
           </div>
+
+        <section className="voice-section" aria-labelledby="voice-title">
+          <div className="section-intro"><div><span className="step-label">OR JUST TELL IT</span><h2 id="voice-title">Talk to your cake</h2></div><p>No extra API key needed</p></div>
+          <p className="voice-examples">Try “Make it lavender,” “Add a layer,” or “Write Happy Birthday, Eda.”</p>
+          <form className="composer" onSubmit={submitCommand}>
+            <button type="button" className={'mic-button' + (speech.listening ? ' is-listening' : '')}
+              onClick={speech.toggle} disabled={!speech.supported} aria-pressed={speech.listening}>
+              {speech.listening ? 'Stop listening' : 'Use voice'}</button>
+            <label htmlFor="cake-command" className="sr-only">Type a cake change</label>
+            <input id="cake-command" className="composer-input" value={command} onChange={event => setCommand(event.target.value)}
+              maxLength={250} placeholder="Or type an edit..."/>
+            <button type="submit" className="secondary-button" disabled={!command.trim()}>Apply</button>
+          </form>
+          {!speech.supported && <p className="subtle-caption">Voice isn't supported here; controls and text still work.</p>}
+          {speech.listening && <p className="subtle-caption">Listening for a cake change…</p>}
+          {speech.interimTranscript && <p className="voice-transcript">“{speech.interimTranscript}”</p>}
+          {lastCommand && !speech.interimTranscript && <p className="voice-transcript">You said: “{lastCommand}”</p>}
+          {notice && <p className="user-notice" role="status">{notice}</p>}
+          {speech.error && <p className="error-note" role="alert">{speech.error}</p>}
+        </section>
         </section>
 
         <section className="customizer-editor" aria-labelledby="personalize-title">
@@ -152,6 +177,17 @@ export default function App() {
               {BAKERY_FLAVORS.map(item => <option value={item.id} key={item.id}>{item.label}</option>)}
             </select>
           </div>
+          <fieldset className="edit-group layer-picker">
+            <legend>How many layers?</legend>
+            <div className="layer-options">
+              {([1, 2, 3] as const).map(layers => <button type="button" key={layers}
+                className={'layer-choice' + (cake.layers === layers ? ' is-selected' : '')}
+                aria-pressed={cake.layers === layers} onClick={() => edit({ layers })}>
+                <strong>{layers}</strong> <span>{layers === 1 ? 'layer' : 'layers'}</span>
+              </button>)}
+            </div>
+            <small className="subtle-caption">Sponge layers, not stacked tiers. Up to three.</small>
+          </fieldset>
           <fieldset className="edit-group">
             <legend>Frosting color</legend>
             <div className="color-options">{BAKERY_COLORS.map(color => <button type="button" key={color}
@@ -160,6 +196,14 @@ export default function App() {
               onClick={() => edit({ colors: { frosting: color } })}><span style={{ backgroundColor: PALETTE_BY_ID[color].hex }} /></button>)}</div>
             <small className="subtle-caption">{cake.colors.frosting ? PALETTE_BY_ID[cake.colors.frosting].label : 'Natural frosting'}</small>
           </fieldset>
+          <div className="edit-group">
+            <label htmlFor="writing">Message on your cake <span className="quiet">(up to 30 characters)</span></label>
+            <form className="inline-edit" onSubmit={applyMessage}>
+              <input id="writing" value={messageDraft} maxLength={30} onChange={event => setMessageDraft(event.target.value)} placeholder="Happy birthday, Eda!"/>
+              <button type="submit" className="secondary-button">Apply</button>
+            </form>
+            {cake.inscription && <button type="button" className="text-button" onClick={() => edit({ inscription: '' })}>Clear writing</button>}
+          </div>
           <fieldset className="edit-group">
             <legend>Add something sweet</legend>
             <div className="option-chips">{BAKERY_TOPPINGS.map(item => <button type="button" key={item.id}
@@ -179,14 +223,6 @@ export default function App() {
                 aria-pressed={cake.toppers[0] === item.id} onClick={() => edit({ toppers: [item.id] })}>{item.label}</button>)}
             </div>
           </fieldset>
-          <div className="edit-group">
-            <label htmlFor="writing">Message on your cake <span className="quiet">(up to 30 characters)</span></label>
-            <form className="inline-edit" onSubmit={applyMessage}>
-              <input id="writing" value={messageDraft} maxLength={30} onChange={event => setMessageDraft(event.target.value)} placeholder="Happy birthday, Eda!"/>
-              <button type="submit" className="secondary-button">Apply</button>
-            </form>
-            {cake.inscription && <button type="button" className="text-button" onClick={() => edit({ inscription: '' })}>Clear writing</button>}
-          </div>
           <div className="edit-group">
             <label htmlFor="candle-style">Candles</label>
             <select id="candle-style" value={cake.candles.style} onChange={event => {
@@ -214,26 +250,6 @@ export default function App() {
           </div>
         </section>
       </div>
-
-      <section className="voice-section" aria-labelledby="voice-title">
-        <div className="section-intro"><div><span className="step-label">03 / OR JUST SAY IT</span><h2 id="voice-title">Talk to your cake</h2></div><p>No AI API key needed</p></div>
-        <p className="voice-examples">Try “Make it lavender, add strawberries, and write Eda.”</p>
-        <form className="composer" onSubmit={submitCommand}>
-          <button type="button" className={'mic-button' + (speech.listening ? ' is-listening' : '')}
-            onClick={speech.toggle} disabled={!speech.supported} aria-pressed={speech.listening}>
-            {speech.listening ? 'Stop listening' : 'Use voice'}</button>
-          <label htmlFor="cake-command" className="sr-only">Type a cake change</label>
-          <input id="cake-command" className="composer-input" value={command} onChange={event => setCommand(event.target.value)}
-            maxLength={250} placeholder="Or type an edit..."/>
-          <button type="submit" className="secondary-button" disabled={!command.trim()}>Apply</button>
-        </form>
-        {!speech.supported && <p className="subtle-caption">Voice isn't supported here; controls and text still work.</p>}
-        {speech.listening && <p className="subtle-caption">Listening for a cake change…</p>}
-        {speech.interimTranscript && <p className="voice-transcript">“{speech.interimTranscript}”</p>}
-        {lastCommand && !speech.interimTranscript && <p className="voice-transcript">You said: “{lastCommand}”</p>}
-        {notice && <p className="user-notice" role="status">{notice}</p>}
-        {speech.error && <p className="error-note" role="alert">{speech.error}</p>}
-      </section>
 
       <section className="custom-request" id="custom-request" aria-labelledby="custom-request-title">
         <div><span className="step-label">SOMETHING MORE COMPLICATED?</span><h2 id="custom-request-title">Dreaming of a castle-shaped cake?</h2>
