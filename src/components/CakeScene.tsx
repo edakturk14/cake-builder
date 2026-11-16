@@ -98,6 +98,11 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
   const accent=cake.colors.accents?PALETTE_BY_ID[cake.colors.accents].hex:undefined;
   const writingColor=paletteHex(cake.colors.inscription,darkSurface?'#ffedb9':'#562d30');
   const maskVariant=cake.base==='cheesecake'?'cheesecake':cake.layers;
+  // The upper piped buttercream ring is ivory; only the smooth central
+  // frosting surface changes color. These ellipses follow the baked
+  // 1/2/3-layer artwork's vertical offsets.
+  const innerFrosting = { cx: 256, cy: 168 + top, rx: 140, ry: 64 };
+  const hasPipedRing = cake.base === 'sponge';
   const coloredParts=(['filling'] as const).filter(part=>cake.colors[part]);
   const description = label ?? (cake.exists
     ? `${cake.layers}-layer ${cake.base === 'cheesecake' ? 'cheesecake' : flavor} cake${cake.theme ? `, ${cake.theme.replaceAll('-', ' ')} theme` : ''}${cake.toppers.map(id => `, ${TOPPER_BY_ID[id].label} topper`).join('')}${cake.customTopper ? `, custom topper: ${cake.customTopper.request}` : ''}${cake.toppings.length ? `, ${cake.toppings.join(', ')}` : ''}${cake.candles.style === 'number' ? `, ${cake.candles.number} candle` : cake.candles.style === 'plain' ? ', birthday candles' : ''}${cake.inscription ? `, icing reads ${cake.inscription}` : ''}`
@@ -120,6 +125,18 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
             <linearGradient id={`${id}-red`} x2=".2" y2="1"><stop stopColor="#ec7560" /><stop offset=".4" stopColor="#d53a2d" /><stop offset="1" stopColor="#9f261d" /></linearGradient>
             <linearGradient id={`${id}-jacket`}><stop stopColor="#181c1c" /><stop offset=".5" stopColor="#454a47" /><stop offset="1" stopColor="#232827" /></linearGradient>
             <radialGradient id={`${id}-skin`} cx=".35" cy=".3"><stop stopColor="#e1b991" /><stop offset="1" stopColor="#b88766" /></radialGradient>
+            {hasPipedRing && <>
+              <clipPath id={`${id}-frosting-center`} clipPathUnits="userSpaceOnUse">
+                <ellipse cx={innerFrosting.cx} cy={innerFrosting.cy} rx={innerFrosting.rx} ry={innerFrosting.ry} />
+              </clipPath>
+              <mask id={`${id}-white-frosting-ring`} maskUnits="userSpaceOnUse" x="0" y="-80" width="512" height="550">
+                <rect x="0" y="-80" width="512" height="550" fill="#fff" />
+                <ellipse cx={innerFrosting.cx} cy={innerFrosting.cy} rx={innerFrosting.rx} ry={innerFrosting.ry} fill="#000" />
+              </mask>
+            </>}
+            <filter id={`${id}-vibrant-topper`} colorInterpolationFilters="sRGB">
+              <feColorMatrix type="saturate" values="1.38" />
+            </filter>
             <filter id={`${id}-ivory-piping`} colorInterpolationFilters="sRGB">
               <feColorMatrix type="matrix" values={colorMatrix('#fff9ed')} />
             </filter>
@@ -131,7 +148,12 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
           </defs>
           <ellipse cx="263" cy="428" rx="175" ry="25" fill={`url(#${id}-shadow)`} />
           <image href={`/art/${cake.base === 'cheesecake' ? 'cheesecake' : `${flavor}-${cake.layers}`}.png`} width="512" height="512" className="cake-base" />
-          {cake.colors.frosting && <image data-color-target="frosting" href={`/art/masks/frosting-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-buttercream-tint)`} opacity=".88"/>}
+          {cake.colors.frosting && <image data-color-target="frosting" href={`/art/masks/frosting-${maskVariant}.png`} width="512" height="512"
+            clipPath={hasPipedRing ? `url(#${id}-frosting-center)` : undefined}
+            filter={`url(#${id}-buttercream-tint)`} opacity=".93" />}
+          {hasPipedRing && <image data-decoration="always-white-frosting-ring" href={`/art/masks/frosting-${maskVariant}.png`}
+            width="512" height="512" mask={`url(#${id}-white-frosting-ring)`}
+            filter={`url(#${id}-ivory-piping)`} />}
           {coloredParts.map(part=><image key={part} data-color-target={part} href={`/art/masks/${part}-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-color-${part})`}/>)}
           {/* The artwork's pink piped accents are a separate mask. Restore them to ivory after coloring the buttercream. */}
           <image data-decoration="white-piping" href={`/art/masks/accents-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-ivory-piping)`}/>
@@ -145,7 +167,7 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
             return <g key={topper} className="cake-decoration" data-decoration={topper}>
               <title>{`${art.label} fondant topper`}</title>
               <ellipse cx={placement.center} cy={placement.contact-1+top} rx={placement.width*.235} ry={placement.width*.035} fill="#583622" opacity=".15" />
-              <image href={art.file} x={placement.center-placement.width*art.anchor.x} y={placement.contact+top-placement.height*art.anchor.y} width={placement.width} height={placement.height} filter={placement.tint?`url(#${id}-tint-${topper})`:undefined}/>
+              <image href={art.file} x={placement.center-placement.width*art.anchor.x} y={placement.contact+top-placement.height*art.anchor.y} width={placement.width} height={placement.height} filter={placement.tint?`url(#${id}-tint-${topper})`:`url(#${id}-vibrant-topper)`}/>
             </g>;
           })}
           {cake.customTopper&&<CustomTopper key={`${cake.customTopper.assetId??cake.customTopper.request}-${imageAttempt}`} design={cake.customTopper} placement={placements.find(item=>item.id==='custom')!} top={top} imageAttempt={imageAttempt} onImageError={()=>setFailedAsset(cake.customTopper?.assetId??null)}/>}
