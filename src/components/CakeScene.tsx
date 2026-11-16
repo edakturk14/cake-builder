@@ -137,6 +137,10 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
             <filter id={`${id}-vibrant-topper`} colorInterpolationFilters="sRGB">
               <feColorMatrix type="saturate" values="1.38" />
             </filter>
+            <filter id={`${id}-festive-tree`} colorInterpolationFilters="sRGB">
+              <feColorMatrix type="saturate" values="1.6" />
+              <feColorMatrix type="matrix" values="1.02 0 0 0 0  0 1.12 0 0 0  0 0 .96 0 0  0 0 0 1 0" />
+            </filter>
             <filter id={`${id}-ivory-piping`} colorInterpolationFilters="sRGB">
               <feColorMatrix type="matrix" values={colorMatrix('#fff9ed')} />
             </filter>
@@ -167,7 +171,7 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
             return <g key={topper} className="cake-decoration" data-decoration={topper}>
               <title>{`${art.label} fondant topper`}</title>
               <ellipse cx={placement.center} cy={placement.contact-1+top} rx={placement.width*.235} ry={placement.width*.035} fill="#583622" opacity=".15" />
-              <image href={art.file} x={placement.center-placement.width*art.anchor.x} y={placement.contact+top-placement.height*art.anchor.y} width={placement.width} height={placement.height} filter={placement.tint?`url(#${id}-tint-${topper})`:`url(#${id}-vibrant-topper)`}/>
+              <image href={art.file} x={placement.center-placement.width*art.anchor.x} y={placement.contact+top-placement.height*art.anchor.y} width={placement.width} height={placement.height} filter={placement.tint?`url(#${id}-tint-${topper})`:topper==='christmas-tree'?`url(#${id}-festive-tree)`:`url(#${id}-vibrant-topper)`}/>
             </g>;
           })}
           {cake.customTopper&&<CustomTopper key={`${cake.customTopper.assetId??cake.customTopper.request}-${imageAttempt}`} design={cake.customTopper} placement={placements.find(item=>item.id==='custom')!} top={top} imageAttempt={imageAttempt} onImageError={()=>setFailedAsset(cake.customTopper?.assetId??null)}/>}
