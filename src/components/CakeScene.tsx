@@ -7,6 +7,7 @@ import { CakeInscription } from './CakeInscription';
 import { CustomTopper } from './CustomTopper';
 import { placeToppers } from './topperLayout';
 import { CakeCandles } from './CakeCandles';
+import { FruitDecorations } from './FruitDecorations';
 
 function colorMatrix(hex:string,blend=1){
   const [r,g,b]=hex.replace('#','').match(/../g)!.map(channel=>parseInt(channel,16)/255);
@@ -33,8 +34,6 @@ function lightColor(hex:string){
   const [r,g,b]=hex.replace('#','').match(/../g)!.map(channel=>parseInt(channel,16)/255);
   return r*.2126+g*.7152+b*.0722>.55;
 }
-
-const STAR = 'M0-12 3.5-4 12-3.5 5 2 7.5 11 0 6-7.5 11-5 2-12-3.5-3.5-4Z';
 
 function ThemeDecorations({ theme, id }: { theme: CakeState['theme']; id: string }) {
   if (!theme) return null;
@@ -72,16 +71,6 @@ function ThemeDecorations({ theme, id }: { theme: CakeState['theme']; id: string
       <path d="M-18-44h15v9h-14Zm22 0h15v9H5Zm-6 3H4" fill="#b5a792" fillOpacity=".3" stroke="#272b29" strokeWidth="2" /><path d="M-4-25q7 4 12-1" fill="none" stroke="#79543e" strokeWidth="1.5" /><path d="M2-35v5l4 1" fill="none" stroke="#9c7357" />
       <rect x="-49" y="39" width="98" height="18" rx="4" fill="#efe1c6" stroke="#b29a72" /><text y="51" textAnchor="middle" fontSize="9" fill="#4e493b" fontFamily="sans-serif">JENSEN HUANG</text>
     </g>}
-  </g>;
-}
-
-function ToppingDecorations({ toppings, id, hasInscription, accent }: { toppings: CakeState['toppings']; id: string; hasInscription: boolean; accent?:string }) {
-  return <g className="cake-decoration">
-    {toppings.includes('ganache') && <g data-decoration="ganache"><path d="M97 223Q111 245 149 250T226 270T311 265T414 222V252Q403 275 397 253Q391 241 384 269Q377 290 371 263Q366 251 353 275Q344 304 336 277Q332 263 320 277Q310 290 294 278Q280 263 276 298Q267 320 261 295Q257 278 244 288Q230 304 222 280Q215 269 203 283Q191 298 182 277Q174 263 160 277Q151 293 144 269Q138 256 125 268Q113 274 106 250Z" fill={`url(#${id}-ganache)`} /><path d="M120 234Q259 303 398 235" fill="none" stroke="#885131" strokeOpacity=".5" strokeWidth="3" /></g>}
-    {toppings.includes('caramel') && <g data-decoration="caramel" fill="none" strokeLinecap="round"><path d="M155 156Q113 174 154 186L353 201Q392 212 358 222L172 234M123 234q-6 43 5 54m31-36q-4 28 3 40m223-57q7 27-1 48" stroke="#94501e" strokeWidth="10" /><path d="M155 155Q113 173 154 185L353 200Q392 211 358 221L172 233M124 236q-4 39 4 48m31-31q-3 24 2 35m224-52q5 24-1 42" stroke="#e8aa50" strokeWidth="7" /><path d="M155 154Q113 172 154 184L353 199Q392 210 358 220L172 232" stroke="#ffdc98" strokeWidth="2" /></g>}
-    {toppings.includes('strawberries') && <g data-decoration="strawberries" filter={`url(#${id}-object)`}><image href="/art/strawberry-fan.png" x={hasInscription ? 96 : 111} y={hasInscription ? 153 : 161} width={hasInscription ? 62 : 74} height={hasInscription ? 59 : 70} /><image href="/art/strawberry-fan.png" x={hasInscription ? 355 : 337} y="146" width={hasInscription ? 57 : 69} height={hasInscription ? 54 : 65} /><image href="/art/strawberry-fan.png" x={hasInscription ? 126 : 130} y="115" width={hasInscription ? 47 : 52} height={hasInscription ? 44 : 49} /></g>}
-    {toppings.includes('raspberries') && <g data-decoration="raspberries" filter={`url(#${id}-object)`}>{[[128, 186], [150, 200], [169, 182], [352, 182], [374, 165], [135, 149], [358, 142]].map(([x, y], i) => <g key={i} transform={`translate(${x} ${y}) rotate(${i % 2 ? 10 : -15})`}><ellipse cy="3" rx="13" ry="17" fill="#9b2639" />{[[0, -10], [-6, -5], [6, -5], [-10, 2], [0, 3], [10, 2], [-7, 10], [5, 10], [0, 16]].map(([a, b], j) => <circle key={j} cx={a} cy={b} r="5.6" fill={`url(#${id}-raspberry)`} />)}<ellipse cy="-11" rx="5" ry="2" fill="#782a31" /></g>)}</g>}
-    {toppings.includes('gold-stars') && <g data-decoration="gold-stars" fill={accent??`url(#${id}-gold)`} stroke={accent??'#a67c2d'} strokeWidth=".6" filter={`url(#${id}-object)`}>{[[135, 164, 1], [186, 132, .8], [335, 139, 1.1], [379, 185, .8], [144, 214, .65], [338, 222, .65]].map(([x, y, scale], i) => <path key={i} d={STAR} transform={`translate(${x} ${y}) rotate(${i * 17}) scale(${scale})`} />)}</g>}
   </g>;
 }
 
@@ -129,8 +118,6 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
             <filter id={`${id}-object`} x="-.3" y="-.3" width="1.6" height="1.8"><feDropShadow dx="2" dy="4" stdDeviation="2" floodColor="#48220f" floodOpacity=".25" /></filter>
             <linearGradient id={`${id}-gold`} x2="1" y2="1"><stop stopColor="#fff0aa" /><stop offset=".45" stopColor="#deb559" /><stop offset="1" stopColor="#a17428" /></linearGradient>
             <linearGradient id={`${id}-red`} x2=".2" y2="1"><stop stopColor="#ec7560" /><stop offset=".4" stopColor="#d53a2d" /><stop offset="1" stopColor="#9f261d" /></linearGradient>
-            <linearGradient id={`${id}-ganache`} x2=".3" y2="1"><stop stopColor="#69351e" /><stop offset=".5" stopColor="#482111" /><stop offset="1" stopColor="#562a18" /></linearGradient>
-            <radialGradient id={`${id}-raspberry`} cx=".35" cy=".25"><stop stopColor="#ec6c75" /><stop offset=".5" stopColor="#bf354c" /><stop offset="1" stopColor="#8c2339" /></radialGradient>
             <linearGradient id={`${id}-jacket`}><stop stopColor="#181c1c" /><stop offset=".5" stopColor="#454a47" /><stop offset="1" stopColor="#232827" /></linearGradient>
             <radialGradient id={`${id}-skin`} cx=".35" cy=".3"><stop stopColor="#e1b991" /><stop offset="1" stopColor="#b88766" /></radialGradient>
             {cake.colors.frosting && <filter id={`${id}-buttercream-tint`} colorInterpolationFilters="sRGB">
@@ -144,7 +131,7 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
           {cake.colors.frosting && <image data-color-target="frosting" href={`/art/masks/frosting-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-buttercream-tint)`}/>}
           {coloredParts.map(part=><image key={part} data-color-target={part} href={`/art/masks/${part}-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-color-${part})`}/>)}
           <g transform={`translate(0 ${top})`}>
-            <ToppingDecorations toppings={cake.toppings} id={id} hasInscription={Boolean(cake.inscription)} accent={accent} />
+            <FruitDecorations toppings={cake.toppings} hasInscription={Boolean(cake.inscription)} hasTopper={Boolean(placements.length || cake.candles.style !== "none")} accent={accent} />
             <g transform={`translate(0 ${cake.inscriptionStyle.placement==='center'?-48:0})`}><ThemeDecorations theme={cake.theme} id={id} /></g>
           </g>
           {placements.filter(item=>item.id!=='custom').map(placement => {
