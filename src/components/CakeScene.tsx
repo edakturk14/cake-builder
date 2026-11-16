@@ -14,27 +14,6 @@ function colorMatrix(hex:string,blend=1){
   const keep=1-blend;
   return `${keep||r} 0 0 0 ${keep?r*blend:0} 0 ${keep||g} 0 0 ${keep?g*blend:0} 0 0 ${keep||b} 0 ${keep?b*blend:0} 0 0 0 1 0`;
 }
-/**
- * Tint the smooth frosting surface while preserving its original shading.
- * Piped swirls are deliberately outside the colorable center, and are
- * restored in ivory above the color layer.
- */
-function smoothTopFrostingMatrix(hex: string) {
-  const rgb = hex.replace('#', '').match(/../g)!.map(channel => parseInt(channel, 16) / 255);
-  const luminance = [0.2126, 0.7152, 0.0722];
-  const rows = rgb.map(channel => [
-    ...luminance.map(weight => weight * 0.28),
-    0,
-    channel * 0.72,
-  ]);
-  return rows.flat().concat([0, 0, 0, 1, 0]).join(' ');
-}
-
-function lightColor(hex:string){
-  const [r,g,b]=hex.replace('#','').match(/../g)!.map(channel=>parseInt(channel,16)/255);
-  return r*.2126+g*.7152+b*.0722>.55;
-}
-
 function ThemeDecorations({ theme, id }: { theme: CakeState['theme']; id: string }) {
   if (!theme) return null;
   return <g className="cake-decoration" data-decoration={`theme-${theme}`}>
@@ -89,8 +68,9 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
   const imageFailed = Boolean(cake.customTopper?.assetId && failedAsset === cake.customTopper.assetId);
   const top = cake.base === 'cheesecake' ? 0 : cake.layers === 1 ? 56 : cake.layers === 3 ? -47 : 0;
   const flavor = cake.flavor === 'classic' ? 'vanilla' : cake.flavor;
-  const darkCake = cake.base !== 'cheesecake' && (cake.flavor === 'chocolate' || cake.flavor === 'red-velvet');
-  const darkSurface=cake.colors.frosting ? !lightColor(PALETTE_BY_ID[cake.colors.frosting].hex) : darkCake;
+  // All bakery presets use the light top frosting baked into their prepared artwork.
+  // The retired frosting-color state must not change inscription/candle contrast.
+  const darkSurface = false;
   const placements=placeToppers(cake);
   const crowded=placements.length>2;
   const writingWidth=crowded||cake.inscriptionStyle.placement==='center'||(cake.candles.count??0)>8||cake.toppings.some(topping=>topping==='strawberries'||topping==='raspberries')?180:236;
@@ -98,10 +78,6 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
   const accent=cake.colors.accents?PALETTE_BY_ID[cake.colors.accents].hex:undefined;
   const writingColor=paletteHex(cake.colors.inscription,darkSurface?'#ffedb9':'#562d30');
   const maskVariant=cake.base==='cheesecake'?'cheesecake':cake.layers;
-  // The central smooth surface takes the tint; the existing cake body stays
-  // photographic and the decorative whipped swirls stay ivory.
-  // Offset follows the original top of each 1/2/3-layer cake image.
-  const smoothTop = { cx: 256, cy: 168 + top, rx: 123, ry: 47 };
   const cakeArtPath = `/art/${cake.base === 'cheesecake' ? 'cheesecake' : `${flavor}-${cake.layers}`}.png`;
   const coloredParts=(['filling'] as const).filter(part=>cake.colors[part]);
   const description = label ?? (cake.exists
@@ -125,9 +101,6 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
             <linearGradient id={`${id}-red`} x2=".2" y2="1"><stop stopColor="#ec7560" /><stop offset=".4" stopColor="#d53a2d" /><stop offset="1" stopColor="#9f261d" /></linearGradient>
             <linearGradient id={`${id}-jacket`}><stop stopColor="#181c1c" /><stop offset=".5" stopColor="#454a47" /><stop offset="1" stopColor="#232827" /></linearGradient>
             <radialGradient id={`${id}-skin`} cx=".35" cy=".3"><stop stopColor="#e1b991" /><stop offset="1" stopColor="#b88766" /></radialGradient>
-            <clipPath id={`${id}-smooth-top-only`} clipPathUnits="userSpaceOnUse">
-              <ellipse cx={smoothTop.cx} cy={smoothTop.cy} rx={smoothTop.rx} ry={smoothTop.ry} />
-            </clipPath>
             <filter id={`${id}-vibrant-topper`} colorInterpolationFilters="sRGB">
               <feColorMatrix type="saturate" values="1.38" />
             </filter>
@@ -135,27 +108,14 @@ export function CakeScene({ cake, compact = false, className = '', label }: Cake
               <feColorMatrix type="saturate" values="1.6" />
               <feColorMatrix type="matrix" values="1.02 0 0 0 0  0 1.12 0 0 0  0 0 .96 0 0  0 0 0 1 0" />
             </filter>
-            <filter id={`${id}-ivory-piping`} colorInterpolationFilters="sRGB">
-              <feColorMatrix type="matrix" values={colorMatrix('#fff9ed')} />
-            </filter>
-            {cake.colors.frosting && <filter id={`${id}-smooth-top-tint`} colorInterpolationFilters="sRGB">
-              <feColorMatrix type="matrix" values={smoothTopFrostingMatrix(PALETTE_BY_ID[cake.colors.frosting].hex)} />
-            </filter>}
             {coloredParts.map(part=><filter key={part} id={`${id}-color-${part}`} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values={colorMatrix(PALETTE_BY_ID[cake.colors[part]!].hex)}/></filter>)}
             {placements.filter(item=>item.tint).map(item=><filter key={item.id} id={`${id}-tint-${item.id}`} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values={colorMatrix(PALETTE_BY_ID[item.tint!].hex,.2)}/></filter>)}
           </defs>
           <ellipse cx="263" cy="428" rx="175" ry="25" fill={`url(#${id}-shadow)`} />
           <image href={cakeArtPath} width="512" height="512" className="cake-base" />
-          {/* Color only the smooth inner frosting, never the sponge or the white swirls. */}
-          {cake.colors.frosting && <image data-color-target="smooth-top-frosting"
-            href={`/art/masks/frosting-${maskVariant}.png`} width="512" height="512"
-            clipPath={`url(#${id}-smooth-top-only)`}
-            filter={`url(#${id}-smooth-top-tint)`} opacity=".97" />}
-          {/* The prepared accents are piped frosting. Keep them WHITE on every color. */}
-          <image data-decoration="white-piped-swirls" href={`/art/masks/accents-${maskVariant}.png`}
-            width="512" height="512" filter={`url(#${id}-ivory-piping)`} />
           {coloredParts.map(part=><image key={part} data-color-target={part} href={`/art/masks/${part}-${maskVariant}.png`} width="512" height="512" filter={`url(#${id}-color-${part})`}/>)}
-          {/* White piped accents are rendered above the smooth frosting tint. */}
+          {/* Keep the cake's original frosting image untouched. Only the selected
+              sponge filling receives a preset flavor color. */}
           <g transform={`translate(0 ${top})`}>
             <FruitDecorations toppings={cake.toppings} hasInscription={Boolean(cake.inscription)} hasTopper={Boolean(placements.length || cake.candles.style !== "none")} accent={accent} />
             <g transform={`translate(0 ${cake.inscriptionStyle.placement==='center'?-48:0})`}><ThemeDecorations theme={cake.theme} id={id} /></g>
