@@ -32,14 +32,20 @@ try {
   await loadPage(page);
 
   const header = await page.locator('.site-header').boundingBox();
-  assert.ok(header && header.height <= 65, 'Compact header must be at most 65px high');
+  assert.ok(header && header.height <= 53, 'Chocolate header should be no more than 53px on desktop');
   const voice = await page.locator('.customizer-preview .voice-section').boundingBox();
   assert.ok(voice && voice.y + voice.height < 900, 'Voice controls must be visible in the initial desktop viewport');
   const message = await page.locator('#writing').boundingBox();
   assert.ok(message && message.y < 900, 'Cake writing must be near the top of the editor');
 
   await page.locator('#writing').fill('Happy Birthday Eda');
+  assert.ok((await page.locator('.preview-inscription').textContent())?.includes('Happy Birthday Eda'),
+    'Writing should be visible in the cake preview before clicking Apply');
+  assert.ok((await page.locator('.preview-inscription').textContent())?.includes('Previewing'),
+    'The preview should disclose the message is not yet saved');
   await page.locator('form.inline-edit').getByRole('button', { name: 'Apply' }).click();
+  assert.ok(!(await page.locator('.preview-inscription').textContent())?.includes('Previewing'),
+    'Apply must save the inscription rather than leave it in draft mode');
   assert.ok((await page.locator('.preview-inscription').textContent())?.includes('Happy Birthday Eda'), 'Applied writing needs a visible confirmation');
   const inscription = page.locator('.customizer-preview .cake-inscription text');
   assert.equal(await inscription.count(), 1, 'Applied writing must be drawn onto the cake');
@@ -55,6 +61,27 @@ try {
   await page.getByRole('button', { name: 'Lavender' }).click();
   assert.equal(await page.locator('.customizer-preview [data-color-target="frosting"]').count(), 1);
   assert.ok((await page.locator('.customizer-preview .cake-art').innerHTML()).includes('buttercream-tint'), 'Use the texture-preserving frosting tint');
+  assert.equal(await page.locator('.customizer-preview [data-decoration="always-white-frosting-ring"]').count(), 1,
+    'White top icing should remain separate from the colored frosting');
+  const whiteRing = await page.locator('.customizer-preview [data-decoration="always-white-frosting-ring"]').getAttribute('mask');
+  assert.ok(whiteRing?.includes('white-frosting-ring'), 'The white frosting must be masked to the outer piping');
+  const colorClip = await page.locator('.customizer-preview [data-color-target="frosting"]').getAttribute('clip-path');
+  assert.ok(colorClip?.includes('frosting-center'), 'Only the lower/inner frosting should change color');
+
+  await page.locator('#candle-style').selectOption('plain');
+  assert.equal(await page.locator('.customizer-preview [data-plain-candle]').count(), 5,
+    'Five plain candles should remain available');
+  assert.equal(await page.locator('.customizer-preview [data-candle-body="wide"]').count(), 5,
+    'Plain candles should be wider but not taller');
+  await mkdir('screenshots', { recursive: true });
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/message-white-icing-five-candles.png' });
+  await page.locator('#candle-style').selectOption('number');
+  const numeralTransform = await page.locator('.customizer-preview [data-decoration="number-candles"]').getAttribute('transform');
+  const numeralX = Number(numeralTransform?.match(/translate\(([\d.]+)/)?.[1] ?? NaN);
+  assert.ok(Number.isFinite(numeralX) && Math.abs(numeralX - 256) < 110,
+    'Number candle should sit near the center of the cake');
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/message-white-icing-number-candle.png' });
+  await page.locator('#candle-style').selectOption('none');
 
   await page.locator('#cake-command').fill('Make it two layers');
   await page.locator('.voice-section form').getByRole('button', { name: 'Apply' }).click();
