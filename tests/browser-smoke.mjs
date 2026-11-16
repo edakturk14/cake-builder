@@ -127,6 +127,10 @@ try {
   await page.waitForTimeout(350);
   await mkdir('screenshots', { recursive: true });
   await page.locator('.customizer-preview').screenshot({ path: 'screenshots/fruit-unicorn.png' });
+  await page.locator('.customizer-editor').getByRole('button', { name: 'Christmas tree' }).click();
+  const treePreview = await page.locator('.customizer-preview [data-decoration="christmas-tree"] image').getAttribute('filter');
+  assert.ok(treePreview?.includes('festive-tree'), 'Christmas tree gets a more saturated, greener prepared-art filter');
+  await page.locator('.customizer-preview').screenshot({ path: 'screenshots/vibrant-christmas-tree.png' });
     console.log('PASS: compact layout, Apply writing, visible inscription, 1–3 layers, natural color controls, typed edit, mobile width, no paid requests');
 } finally {
   await browser?.close();
