@@ -38,8 +38,8 @@ jobs:
             screenshots/message-white-icing-five-candles.png
             screenshots/message-white-icing-number-candle.png
             screenshots/vibrant-christmas-tree.png
-            screenshots/white-top-lavender-side-1-layer.png
-            screenshots/white-top-lavender-side-3-layers.png
-            screenshots/frosting-white-top-white-side.png
-            screenshots/frosting-white-top-lavender-side.png
+            screenshots/lavender-smooth-top-1-layer.png
+            screenshots/lavender-smooth-top-3-layers.png
+            screenshots/frosting-white-smooth-top.png
+            screenshots/frosting-lavender-smooth-top.png
           if-no-files-found: ignore
