@@ -23,6 +23,7 @@ function buttercreamMatrix(hex: string) {
   const original = 0.38, tint = 0.62, shadow = 0.78, highlight = 0.22;
   const coefficients = rgb.map((channel, output) => [
     ...sourceLuminance.map((luma, input) => (output === input ? original : 0) + tint * channel * shadow * luma),
+    0, // no dependence on source alpha in RGB; alpha is preserved by the last row
     tint * channel * highlight,
   ]);
   return coefficients.flat().concat([0, 0, 0, 1, 0]).join(' ');
