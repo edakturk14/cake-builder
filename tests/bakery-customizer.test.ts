@@ -69,11 +69,11 @@ test('replace prepared topper instead of overlapping multiple figures', () => {
 
 test('removing one topping does not accidentally remove another', () => {
   const base = applyCakePatch(createTemplateCake('classic'), { toppings: ['strawberries'] }).state;
-  const command = interpretLocalCommand('Remove strawberries and add caramel', base);
+  const command = interpretLocalCommand('Remove strawberries and add gold stars', base);
   assert.equal(command.kind, 'edit');
   if (command.kind === 'edit') {
     const next = applyCakePatch(base, command.patch).state;
-    assert.deepEqual(next.toppings, ['caramel']);
+    assert.deepEqual(next.toppings, ['gold-stars']);
   }
 });
 
@@ -89,4 +89,28 @@ test('unrecognized prompts stay unpriced and never invent decorations', () => {
   const base = createTemplateCake('classic');
   assert.equal(interpretLocalCommand('Give it a midnight masquerade mood', base).kind, 'help');
   assert.equal(interpretLocalCommand('Build a spaceship-shaped cake', base).kind, 'custom');
+});
+
+test('freeform ganache and caramel drips are no longer selectable through text or templates', () => {
+  for (const template of BAKERY_TEMPLATES) {
+    const toppings = createTemplateCake(template.id).toppings;
+    assert.equal(toppings.includes('ganache'), false);
+    assert.equal(toppings.includes('caramel'), false);
+  }
+  const cake = createTemplateCake('chocolate');
+  assert.equal(interpretLocalCommand('Add chocolate ganache', cake).kind, 'help');
+  assert.equal(interpretLocalCommand('Add caramel drizzle', cake).kind, 'help');
+  assert.equal(interpretLocalCommand('Remove caramel drizzle', cake).kind, 'edit');
+});
+
+test('holiday, birthday and racing fondant toppers are available as prepared designs', async () => {
+  const { BAKERY_TOPPERS, BAKERY_TOPPINGS } = await import('../src/shared/bakery');
+  assert.deepEqual(BAKERY_TOPPINGS.map(item => item.id), ['strawberries', 'raspberries', 'gold-stars']);
+  for (const id of ['christmas-tree', 'snowman', 'balloons', 'castle', 'race-car']) {
+    assert.ok(BAKERY_TOPPERS.some(item => item.id === id), id);
+  }
+  const cake = createTemplateCake('classic');
+  const request = interpretLocalCommand('Add a Christmas tree on top', cake);
+  assert.equal(request.kind, 'edit');
+  if (request.kind === 'edit') assert.deepEqual(applyCakePatch(cake, request.patch).state.toppers, ['christmas-tree']);
 });
