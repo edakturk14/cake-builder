@@ -39,11 +39,25 @@ test('a castle topper is supported but turning the whole cake into a castle need
   assert.equal(interpretLocalCommand('Make the cake look like a castle', base).kind, 'custom');
 });
 
-test('layer and tier commands do not mutate a fixed template', () => {
+test('one to three layers update the cake and sample prices', () => {
   const base = createTemplateCake('chocolate');
-  assert.equal(interpretLocalCommand('Add three layers', base).kind, 'help');
-  assert.equal(interpretLocalCommand('Make it two tiers', base).kind, 'help');
+  const command = interpretLocalCommand('Make it three layers', base);
+  assert.equal(command.kind, 'edit');
+  if (command.kind === 'edit') {
+    const next = applyCakePatch(base, command.patch).state;
+    assert.equal(next.layers, 3);
+    assert.deepEqual(next.toppings, base.toppings);
+    assert.equal(estimateCake(next).totalCents, estimateCake(base).totalCents + 600);
+  }
+  const one = interpretLocalCommand('Make it one layer', base);
+  assert.equal(one.kind, 'edit');
+  if (one.kind === 'edit') assert.equal(applyCakePatch(base, one.patch).state.layers, 1);
+  const extra = interpretLocalCommand('Add a layer', base);
+  assert.equal(extra.kind, 'edit');
+  if (extra.kind === 'edit') assert.equal(applyCakePatch(base, extra.patch).state.layers, 3);
+  assert.equal(interpretLocalCommand('Add a layer', applyCakePatch(base, { layers: 3 }).state).kind, 'help');
   assert.equal(interpretLocalCommand('Make it three tiers', base).kind, 'custom');
+  assert.equal(interpretLocalCommand('Make it two tiers', base).kind, 'custom');
 });
 
 test('replace prepared topper instead of overlapping multiple figures', () => {
