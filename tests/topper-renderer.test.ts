@@ -55,6 +55,9 @@ test('inscription appears in the preview above the frosting on chocolate 1, 2 an
     assert.ok(markup.includes(`/art/chocolate-${layers}.png`), `chocolate ${layers} base`);
     assert.ok(markup.includes(`/art/masks/frosting-${layers}.png`), `chocolate ${layers} frosting mask`);
     assert.ok(markup.includes('buttercream-tint'), `chocolate ${layers} natural frosting tint`);
+    const matrix = markup.match(/buttercream-tint"[^>]*><feColorMatrix[^>]*values="([^"]+)"/);
+    assert.ok(matrix, `chocolate ${layers} has a tint matrix`);
+    assert.equal(matrix[1].trim().split(/\s+/).length, 20, `chocolate ${layers} uses a valid 4x5 SVG matrix`);
     assert.ok(markup.includes('Cake inscription: Happy Birthday Eda'), `chocolate ${layers} labeled writing`);
     assert.ok(markup.includes('Happy Birthday') && markup.includes('Eda'), `chocolate ${layers} rendered lettering`);
     assert.ok(markup.indexOf('cake-base') < markup.indexOf('data-writing-font'), `chocolate ${layers} writing painted after base`);
