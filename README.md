@@ -23,7 +23,7 @@ Open http://127.0.0.1:5173. The Vite web app works without configuring `.env.loc
 4. Review sample pricing and save a snapshot to a browser-local basket. Quantities/removal/reload are supported.
 5. For sculpted cakes, castle-shaped cakes or unsupported designs, open the custom request **draft**. It can be copied, but is not sent to any bakery.
 
-All starter products and visible edit options are defined in `src/shared/bakery.ts`, which is the place for a bakery to supply its actual menu. Existing pricing comes from `src/shared/cake.ts` and remains **sample pricing, not a bakery quote**.
+All starter products and visible edit options are defined in `src/shared/bakery.ts`, which is the place for a bakery to supply its actual menu. **NYC showcase pricing starts at $58 per cake**, plus prepared toppings, toppers, candles and extra sponge layers. `estimateBakeryCake` and `priceBakeryBasketItem` in that file apply this starting price to the preview, template cards and saved/reloaded baskets, while leaving historical demo price fixtures in `src/shared/cake.ts` unchanged. These prices remain **sample pricing, not a bakery quote**.
 
 ### Layers and frosting rendering
 
