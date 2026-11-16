@@ -26,7 +26,11 @@ try {
       const rendered = original.matrixTransform(matrix);
       return [Math.round(rendered.x - rect.x), Math.round(rendered.y - rect.y)];
     }
-    return { top: p(256, 155), side: p(256, 337) };
+    return {
+      center: p(256, 224), // smooth frosting on the 1-layer cake top
+      whitePiping: p(120, 191), // ring outside the colorable center
+      side: p(256, 337), // original sponge, must never be recolored
+    };
   });
   async function snapshot(name) {
     await page.waitForTimeout(180);
@@ -38,7 +42,7 @@ try {
       return [...data.subarray((y * info.width + x) * 4, (y * info.width + x) * 4 + 3)];
     };
     await page.locator('.customizer-preview').screenshot({ path: `screenshots/frosting-${name}.png` });
-    return { top: pixel('top'), side: pixel('side') };
+    return { center: pixel('center'), whitePiping: pixel('whitePiping'), side: pixel('side') };
   }
   await mkdir('screenshots', { recursive: true });
   await page.getByRole('button', { name: 'White', exact: true }).click();
@@ -46,11 +50,16 @@ try {
   await page.getByRole('button', { name: 'Lavender' }).click();
   const lavender = await snapshot('white-top-lavender-side');
   const distance = (a, b) => Math.sqrt(a.reduce((sum, value, index) => sum + (value - b[index]) ** 2, 0));
-  const topChange = distance(white.top, lavender.top);
+  const centerChange = distance(white.center, lavender.center);
+  const pipingChange = distance(white.whitePiping, lavender.whitePiping);
   const sideChange = distance(white.side, lavender.side);
-  assert.ok(topChange < 12, `Top must remain white when color changes (delta ${topChange.toFixed(1)}, points ${white.top} -> ${lavender.top})`);
-  assert.ok(sideChange > 25, `Lower side must change color (delta ${sideChange.toFixed(1)}, points ${white.side} -> ${lavender.side})`);
-  console.log(`PASS frosting pixels: top delta=${topChange.toFixed(1)}, side delta=${sideChange.toFixed(1)}`);
+  assert.ok(centerChange > 25,
+    `Smooth top frosting should change color: delta ${centerChange.toFixed(1)}, ${white.center} -> ${lavender.center}`);
+  assert.ok(pipingChange < 12,
+    `White border swirls should not change color: delta ${pipingChange.toFixed(1)}`);
+  assert.ok(sideChange < 12,
+    `Original sponge must keep its appearance: delta ${sideChange.toFixed(1)}`);
+  console.log(`PASS frosting pixels: center delta=${centerChange.toFixed(1)}, white swirls delta=${pipingChange.toFixed(1)}, cake side delta=${sideChange.toFixed(1)}`);
 } finally {
   await browser.close();
 }
