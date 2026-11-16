@@ -1,4 +1,4 @@
-import { createCake, type CakePatch, type CakeState } from './cake';
+import { createCake, estimateCake, type BasketItem, type CakeEstimate, type CakePatch, type CakeState } from './cake';
 import type { PaletteId } from './appearance';
 import type { TopperId } from './toppers';
 
@@ -77,4 +77,31 @@ export function createTemplateCake(id: TemplateId): CakeState {
 
 export function isBakeryTopper(value: string): value is TopperId {
   return BAKERY_TOPPERS.some(item => item.id === value);
+}
+
+/** NYC bakery showcase pricing. Existing legacy demo fixtures retain their original price rules. */
+export const BAKERY_STARTING_PRICE_CENTS = 5800;
+
+/**
+ * Every sponge flavor starts at $58. Layers, toppers, fruit, candles and
+ * prepared decorations use their existing add-on amounts.
+ * The bakery site uses this estimator everywhere instead of demo estimateCake.
+ */
+export function estimateBakeryCake(cake: CakeState): CakeEstimate {
+  const estimated = estimateCake(cake);
+  if (!cake.exists) return estimated;
+  const base = estimated.lines.find(line => line.id === 'base');
+  if (!base) return estimated;
+  const baseAdjustment = BAKERY_STARTING_PRICE_CENTS - base.amountCents;
+  return {
+    ...estimated,
+    totalCents: estimated.totalCents + baseAdjustment,
+    lines: estimated.lines.map(line =>
+      line.id === 'base' ? { ...line, amountCents: BAKERY_STARTING_PRICE_CENTS } : line),
+  };
+}
+
+/** Reprice a saved cake after the core legacy-basket validator reloads it. */
+export function priceBakeryBasketItem(item: BasketItem): BasketItem {
+  return { ...item, estimate: estimateBakeryCake(item.design) };
 }
