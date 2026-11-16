@@ -351,3 +351,16 @@
   flex: 0 0 auto;
 }
 .customizer-editor .topper-choice span { white-space: nowrap; }
+
+/* Final compact header: keep the chocolate color but reclaim a little height. */
+@media (min-width: 601px) {
+  .site-header { height: 51px; padding-top: 5px; padding-bottom: 5px; }
+  .site-header .brand { font-size: 20px; }
+  .site-header .brand svg { height: 27px; width: 25px; }
+  .site-header .basket-trigger { font-size: 12px; }
+}
+@media (max-width: 600px) {
+  .site-header { height: 48px; padding-top: 5px; padding-bottom: 5px; }
+}
+.preview-unsaved { font-size: 10px; color: #876f67; font-weight: 400; }
+.customizer-editor .topper-choice img { filter: saturate(1.32) contrast(1.06); }
