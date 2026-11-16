@@ -80,6 +80,19 @@ try {
   const numeralX = Number(numeralTransform?.match(/translate\(([\d.]+)/)?.[1] ?? NaN);
   assert.ok(Number.isFinite(numeralX) && Math.abs(numeralX - 256) < 110,
     'Number candle should sit near the center of the cake');
+  const numeralAndWriting = await page.evaluate(() => {
+    const candle = document.querySelector('.customizer-preview [data-decoration="number-candles"] text');
+    const writing = document.querySelector('.customizer-preview .cake-inscription text');
+    if (!candle || !writing) return null;
+    const n = candle.getBoundingClientRect();
+    const w = writing.getBoundingClientRect();
+    return { numeral: { top: n.top, bottom: n.bottom, left: n.left, right: n.right },
+      inscription: { top: w.top, bottom: w.bottom, left: w.left, right: w.right } };
+  });
+  assert.ok(numeralAndWriting, 'Both the number candle and inscription should render');
+  const n = numeralAndWriting.numeral, w = numeralAndWriting.inscription;
+  assert.ok(n.bottom < w.top - 1 || n.top > w.bottom + 1 || n.right < w.left - 1 || n.left > w.right + 1,
+    'Number candle must not cover the cake inscription');
   await page.locator('.customizer-preview').screenshot({ path: 'screenshots/message-white-icing-number-candle.png' });
   await page.locator('#candle-style').selectOption('none');
 
