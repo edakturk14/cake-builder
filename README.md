@@ -1,68 +1,79 @@
-# Cake Gallery
+# Cake Gallery 🍰
 
-A small, template-first cake customizer for boutique bakeries. Customers start with a prepared cake design, personalize its toppings, topper, layers, candles and inscription, and save the illustrated design to a browser basket.
+A little cake, made your way.
 
-The default experience **needs no AI API key**, no image-generation provider and no account.
+Cake Gallery is a visual cake customizer for boutique bakeries. Pick a design that the bakery can make, add layers, decorations, candles, and a message, then save your cake to a basket. You can use the controls or simply tell the cake what to change.
 
-## Run locally
+Built as a small, low-cost prototype: **regular customization needs no AI API key or image generation**.
 
-Use Node.js 22+:
+## A look inside
 
-```sh
+![Cake Gallery desktop builder with cake designs, live preview, voice commands, and personalization controls](docs/screenshots/builder-desktop.png)
+
+| Birthday with Sprinkles | Red Velvet |
+|:---:|:---:|
+| ![One-layer birthday cake with colorful sprinkles](docs/screenshots/birthday-sprinkles.png) | ![Two-layer red velvet cake](docs/screenshots/red-velvet.png) |
+| Chocolate Party | Add your own decorations |
+| ![Two-layer chocolate cake with vanilla-colored cream filling](docs/screenshots/chocolate-party.png) | ![Chocolate cake customized with a unicorn and berries](docs/screenshots/customized-cake.png) |
+
+*Screenshots from the working prototype. The cake images are illustrative, not bakery product photos.*
+
+## How it works
+
+1. **Pick a cake.** Start with one of four prepared designs.
+2. **Make it yours.** Choose 1–3 sponge layers, flavor, decorations, a topper, candles, and a message.
+3. **Talk or type.** Try “Add strawberries,” “Make it three layers,” or “Write Happy Birthday Eda.” You can also use the regular controls.
+4. **Review the price.** See an updated estimate and save your design to a browser-local basket.
+5. **Request something special.** Sculpted or unusually shaped cakes go into a custom quote draft instead of generating an inaccurate preview.
+
+### The starter cakes
+
+| Design | Starting price | Included |
+|---|---:|---|
+| Classic Birthday | $58 | One-layer vanilla cake |
+| Chocolate Party | $64 | Two-layer chocolate cake with vanilla-colored cream filling |
+| Red Velvet | $64 | Two-layer red velvet cake |
+| Birthday with Sprinkles | $62 | One-layer vanilla cake with prepared colorful sprinkles |
+
+Prices are examples for the NYC bakery prototype: **$58 base cake**, plus charges for extra layers, toppings, toppers, and candles. The price updates with each supported edit.
+
+The default cake frosting is part of the prepared artwork. **There is no frosting color picker or artificial frosting recoloring.** The selectable toppings are strawberries, raspberries, and gold stars (up to two types). Birthday with Sprinkles includes its own prepared sprinkles. The topper menu includes birthday, holiday, and playful designs such as balloons, a castle, a unicorn, a Christmas tree, and a racing kart.
+
+## Run it locally
+
+You'll need **Node.js 22+**.
+
+~~~bash
+git clone https://github.com/edakturk14/cake-builder.git
+cd cake-builder
 npm ci
 npm run dev
-```
+~~~
 
-Open http://127.0.0.1:5173. The Vite web app works without configuring `.env.local`.
+Open [http://127.0.0.1:5173](http://127.0.0.1:5173).
 
-## What customers can do
+No `.env` file or API key is needed for the normal builder. The web app uses **React, TypeScript, and Vite**, with a small **Express** server.
 
-1. Choose **Classic Birthday**, **Chocolate Party**, **Red Velvet**, or **Birthday with Sprinkles**. Red Velvet and Chocolate Party start at two layers; Birthday with Sprinkles starts at one and includes a prepared confetti sprinkle decoration.
-2. Choose **1, 2, or 3 sponge layers**, change the sponge flavor, add/remove available prepared toppings, choose one topper, set a short inscription and choose candles. Frosting colors are intentionally **not customizable** in this prototype.
-3. Optionally type or speak simple edits such as "Add strawberries and write Eda." The deterministic interpreter lives in `src/shared/localCommands.ts`. Browser speech recognition may use a browser-provided online service and isn't available in every browser; controls and typing always remain available.
-4. Review sample pricing and save a snapshot to a browser-local basket. Quantities/removal/reload are supported.
-5. For sculpted cakes, castle-shaped cakes or unsupported designs, open the custom request **draft**. It can be copied, but is not sent to any bakery.
+### Useful commands
 
-All starter products and visible edit options are defined in `src/shared/bakery.ts`, which is the place for a bakery to supply its actual menu. **NYC showcase pricing starts at $58 per cake**, plus prepared toppings, toppers, candles and extra sponge layers. `estimateBakeryCake` and `priceBakeryBasketItem` in that file apply this starting price to the preview, template cards and saved/reloaded baskets, while leaving historical demo price fixtures in `src/shared/cake.ts` unchanged. These prices remain **sample pricing, not a bakery quote**.
-
-### Layers and frosting rendering
-
-The four starter templates have starting layer counts, but customers can change any sponge cake to **1, 2 or 3 sponge layers**, by clicking or saying e.g. "Make it three layers" or "Add a layer." An extra sponge layer updates sample pricing. **Stacked tiers** and sculpted shapes are custom quotes, not layer-count edits.
-
-Each layer count uses existing prepared cake images. The frosting is the original artwork with **no additional colored or white frosting overlay**. The frosting color picker and voice recoloring commands were removed because those effects did not look believable. Chocolate Party uses **ivory/vanilla-colored filling**, not pink.
-
-The compact desktop page places starter designs on the left, live cake and speech/typing in the center, and personalization controls on the right. On narrow screens these become a vertical flow.
-
-## Cake art guardrails
-
-- **Ganache and caramel drizzle are no longer selectable as free-form toppings.** The previous drawn syrup paths looked like gold sticks and dark paint when stacked with fruit. Real chocolate-drip or caramel finishes should become prepared bakery templates with their own approved artwork.
-- The menu offers **strawberries, raspberries and gold stars**. Customers can select up to **two**, and mixed berries are rendered in smaller, separate clusters on the left and right edges, leaving the center for figurines, writing and candles.
-- **Birthday with Sprinkles** uses the prepared vanilla birthday cake with a small, fixed colorful sugar-sprinkle arrangement on top. It is priced at $62 ($58 base + $4 sprinkles). Sprinkles are included by default with this cake; the ordinary topping picker still offers strawberries, raspberries and gold stars.
-- Prepared toppers include **balloons, Christmas tree, snowman, castle, unicorn, princess, flowers, rainbow and generic racing kart**, all using the existing artwork library. They render smaller when berries are present. A Santa figurine would require new approved fondant artwork rather than silently drawing an inaccurate substitute.
-- The underlying cake images are still prepared illustration/raster artwork, not photographs supplied by a bakery. Rendering improvements do not turn them into actual product photos.
-
-## Cost controls and safety
-
-- Ordinary customization buttons and text commands use local React state. No Jev, OpenRouter or other LLM provider is called by the new page.
-- The server's legacy `POST /api/interpret` and `POST /api/topper-image` endpoints are **disabled by default**, even if environment API keys happen to exist. They require `ENABLE_PAID_PROVIDERS=true` to allow calls.
-- **Do not enable these paid endpoints on a public demo without authentication, user-level throttling and spend limits.**
-- Prepared cake and topper artwork is included in the repo and does not trigger image generation.
-
-## Not yet a live bakery storefront
-
-- The basket lives in the customer's browser, not a shared database.
-- There is no checkout, payment, real order submission, confirmed delivery/pickup slot or bakery inventory.
-- Custom request form details are not sent, saved remotely or reviewed by a baker.
-- Bakery owners must approve the menu, prices, lead times, serving sizes, allergen information and feasibility before accepting real orders.
-
-## Development checks
-
-```sh
+~~~bash
 npm run typecheck
 npm test
 npm run build
-```
+~~~
 
-The new `tests/bakery-customizer.test.ts` covers templates, 1–3-layer text/voice edits, one-topper rules, shape-to-quote routing and sample pricing. `tests/topper-renderer.test.ts` verifies cake messages, original unmodified frosting across flavors/layer counts, and the birthday sprinkle decorations. The GitHub workflow also runs `tests/browser-smoke.mjs` in headless Chromium, exercising **Apply** on the actual inscription input, layer buttons, typed commands, mobile overflow and avoidance of paid endpoints.
+## What's under the hood?
 
-For historical context on the earlier unrestricted voice-first experiment, see `docs/build-brief.md`, `docs/validation.md` and `docs/retest-interpretation.md`.
+- `src/shared/bakery.ts` defines the starter cakes, available decorations, and bakery pricing.
+- `src/shared/cake.ts` contains cake state, edit validation, Undo, and the underlying demo-pricing rules.
+- `src/shared/localCommands.ts` interprets the supported spoken and typed cake edits without calling an LLM.
+- `src/components/CakeScene.tsx` and `src/components/FruitDecorations.tsx` render the cake and prepared decorations.
+- `tests/browser-smoke.mjs` checks the actual customer flow in Chromium.
+
+The cake uses prepared images rather than generating a new image for every request. Browser speech recognition is optional and browser-dependent; typing and clicking always work. The legacy paid interpretation and image-generation endpoints are **disabled by default**. Do not expose them publicly without authentication and spending limits.
+
+## Prototype limitations
+
+This is **not a live bakery storefront** yet. The basket saves locally in the browser; there is no payment processing, order submission, stock management, or confirmed pickup/delivery scheduling. A complex custom-cake request is a copyable draft, **not a message sent to the baker**.
+
+For the earlier voice-first experiments, see `docs/build-brief.md`, `docs/validation.md`, and `docs/retest-interpretation.md`.
